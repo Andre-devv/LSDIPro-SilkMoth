@@ -1,0 +1,99 @@
+\documentclass[a4paper]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{pgfgantt}
+\usepackage{hyperref}
+
+\title{Implementation Plan - Student Project SilkMoth}
+\date{April 2025}
+
+\begin{document}
+
+\maketitle
+
+Figure \ref{fig:plan} shows a more detailed version of our initial project plan. Note that some tasks may take longer or could be completed earlier than this plan assumes, and we are willing to adjust the plan according to our resources. We aim to parallelize the implementation tasks during the project whenever possible. We split the project into three phases as follows.
+
+\begin{enumerate}
+    \item \textbf{(17.4 - 15.05)} - Core Pipeline
+    \begin{itemize}
+        \item Get a common understanding of the system
+        \item Implement the main components without major optimization
+        \item Prepare small data set to test correctness and larger data sets for evaluation phase
+        \item Goal: Runnable code for at least the base case (single search pass, similarity threshold $\alpha = 0$, similarity function $\phi = \texttt{Jac}$)
+    \end{itemize}
+    \item \textbf{(16.5 - 12.06)} - Extended Framework
+    \begin{itemize}
+        \item Improve the core pipeline
+        \item Refinement and optimization
+        \item Support for discovery mode, $\alpha \neq 0$ , $\phi = \texttt{Eds}$ and $\phi = \texttt{NEds}$
+        \item Goal: Most features should be finalized and ready for expert review
+    \end{itemize}
+    \item \textbf{(13.6 - 24.07)} - Evaluation
+    \begin{itemize}
+        \item Improve the system from the feedback and finalize the last functionalities 
+        \item Implement the applications to conduct experiments
+        \item Visualize experiment results
+        \item Write report/documentation
+        \item Consider bonus improvements e.g. additional data sets like GitTables\footnote{\url{https://gittables.github.io/}} or additional similarity functions like Hamming similarity\footnote{\url{https://en.wikipedia.org/wiki/Hamming_distance}}
+        \item Goal: Presentation and submission of the final system
+    \end{itemize}
+\end{enumerate}
+
+
+\begin{figure}[b!]
+\begin{ganttchart}[
+    vgrid, hgrid, 
+    x unit=0.5cm,
+    y unit title=0.75cm,
+    y unit chart=0.5cm,
+    title height=1,
+    milestone left shift=.1,
+    milestone right shift=-.1,
+    group left shift=0,
+    group right shift=0,
+    group peaks tip position=0,
+    group peaks height=0.2,
+    title label font=\small,
+    bar label font=\small,
+    group label font=\small\bfseries,
+    milestone label font=\small\itshape,
+    ]{1}{14}
+    \gantttitle[]{Project Plan [weeks]}{14} \\
+    \gantttitlelist{1,...,14}{1} \\
+
+    \ganttgroup{Milestone 1: Core Pipeline}{1}{4} \\
+    \ganttbar{Understand SilkMoth}{1}{1} \\
+    \ganttbar{System design of core pipeline}{2}{2} \\
+    \ganttbar{Data collection/preparation}{2}{4} \\
+    \ganttbar{Tokenizer}{3}{4} \\
+    \ganttbar{Inverted Index}{3}{4} \\
+    \ganttbar{Signature Generator}{3}{4} \\
+    \ganttbar{Maximum Matching Verification}{3}{4} \\
+    \ganttmilestone{Milestone 1 done}{4} \\
+
+    \ganttgroup{Milestone 2: Extended Framework}{5}{8} \\
+    \ganttbar{Discovery Mode}{5}{6} \\
+    \ganttbar{Check Filter}{5}{6} \\
+    \ganttbar{Nearest Neighbor Filter}{6}{7} \\
+    \ganttbar{Triangle Optimization}{6}{7} \\
+    \ganttbar{Support for $\alpha \neq 0$}{6}{8}\\
+    \ganttbar{Edit Similarity}{7}{8}\\
+    \ganttbar{Prepare for Experiments}{7}{8}\\
+    \ganttbar{Prepare for expert review}{8}{8} \\
+    \ganttmilestone{Milestone 2 done}{8} \\
+
+    \ganttgroup{Milestone 3: Evaluation}{9}{14} \\
+    \ganttbar{Improve system using feedback}{9}{9} \\
+    \ganttbar{Experiments: Inclusion Dependency}{9}{12} \\
+    \ganttbar{Experiments: String Matching}{9}{12} \\
+    \ganttbar{Experiments: Schema Matching}{9}{12} \\
+    \ganttbar{(Bonus)}{11}{12} \\
+    \ganttbar[bar/.append style={fill=gray, solid}]{Finalize Visualization and Documentation}{12}{14} \\
+    \ganttbar[bar/.append style={fill=gray, solid}]{Preparing presentation}{13}{14} \\
+    \ganttmilestone{Milestone 4 done}{14} \\
+    \ganttmilestone{Project done}{14}
+\end{ganttchart}
+\caption{Implementation Plan. First week starting from 17.04.2025.}
+\label{fig:plan}
+\end{figure}
+
+\end{document}
