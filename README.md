@@ -16,3 +16,10 @@ A project inspired by the SilkMoth paper, exploring efficient techniques for rel
 
 ### 📘 Project Documentation
 [📄 **View Full PDF Report**](./docs/report.pdf)
+
+---
+
+### Installing from source
+
+1. Run `pip install src/` to install
+2. (optional) Run `python -m unittest discover -s src/silkmoth/test -p "*.py"` to execute the unit tests
