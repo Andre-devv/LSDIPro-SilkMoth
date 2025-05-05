@@ -12,15 +12,15 @@ class Tokenizer:
         """
         self.sim_func = sim_func
 
-    def tokenize(self, set: str) -> list:
+    def tokenize(self, set: list) -> list:
         """
-        Tokenizes the input string based on the similarity function.
+        Tokenizes the input based on the similarity function.
 
         Args:
-            set (str): The input string to tokenize.
+            set: The input string to tokenize.
 
         Returns:
-            list: A list of str tokens extracted from the input string.
+            list: A list of str tokens extracted from the input.
 
         """
         tokens = []
@@ -30,15 +30,28 @@ class Tokenizer:
             raise ValueError("Unsupported similarity function")
         return tokens
 
-    def jaccard_tokenize(self, set: str) -> list:
+    def jaccard_tokenize(self, set: list) -> list:
         """
-        Tokenizes the input string using Jaccard similarity.
+        Tokenizes the input using Jaccard similarity.
 
         Args:
-            set (str): The input string to tokenize.
+            set: The input string to tokenize.
 
         Returns:
             list: A list of str tokens extracted from the input string.
         """
-        tokens = set.split()
+        tokens = []
+        for element in set:
+            if isinstance(element, (str, int, float, bool)):
+                tokens.extend(str(element).split())
+            elif isinstance(element, (list, tuple)):
+                for sub_element in element:
+                    if isinstance(sub_element, (str, int, float, bool)):
+                        tokens.extend(str(sub_element).split())
+                    else:
+                        raise ValueError(
+                            f"Unsupported nested type: {type(sub_element)}"
+                        )
+            else:
+                raise ValueError(f"Unsupported element type: {type(element)}")
         return tokens
