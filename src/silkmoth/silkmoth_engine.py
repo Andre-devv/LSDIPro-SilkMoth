@@ -14,7 +14,7 @@ class SilkMothEngine:
         self.sim_func = sim_func                    # phi
         self.sim_thresh = sim_thresh                # alpha
         self.inverted_index = self.build_index(source_sets)
-        self.tokenizer = Tokenizer()
+        self.tokenizer = Tokenizer(sim_func)
         self.signature_gen = SignatureGenerator()
         self.candidate_selector = CandidateSelector()
         self.verifier = Verifier()
