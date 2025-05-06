@@ -1,6 +1,8 @@
 import unittest
 from silkmoth.tokenizer import Tokenizer
 from silkmoth.utils import jaccard_similarity
+from io import StringIO
+import csv
 
 
 class TestTokenizer(unittest.TestCase):
@@ -58,6 +60,38 @@ class TestTokenizer(unittest.TestCase):
         input_data = ["Hello World", 123, [True, 45.67]]
         expected_tokens = ["Hello", "World", "123", "True", "45.67"]
         tokens = self.tokenizer_jaccard.tokenize(input_data)
+        self.assertEqual(tokens, expected_tokens)
+
+    def test_jaccard_tokenize_csv_data(self):
+        # Test on CSV data with mixed types
+        csv_data = """Name,Age,Location,Score,Active
+                        Alice,30,New York,85.5,True
+                        Bob,25,Los Angeles,90.0,False"""
+
+        reader = csv.reader(StringIO(csv_data))
+        input_data = list(reader)
+
+        expected_tokens = [
+            "Name",
+            "Age",
+            "Location",
+            "Score",
+            "Active",
+            "Alice",
+            "30",
+            "New",
+            "York",
+            "85.5",
+            "True",
+            "Bob",
+            "25",
+            "Los",
+            "Angeles",
+            "90.0",
+            "False",
+        ]
+        tokens = self.tokenizer_jaccard.tokenize(input_data)
+
         self.assertEqual(tokens, expected_tokens)
 
 
