@@ -14,7 +14,7 @@ class TestTokenizer(unittest.TestCase):
     def test_unsupported_similarity_function(self):
 
         with self.assertRaises(ValueError):
-            self.tokenizer_unsupported.tokenize("test string")
+            self.tokenizer_unsupported.tokenize(["test string"])
 
     def test_jaccard_tokenize_english(self):
         input_string = ["77 Mass Ave Boston MA"]
