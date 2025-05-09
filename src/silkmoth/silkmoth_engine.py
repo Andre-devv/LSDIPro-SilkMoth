@@ -13,15 +13,16 @@ class SilkMothEngine:
         self.sim_metric = sim_metric                # related
         self.sim_func = sim_func                    # phi
         self.sim_thresh = sim_thresh                # alpha
-        self.inverted_index = self.build_index(source_sets)
         self.tokenizer = Tokenizer(sim_func)
         self.signature_gen = SignatureGenerator()
         self.candidate_selector = CandidateSelector()
         self.verifier = Verifier()
+        self.inverted_index = self.build_index(source_sets)
         
-    def build_index(source_sets):
-        pass
-
+    def build_index(self, source_sets):
+        token_sets = [self.tokenizer.tokenize(s) for s in source_sets]
+        return InvertedIndex(token_sets)
+        
     def search_sets(self, reference_set):
         r_tokens = self.tokenizer.tokenize(reference_set)
         signature = self.signature_gen.get_signature(r_tokens)
