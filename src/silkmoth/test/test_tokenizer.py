@@ -35,8 +35,8 @@ class TestTokenizer(unittest.TestCase):
         self.assertEqual(tokens, expected_tokens)
 
     def test_jaccard_tokenize_nested_lists(self):
-        input_data = [["77 Mass Ave", "Boston"], ["MA", 123]]
-        expected_tokens = [["77", "Mass", "Ave", "Boston"], ["MA", "123"]]
+        input_data = [[["77 Mass Ave", "Boston"], ["MA", 123]]]
+        expected_tokens = [["77", "Mass", "Ave", "Boston", "MA", "123"]]
         tokens = self.tokenizer_jaccard.tokenize(input_data)
         self.assertEqual(tokens, expected_tokens)
 
