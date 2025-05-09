@@ -20,6 +20,10 @@ def jaccard_tokenize(input_set: list) -> list:
             for sub_element in element:
                 if isinstance(sub_element, (str, int, float, bool)):
                     sub_tokens.extend(str(sub_element).split())
+                elif isinstance(sub_element, (list, tuple)):
+                    for sub_sub_element in sub_element:
+                        if isinstance(sub_sub_element, (str, int, float, bool)):
+                            sub_tokens.extend(str(sub_sub_element).split())
                 else:
                     raise ValueError(
                         f"Unsupported nested type: {type(sub_element)}"
