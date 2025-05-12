@@ -15,7 +15,8 @@ class InvertedIndex:
                 for token in tokens:
                     if not token in self.lookup_table:
                         self.lookup_table[token] = [(set_idx, element_idx)]
-                    else:
+                    # avoid duplicates in inverted list
+                    elif self.lookup_table[token][-1] != (set_idx, element_idx):
                         self.lookup_table[token].append((set_idx, element_idx))
 
     def keys(self):
