@@ -14,16 +14,20 @@ def jaccard_tokenize(input_set: list) -> list:
     tokens = []
     for element in input_set:
         if isinstance(element, (str, int, float, bool)):
-            tokens.append(str(element).split())
+            tokens.append(set(str(element).split()))
         elif isinstance(element, (list, tuple)):
-            sub_tokens = []
+            sub_tokens = set()
             for sub_element in element:
                 if isinstance(sub_element, (str, int, float, bool)):
-                    sub_tokens.extend(str(sub_element).split())
+                    sub_tokens.update(str(sub_element).split())
                 elif isinstance(sub_element, (list, tuple)):
                     for sub_sub_element in sub_element:
                         if isinstance(sub_sub_element, (str, int, float, bool)):
-                            sub_tokens.extend(str(sub_sub_element).split())
+                            sub_tokens.update(str(sub_sub_element).split())
+                        else:
+                            raise ValueError(
+                                f"Unsupported nested type: {type(sub_element)}"
+                            )
                 else:
                     raise ValueError(
                         f"Unsupported nested type: {type(sub_element)}"
