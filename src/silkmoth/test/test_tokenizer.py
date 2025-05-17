@@ -18,25 +18,25 @@ class TestTokenizer(unittest.TestCase):
 
     def test_jaccard_tokenize_english(self):
         input_string = ["77 Mass Ave Boston MA"]
-        expected_tokens = [["77", "Mass", "Ave", "Boston", "MA"]]
+        expected_tokens = [{"77", "Mass", "Ave", "Boston", "MA"}]
         tokens = self.tokenizer_jaccard.tokenize(input_string)
         self.assertEqual(tokens, expected_tokens)
 
     def test_jaccard_tokenize_unicode(self):
         input_string = ["こんにちは 世界 🌍"]
-        expected_tokens = [["こんにちは", "世界", "🌍"]]
+        expected_tokens = [{"こんにちは", "世界", "🌍"}]
         tokens = self.tokenizer_jaccard.tokenize(input_string)
         self.assertEqual(tokens, expected_tokens)
 
     def test_jaccard_tokenize_numbers(self):
         input_data = [[123, 45.67, True]]
-        expected_tokens = [["123", "45.67", "True"]]
+        expected_tokens = [{"123", "45.67", "True"}]
         tokens = self.tokenizer_jaccard.tokenize(input_data)
         self.assertEqual(tokens, expected_tokens)
 
     def test_jaccard_tokenize_nested_lists(self):
         input_data = [[["77 Mass Ave", "Boston"], ["MA", 123]]]
-        expected_tokens = [["77", "Mass", "Ave", "Boston", "MA", "123"]]
+        expected_tokens = [{"77", "Mass", "Ave", "Boston", "MA", "123"}]
         tokens = self.tokenizer_jaccard.tokenize(input_data)
         self.assertEqual(tokens, expected_tokens)
 
@@ -58,7 +58,7 @@ class TestTokenizer(unittest.TestCase):
 
     def test_jaccard_tokenize_mixed_types(self):
         input_data = ["Hello World", 123, [True, 45.67]]
-        expected_tokens = [["Hello", "World"], ["123"], ["True", "45.67"]]
+        expected_tokens = [{"Hello", "World"}, {"123"}, {"True", "45.67"}]
         tokens = self.tokenizer_jaccard.tokenize(input_data)
         self.assertEqual(tokens, expected_tokens)
 
@@ -72,23 +72,23 @@ class TestTokenizer(unittest.TestCase):
         input_data = list(reader)
 
         expected_tokens = [
-            ["Name",
+            {"Name",
             "Age",
             "Location",
             "Score",
-            "Active"],
-            ["Alice",
+            "Active"},
+            {"Alice",
             "30",
             "New",
             "York",
             "85.5",
-            "True"],
-            ["Bob",
+            "True"},
+            {"Bob",
             "25",
             "Los",
             "Angeles",
             "90.0",
-            "False"],
+            "False"},
         ]
         tokens = self.tokenizer_jaccard.tokenize(input_data)
 

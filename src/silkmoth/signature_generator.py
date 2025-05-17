@@ -11,7 +11,7 @@ class SignatureGenerator:
         Args:
             reference_set: Tokenized reference set.
             inverted_index (InvertedIndex): Index to evaluate token cost.
-            delta (float): Similarity threshold factor.
+            delta (float): Relatedness threshold factor.
 
         Returns:
             list: A list of str for selected tokens forming the signature.
@@ -19,6 +19,9 @@ class SignatureGenerator:
         return self._generate_weighted_signature(reference_set, inverted_index, delta)
 
     def _generate_weighted_signature(self, reference_set, inverted_index, delta):
+        if delta <= 0.0:
+            return []
+        
         n = len(reference_set)
         theta = delta * n  # required covered fraction ,  delta * |R| in paper
 
@@ -54,7 +57,9 @@ class SignatureGenerator:
         total_loss = float(n) #nothing coveered yet so total loss is big
         selected_sig = set() 
 
-        while heap and total_loss >= theta:
+        #while heap and total_loss >= theta:
+        while heap and (total_loss >= theta or delta == 1.0 and any(c < 1.0 for c in covered)):
+
             # 1.
             ratio, t = heapq.heappop(heap) # pull best token with lowest cost/value from heap
             if t in selected_sig:

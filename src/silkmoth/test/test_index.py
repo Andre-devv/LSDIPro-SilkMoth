@@ -74,4 +74,15 @@ class TestInvertedIndex(unittest.TestCase):
             I.get_set(-1)
         with self.assertRaises(ValueError):
             I.get_set(4)
+
+    def test_duplicates(self):
+        I = InvertedIndex([[["1", "2", "2"], ["2", "2", "3"]]])
+        self.assertEqual(I.get_indexes("2"), [(0, 0), (0, 1)])
         
+    def test_set_objects(self):
+        input_S = [[{"1", "2", "3"}, {"2", "3", "4"}], 
+                   [{"2", "3", "4"}, {"3", "4", "5"}]]
+        I = InvertedIndex(input_S)
+        self.assertEqual(I["1"], [([{"1", "2", "3"}, {"2", "3", "4"}], 
+                                   {"1", "2", "3"})])
+        self.assertEqual(I.get_indexes("2"), [(0,0), (0,1), (1,0)])
