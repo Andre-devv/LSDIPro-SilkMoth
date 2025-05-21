@@ -21,6 +21,12 @@ class SignatureGenerator:
     def _generate_weighted_signature(self, reference_set, inverted_index, delta):
         if delta <= 0.0:
             return []
+
+        if delta >= 1.0:
+            all_unique_tokens = set()
+            for elem in reference_set:
+                all_unique_tokens.update(elem)
+            return list(all_unique_tokens)
         
         n = len(reference_set)
         theta = delta * n  # required covered fraction ,  delta * |R| in paper
@@ -53,29 +59,35 @@ class SignatureGenerator:
             heapq.heappush(heap, (cost / val, t)) # goal small ratio: cost/value
 
         # 3) Selection with greedy algorithm
-        covered = [0.0] * n 
-        total_loss = float(n) #nothing coveered yet so total loss is big
-        selected_sig = set() 
+        selected_sig = set()
+        r_sizes = [len(set(elem)) if elem else 0 for elem in reference_set]
+        total_loss = float(n)
+        current_k_counts = [0] * n
 
-        #while heap and total_loss >= theta:
-        while heap and (total_loss >= theta or delta == 1.0 and any(c < 1.0 for c in covered)):
-
+        # while heap and total_loss >= theta:
+        while heap and total_loss >= theta:
             # 1.
-            ratio, t = heapq.heappop(heap) # pull best token with lowest cost/value from heap
+            ratio, t = heapq.heappop(heap)  # pull best token with lowest cost/value from heap
             if t in selected_sig:
                 continue
             if ratio == float('inf'):
                 break
+
             # 2.
             selected_sig.add(t)
-            w = token_value[t] #look up token value of selected
 
-            # coverage score for each element
-            # covered[idx] tracks how much of that element has been covered by the tokens chosen so far.
-            for idx in token_to_elems.get(t, []):
-                covered[idx] = min(covered[idx] + w, 1.0) # for each elem this t appears in, increase element's coverage by w & set liimit so it never go above 1.0
-        
-            total_loss = sum(1.0 - c for c in covered) # as soon as theta > total loss -> enough tokens that cover each element
+            # 3.
+            for i in range(n):
+                if r_sizes[i] == 0:
+                    continue
 
+                # Calculate |k_i|: number of tokens from reference_set[i] also in selected_sig
+                current_k_counts[i] = len(set(reference_set[i]).intersection(selected_sig))
+
+            # 4.
+            total_loss = sum(
+                (r_sizes[i] - current_k_counts[i]) / r_sizes[i]
+                for i in range(n) if r_sizes[i] > 0
+            )
 
         return list(selected_sig)
