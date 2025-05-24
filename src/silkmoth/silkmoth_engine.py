@@ -25,7 +25,7 @@ class SilkMothEngine:
         
     def search_sets(self, reference_set):
         r_tokens = self.tokenizer.tokenize(reference_set)
-        signature = self.signature_gen.get_signature(r_tokens)
+        signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh)
         candidates = self.candidate_selector.get_candidates(signature, self.inverted_index)
         return self.verifier.get_related_sets(candidates, r_tokens)
 
