@@ -25,9 +25,6 @@ class SignatureGenerator:
         n = len(reference_set)
         theta = delta * n  # required covered fraction ,  delta * |R| in paper
 
-        if delta >= 1.0:
-            theta = 0
-
         # 1) Build token: elements map and aggregate token values
         token_to_elems = defaultdict(list)
         token_value = {}
