@@ -51,7 +51,7 @@ class TestSignatureGenerator(unittest.TestCase):
         self.assertLess(total_loss, theta, "Signature does not satisfy weighted validity constraint")
 
 
-    # Example from Table 2 with edge cases for delta = 0 (empty list), delta = 1 (full coverage)
+    # Example from Table 2 with edge cases for delta = 0 and delta = 1
     def test_signature_deltas(self):
         t1 = "77"
         t2 = "Mass"
@@ -81,12 +81,12 @@ class TestSignatureGenerator(unittest.TestCase):
 
         self.assertEqual(self.generator.get_signature(R, inverted_index, 0.0), [])
 
-        full_cov = self.generator.get_signature(R, inverted_index, 1.0)
-        self.assertGreaterEqual(len(full_cov), 1)
+        delta_one_sig = self.generator.get_signature(R, inverted_index, 1.0)
+        self.assertGreaterEqual(len(delta_one_sig), 1)
 
 
     # delta = 0 - no coverage is required 
-    def test_delta_zero(self):
+    def test_sig_validity_for_delta_zero(self):
         R = [["A"], ["B"], ["C"]]
         dataset = [R]
         inverted_index = InvertedIndex(dataset)
@@ -95,15 +95,15 @@ class TestSignatureGenerator(unittest.TestCase):
         self.assertEqual(signatures, [])  # No tokens needed
 
 
-    # delta = 1 - full coverage required 
-    def test_full_coverage_required(self):
+    # delta = 1 - total_loss < n required  
+    def test_sig_validity_for_delta_one(self):
         R = [["A", "B"], ["C", "D"]]
         dataset = [R]
         index = InvertedIndex(dataset)
 
         signatures = self.generator.get_signature(R, index, 1.0)
 
-        # select at least 2 tokens to achieve full coverage
+        # one token suffices to achieve full coverage
         self.assertGreaterEqual(len(signatures), 1)
 
 
