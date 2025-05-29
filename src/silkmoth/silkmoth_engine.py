@@ -16,7 +16,7 @@ class SilkMothEngine:
         self.reduction = reduction
         self.tokenizer = Tokenizer(sim_func)
         self.signature_gen = SignatureGenerator()
-        self.candidate_selector = CandidateSelector()
+        self.candidate_selector = CandidateSelector(similarity_func=self.sim_func)
         self.verifier = Verifier(related_thresh, sim_metric, sim_func, sim_thresh, reduction)
         self.inverted_index = self.build_index(source_sets)
         
@@ -28,7 +28,10 @@ class SilkMothEngine:
         r_tokens = self.tokenizer.tokenize(reference_set)
         signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh)
         candidates = self.candidate_selector.get_candidates(signature, self.inverted_index)
-        return self.verifier.get_related_sets(r_tokens, candidates, self.inverted_index)
+        filtered_candidates = self.candidate_selector.check_filter(
+        r_tokens, set(signature), candidates, self.inverted_index
+        )
+        return self.verifier.get_related_sets(r_tokens, filtered_candidates, self.inverted_index)
 
     def discover_sets(self, reference_sets):
         pass
