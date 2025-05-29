@@ -7,16 +7,17 @@ from silkmoth.verifier import *
 
 class SilkMothEngine:
     
-    def __init__(self, related_thresh, source_sets, sim_metric=similar, sim_func=jaccard_similarity, sim_thresh=0):
-        self.related_thresh = related_thresh        # theta
+    def __init__(self, related_thresh, source_sets, sim_metric=similar, sim_func=jaccard_similarity, sim_thresh=0, reduction=False):
+        self.related_thresh = related_thresh        # delta
         self.source_sets = source_sets              # S
         self.sim_metric = sim_metric                # related
         self.sim_func = sim_func                    # phi
         self.sim_thresh = sim_thresh                # alpha
+        self.reduction = reduction
         self.tokenizer = Tokenizer(sim_func)
         self.signature_gen = SignatureGenerator()
         self.candidate_selector = CandidateSelector(similarity_func=self.sim_func)
-        self.verifier = Verifier()
+        self.verifier = Verifier(related_thresh, sim_metric, sim_func, sim_thresh, reduction)
         self.inverted_index = self.build_index(source_sets)
         
     def build_index(self, source_sets):
@@ -30,7 +31,7 @@ class SilkMothEngine:
         filtered_candidates = self.candidate_selector.check_filter(
         r_tokens, set(signature), candidates, self.inverted_index
         )
-        return self.verifier.get_related_sets(filtered_candidates, r_tokens)
+        return self.verifier.get_related_sets(r_tokens, filtered_candidates, self.inverted_index)
 
     def discover_sets(self, reference_sets):
         pass
