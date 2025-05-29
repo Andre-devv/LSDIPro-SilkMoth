@@ -1,9 +1,9 @@
-from silkmoth.utils import *
-from silkmoth.inverted_index import *
-from silkmoth.tokenizer import *
-from silkmoth.signature_generator import *
-from silkmoth.candidate_selector import *
-from silkmoth.verifier import *
+from .utils import *
+from .inverted_index import *
+from .tokenizer import *
+from .signature_generator import *
+from .candidate_selector import *
+from .verifier import *
 
 class SilkMothEngine:
     

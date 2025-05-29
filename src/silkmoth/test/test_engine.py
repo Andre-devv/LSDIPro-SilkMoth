@@ -1,5 +1,6 @@
 import unittest
-import silkmoth as sm
+from silkmoth.silkmoth_engine import SilkMothEngine
+from silkmoth.utils import contain, jaccard_similarity
 
 class TestEngine(unittest.TestCase):
 
@@ -31,7 +32,7 @@ class TestEngine(unittest.TestCase):
                   " ".join([t1, t4, t5, t11, t12])]
 
     def test_pipeline_running_base_example(self):
-        engine = sm.SilkMothEngine(0.7, self.S, sm.contain, sm.jaccard_similarity)
+        engine = SilkMothEngine(0.7, self.S, contain, jaccard_similarity)
         search_results = engine.search_sets(self.R)
         self.assertEqual(search_results, {3})
 
