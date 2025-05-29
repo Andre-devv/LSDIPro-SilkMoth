@@ -1,4 +1,4 @@
-from silkmoth.utils import *
+from .utils import *
 
 
 def jaccard_tokenize(input_set: list) -> list:

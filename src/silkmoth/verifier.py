@@ -1,4 +1,4 @@
-from silkmoth.inverted_index import InvertedIndex
+from .inverted_index import InvertedIndex
 import networkx as nx
 
 def _reduce(reference_set: list, source_set: list) -> tuple:
