@@ -1,19 +1,26 @@
+from .utils import *
+
 class CandidateSelector:
 
-    def __init__(self, similarity_func):
+    def __init__(self, similarity_func, sim_metric, related_thresh):
         """
         Args:
             similarity_func (callable): Similarity function phi(r, s) (e.g., Jaccard).
+            sim_metric (callable): Similarity metric related(R, S) (e.g., contain).
+            related_thresh (float): Relatedness threshold delta.
         """
         self.similarity = similarity_func
+        self.sim_metric = sim_metric
+        self.delta = related_thresh
 
-    def get_candidates(self, signature, inverted_index):
+    def get_candidates(self, signature, inverted_index, ref_size):
         """
         Retrieve candidate set indices using token signature lookup.
 
         Args:
             signature (set): Signature tokens for a reference set.
             inverted_index (InvertedIndex): Instance of the custom InvertedIndex class.
+            ref_size (int): Size of set R.
 
         Returns:
             set: Indices of candidate sets containing at least one signature token.
@@ -24,12 +31,37 @@ class CandidateSelector:
             try:
                 idx_list = inverted_index.get_indexes(token)
                 for set_idx, _ in idx_list:
-                    candidates.add(set_idx)
+                    src_size = len(inverted_index.get_set(set_idx))
+                    if self.verify_size(ref_size, src_size):
+                        candidates.add(set_idx)
             except ValueError:
                 # token not found in inverted index; safely ignore
                 continue
 
         return candidates
+    
+    def verify_size(self, ref_size, src_size) -> bool:
+        """
+        Checks if sets can be related based on their sizes. Set-Containment is 
+        only defined for |R|<=|S|. For Set-Similarity we should compare only 
+        similar size sets.
+
+        Args:
+            ref_size (int): Size of set R.
+            src_size (int): Size of (possible) set S.
+        
+        Returns:
+            bool: True if both sets could be related based on their size, False
+            otherwise.
+        """
+        # case 1: Set-Containment
+        if self.sim_metric == contain and ref_size > src_size:
+            return False
+        # case 2: Set-Similarity
+        if self.sim_metric == similar:
+            if min(ref_size, src_size) < self.delta * max(ref_size, src_size):
+                return False
+        return True   
 
     def check_filter(self, R, K, candidates, inverted_index):
         """

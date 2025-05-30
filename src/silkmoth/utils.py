@@ -47,6 +47,6 @@ def contain(reference_set_size: int, source_set_size: int, mm_score: float) -> f
         float: Set-Containment
     """
     if reference_set_size > source_set_size:
-        return 0
+        raise ValueError(f"Reference set too large")
 
     return mm_score / reference_set_size

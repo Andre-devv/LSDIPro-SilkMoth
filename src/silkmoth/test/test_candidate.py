@@ -1,7 +1,7 @@
 import unittest
 from silkmoth.inverted_index import InvertedIndex
 from silkmoth.candidate_selector import CandidateSelector
-from silkmoth.utils import jaccard_similarity
+from silkmoth.utils import jaccard_similarity, contain, similar
 
 
 class TestCandidateSelector(unittest.TestCase):
@@ -45,30 +45,30 @@ class TestCandidateSelector(unittest.TestCase):
         self.K = {t8, t9, t10, t11, t12}
 
         self.inverted_index = InvertedIndex(self.S)
-        self.selector = CandidateSelector(similarity_func=jaccard_similarity)
+        self.selector = CandidateSelector(similarity_func=jaccard_similarity, sim_metric=contain, related_thresh=0.7)
 
     def test_single_token(self):
         signature = {"Chicago"}  # t11 (Chicago) only appears in S3
-        candidates = self.selector.get_candidates(signature, self.inverted_index)
+        candidates = self.selector.get_candidates(signature, self.inverted_index, 1)
         self.assertEqual(candidates, {2})
 
     def test_multiple_tokens(self):
         # t1 (77) appears in all sets except S1
         # t4 (5th) appears in all sets
         signature = {"77", "5th"}
-        candidates = self.selector.get_candidates(signature, self.inverted_index)
+        candidates = self.selector.get_candidates(signature, self.inverted_index, 1)
         self.assertEqual(candidates, {0, 1, 2, 3})
 
     def test_no_match(self):
         # Berlin does not appear in any set
         signature = {"Berlin"}
-        candidates = self.selector.get_candidates(signature, self.inverted_index)
+        candidates = self.selector.get_candidates(signature, self.inverted_index, 1)
         self.assertEqual(candidates, set())
 
     def test_mixed_tokens(self):
         # one known and one unknown token
         signature = {"Mass", "UnknownToken"}
-        candidates = self.selector.get_candidates(signature, self.inverted_index)
+        candidates = self.selector.get_candidates(signature, self.inverted_index, 1)
         self.assertEqual(candidates, {0, 1, 2, 3})  # from t2 = "Mass"
 
     def test_check_filter_table2(self):
@@ -96,3 +96,15 @@ class TestCandidateSelector(unittest.TestCase):
             self.R, set(), candidates, self.inverted_index
         )
         self.assertEqual(filtered, set())
+
+    def test_size_filter_contain(self):
+        self.assertTrue(self.selector.verify_size(5, 5))
+        self.assertTrue(self.selector.verify_size(2, 5))
+        self.assertFalse(self.selector.verify_size(5, 2))
+
+    def test_size_filter_similar(self):
+        sel = CandidateSelector(similarity_func=jaccard_similarity, sim_metric=similar, related_thresh=0.7)
+        self.assertFalse(sel.verify_size(5, 3))
+        self.assertFalse(sel.verify_size(3, 5))
+        self.assertTrue(sel.verify_size(5, 4))
+        self.assertTrue(sel.verify_size(4, 5))
