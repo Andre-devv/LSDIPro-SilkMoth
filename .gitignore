@@ -3,3 +3,5 @@ __pycache__/
 silkmoth.egg-info/
 build/
 dist/
+reference_sets_inclusion_dependency.json
+source_sets_inclusion_dependency.json

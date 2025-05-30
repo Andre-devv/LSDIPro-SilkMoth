@@ -57,8 +57,8 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(round(contain(3, 3, 2.229), 3), 0.743)
 
     def test_contain_error(self):
-
-        self.assertEqual(contain(4, 3, 3), 0)
+        with self.assertRaises(ValueError):
+            contain(4, 3, 3)
 
     def test_similar(self):
         self.assertEqual(round(similar(3, 3, 2.229), 3), 0.591)
