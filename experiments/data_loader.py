@@ -73,30 +73,29 @@ class DataLoader:
         reference_sets = random.sample(source_sets, reference_set_amount)
         return reference_sets, source_sets
 
-    def load_webtable_schemas_randomized(self, source_set_amount: int) -> tuple[list, list]:
-        if source_set_amount < 2:
+    def load_webtable_schemas_randomized(self, set_amount: int) -> list:
+        if set_amount < 2:
             raise ValueError("source_set_amount must be at least 2")
-        # Randomly select a reference set and source sets
-        reference_set_num = random.randint(0, len(self.files) - 1)
-        source_set_nums = random.sample(range(len(self.files)), source_set_amount)
+        # Random sequence of table numbers
+        table_nums = random.sample(range(len(self.files)), len(self.files))
 
-        # Make sure that reference_set differs from source_sets
-        while reference_set_num in source_set_nums:
-            reference_set_num = random.randint(0, len(self.files) - 1)
+        schema_sets = []
 
-        # Get schema for the reference set
-        reference_set = self.load_webtable_schema(reference_set_num)
-        if reference_set is []:
-            raise ValueError("chosen reference_set is empty")
+        i = 0
+        while len(schema_sets) < set_amount and i < len(table_nums):
+            try:
+                # Load the schema for the current table number
+                schema = self.load_single_webtable_schema(table_nums[i])
+                schema_sets.append(schema)
+                print(f"Schema set number {len(schema_sets)} loaded")
+                i += 1
+            except ValueError as e:
+                print(f"Skipping table number {table_nums[i]} due to error: {e}")
+                i += 1
 
-        source_sets = []
-        for i in source_set_nums:
-            source_set = self.load_webtable_schema(i)
-            source_sets.append(source_set)
+        return schema_sets
 
-        return reference_set, source_sets
-
-    def load_webtable_schema(self, reference_set_num: int) -> list:
+    def load_single_webtable_schema(self, reference_set_num: int) -> list:
         # Load the webtable schema for the given reference set number
         if reference_set_num < 0 or reference_set_num >= len(self.files):
             raise IndexError("reference_set_num is out of range")
@@ -110,8 +109,19 @@ class DataLoader:
                 json_data = json.load(file)
                 if "relation" in json_data and isinstance(json_data["relation"], list):
                     schema = [relation[0] for relation in json_data["relation"]]
-                    return schema
+                    if len(schema) == 0:
+                        raise ValueError("Schema is empty")
+
+                    if all(not is_convertible_to_number(col) for col in schema):
+                        # remove "" empty strings from the schema
+                        schema = [col for col in schema if len(col) > 0]
+                        if len(schema) == 0:
+                            raise ValueError("Schema contains only empty strings")
+                        return schema
+                    else:
+                        raise ValueError("Schema contains numeric values or is empty")
                 else:
-                    return []
+                    raise ValueError("JSON does not contain a valid 'relation' key or it is not a list")
         except Exception as e:
             raise ValueError(f"Error loading JSON file: {e}")
+

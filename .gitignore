@@ -5,3 +5,4 @@ build/
 dist/
 reference_sets_inclusion_dependency.json
 source_sets_inclusion_dependency.json
+webtable_schemas_sets_500k.json
