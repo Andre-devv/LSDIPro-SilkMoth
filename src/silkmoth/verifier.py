@@ -109,4 +109,4 @@ class Verifier:
             source_set = inverted_index.get_set(c)
             if self._verify(reference_set, source_set):
                 related_sets.add(c)
-        return related_sets
+        return list(related_sets)
