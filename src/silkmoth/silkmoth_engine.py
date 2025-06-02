@@ -37,5 +37,25 @@ class SilkMothEngine:
         )
         return self.verifier.get_related_sets(r_tokens, final_candidates, self.inverted_index)
 
+
     def discover_sets(self, reference_sets):
-        pass
+        
+        related_pairs = []
+
+        for i, reference_set in enumerate(reference_sets):
+            r_tokens = self.tokenizer.tokenize(reference_set)
+            signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh)
+            candidates = self.candidate_selector.get_candidates(signature, self.inverted_index, len(r_tokens))
+            filtered_candidates = self.candidate_selector.check_filter(
+                r_tokens, set(signature), candidates, self.inverted_index
+            )
+
+            for j in filtered_candidates:
+                if j > i:
+                    s_tokens = self.inverted_index.get_set(j)
+                    mm_score = self.verifier._get_mm_score(r_tokens, s_tokens)
+                    sim = self.sim_metric(len(r_tokens), len(s_tokens), mm_score)
+                    if sim >= self.related_thresh:
+                        related_pairs.append((i, j, sim))
+
+        return related_pairs

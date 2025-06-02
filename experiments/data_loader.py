@@ -1,5 +1,6 @@
 import random
 import os
+import pandas as pd
 
 from utils import *
 
@@ -124,4 +125,28 @@ class DataLoader:
                     raise ValueError("JSON does not contain a valid 'relation' key or it is not a list")
         except Exception as e:
             raise ValueError(f"Error loading JSON file: {e}")
+        
+
+
+
+    def load_dblp_titles(self, data_path: str) -> list:
+        """
+        Load DBLP paper titles from a CSV file.
+
+        Args:
+            data_path (str): Path to CSV file containing a column 'title'.
+
+        Returns:
+            list: A list of title strings.
+        """
+
+        if not os.path.exists(data_path):
+            raise FileNotFoundError(f"DBLP csv file not found: {data_path}")
+        
+        df = pd.read_csv(data_path)
+        if "title" not in df.columns:
+            raise ValueError("CSV must contain a 'title' column")
+
+        titles = df["title"].dropna().tolist()
+        return titles
 
