@@ -1,7 +1,7 @@
 from data_loader import DataLoader
 from utils import *
 from silkmoth.silkmoth_engine import SilkMothEngine
-from silkmoth.utils import jaccard_similarity, contain
+from silkmoth.utils import jaccard_similarity, contain, similar
 
 import time
 import os
@@ -62,5 +62,55 @@ class Experiments:
             legend_label="WEIGHTED",
             file_name="webtable_inclusion_dependency_experiment.png"
         )
+
+
+    
+    def run_dblp_approximate_string_matching_experiment(self):
+
+        data_path = os.path.join(os.path.dirname(__file__), "data", "dblp", "DBLP_100k.csv")
+        
+        # Load titles
+        titles = self.data_loader.load_dblp_titles(data_path)
+
+        # Reduce dataset size for testing
+        titles = titles[:50]  
+
+        related_thresholds = [0.4, 0.5, 0.6, 0.7] # use larger dataset for 0.7 to 0.85 to return results
+        elapsed_times = []
+
+        for threshold in related_thresholds:
+            print(f"\nRunning SilkMoth with δ = {threshold}")
+
+            start_time = time.time()
+
+            engine = SilkMothEngine(
+                related_thresh=threshold,
+                source_sets=titles,
+                sim_metric=similar,
+                sim_func=jaccard_similarity, # since edit sim not implemented yet, using this
+                sim_thresh=0, # alpha bc yet not implemented for alpha > 0
+                reduction=False
+            )
+
+            # Using discovery mode
+            related_pairs = engine.discover_sets(titles)
+            print(f"\nFound {len(related_pairs)} related pairs.")
+
+            for i, j, sim in related_pairs:
+                print(f"[{sim:.3f}] {i}: {titles[i]}  ↔  {j}: {titles[j]}")
+
+            end_time = time.time()
+            elapsed = end_time - start_time
+            elapsed_times.append(elapsed)
+            print(f"δ = {threshold} → Elapsed time: {elapsed:.2f}s")
+
+        plot_elapsed_times(
+            related_thresholds=related_thresholds,
+            elapsed_times=elapsed_times,
+            fig_text="Approximate String Matching (α = 0.0)",
+            legend_label="WEIGHTED",
+            file_name="dblp_string_matching_experiment.png"
+    )
+
 
 
