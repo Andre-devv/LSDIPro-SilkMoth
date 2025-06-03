@@ -28,10 +28,13 @@ class SilkMothEngine:
         r_tokens = self.tokenizer.tokenize(reference_set)
         signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh)
         candidates = self.candidate_selector.get_candidates(signature, self.inverted_index, len(r_tokens))
-        filtered_candidates = self.candidate_selector.check_filter(
+        filtered_candidates, match_map = self.candidate_selector.check_filter(
         r_tokens, set(signature), candidates, self.inverted_index
         )
-        return self.verifier.get_related_sets(r_tokens, filtered_candidates, self.inverted_index)
+        final_candidates = self.candidate_selector.nn_filter(
+        r_tokens, set(signature), filtered_candidates , self.inverted_index, self.related_thresh, match_map
+        )
+        return self.verifier.get_related_sets(r_tokens, final_candidates, self.inverted_index)
 
     def discover_sets(self, reference_sets):
         pass

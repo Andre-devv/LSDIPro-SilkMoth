@@ -68,27 +68,30 @@ class CandidateSelector:
         Apply check filter to prune weak candidate sets.
 
         Args:
-            R (list of list): Tokenized reference set (each r_i is a list of tokens).
-            K (set): Flattened signature (selected tokens).
-            candidates (set): Indices of candidate sets from get_candidates().
-            inverted_index (InvertedIndex): To access token positions and sets.
+            R (list of list): Tokenized reference set.
+            K (set): Flattened signature tokens.
+            candidates (set): Candidate set indices from get_candidates().
+            inverted_index (InvertedIndex): For retrieving sets.
 
         Returns:
-            set: Filtered candidate indices that pass the check filter.
+            tuple:
+                set: Candidate indices that pass the check filter.
+                dict: Map from candidate index to set of matched rᵢ indices.
         """
         filtered = set()
-        # retrieve k_i elements from the signature
+        match_map = dict()
         k_i_sets = [set(r_i).intersection(K) for r_i in R]
 
         for c_idx in candidates:
             S = inverted_index.get_set(c_idx)
-            valid = False
+            matched_r_indices = set()
 
-            for r_i, k_i in zip(R, k_i_sets):
+            for r_idx, (r_i, k_i) in enumerate(zip(R, k_i_sets)):
                 if not r_i or not k_i:
                     continue
 
                 threshold = (len(r_i) - len(k_i)) / len(r_i)
+                r_set = set(r_i)
 
                 for token in k_i:
                     try:
@@ -96,21 +99,106 @@ class CandidateSelector:
                         for s_idx, e_idx in entries:
                             if s_idx == c_idx:
                                 s = S[e_idx]
-                                sim = self.similarity(set(r_i), set(s))
+                                sim = self.similarity(r_set, set(s))
                                 if sim >= threshold:
-                                    valid = True
-                                    break
-
-                        if valid:
-                            break
-
+                                    matched_r_indices.add(r_idx)
+                                    break  # stop checking this r_i
+                        if r_idx in matched_r_indices:
+                            break  # exit k_i loop early
                     except ValueError:
                         continue
 
-                if valid:
-                    break
-
-            if valid:
+            if matched_r_indices:
                 filtered.add(c_idx)
+                match_map[c_idx] = matched_r_indices
 
-        return filtered
+        return filtered, match_map
+
+    def _nn_search(self, r_set, S, c_idx, inverted_index):
+        """
+        Find the maximum similarity between r and elements s ∈ S[C] that share at least one token with r using
+        the inverted index for efficiency.
+
+        Args:
+            r_set (set): Reference element tokens.
+            S (list of list): Elements of candidate set S[c_idx].
+            c_idx (int): Index of candidate set in inverted index.
+            inverted_index (InvertedIndex): For fetching token locations.
+
+        Returns:
+            float: Maximum similarity between r and any s ∈ S[c_idx].
+        """
+        seen = set()
+        max_sim = 0.0
+        for token in r_set:
+            try:
+                entries = inverted_index.get_indexes(token)
+                for s_idx, e_idx in entries:
+                    if s_idx != c_idx:
+                        continue
+                    s = S[e_idx]
+                    s_key = tuple(s)
+                    if s_key in seen:
+                        continue
+                    seen.add(s_key)
+                    sim = self.similarity(r_set, set(s))
+                    max_sim = max(max_sim, sim)
+            except ValueError:
+                continue
+        return max_sim
+
+
+    def nn_filter(self, R, K, candidates, inverted_index, threshold, match_map):
+        """
+        Nearest Neighbor Filter (Algorithm 2 from SilkMoth paper).
+
+        Args:
+            R (list of list): Tokenized reference set.
+            K (set): Flattened signature tokens.
+            candidates (set): Candidate indices from check filter.
+            inverted_index (InvertedIndex): To retrieve sets and indexes.
+            threshold (float): Relatedness threshold δ (between 0 and 1).
+            match_map (dict): Maps candidate set index to matched rᵢ indices (from check filter).
+
+        Returns:
+            set: Final filtered candidate indices that pass the NN filter.
+        """
+        n = len(R)
+        theta = threshold * n
+        k_i_sets = [set(r_i).intersection(K) for r_i in R]
+        final_filtered = set()
+
+        for c_idx in candidates:
+            S = inverted_index.get_set(c_idx)
+            total = 0.0
+            matched_r_indices = match_map.get(c_idx, set())
+
+            for r_idx, r_i in enumerate(R):
+                if not r_i:
+                    continue
+                base_loss = (len(r_i) - len(k_i_sets[r_idx])) / len(r_i)
+                total += base_loss
+
+            # Step 2: for matched rᵢ, compute NN and adjust total
+            for r_idx, r_i in enumerate(R):
+                if not r_i:
+                    continue
+                k_i = k_i_sets[r_idx]
+                base_loss = (len(r_i) - len(k_i)) / len(r_i)
+
+                r_set = set(r_i)
+                if r_idx in matched_r_indices:
+                    nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
+                    total += nn_sim - base_loss
+                else:
+                    nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
+                    total += nn_sim - base_loss
+                    if total < theta:
+                        break  # Early pruning
+
+            if total >= theta:
+                final_filtered.add(c_idx)
+
+        return final_filtered
+
+

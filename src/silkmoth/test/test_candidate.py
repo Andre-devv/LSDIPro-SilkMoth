@@ -72,30 +72,37 @@ class TestCandidateSelector(unittest.TestCase):
         self.assertEqual(candidates, {0, 1, 2, 3})  # from t2 = "Mass"
 
     def test_check_filter_table2(self):
-        # Signature tokens as in example 6 from paper
         candidates = {0, 1, 2, 3}
-        filtered = self.selector.check_filter(
+        filtered, match_map = self.selector.check_filter(
             self.R, self.K, candidates, self.inverted_index
         )
 
         self.assertNotIn(1, filtered)  # S2 is filtered out
-        self.assertIn(2, filtered)  # S3 should pass
-        self.assertIn(3, filtered)  # S4 should pass
+        self.assertIn(2, filtered)     # S3 should pass
+        self.assertIn(3, filtered)     # S4 should pass
+
+        self.assertIn(2, match_map)
+        self.assertEqual(match_map[2], {0})  
+
+        self.assertIn(3, match_map)
+        self.assertEqual(match_map[3], {0, 1})  
 
     def test_check_filter_empty_reference_set(self):
         empty_R = []
         candidates = {0, 1, 2, 3}
-        filtered = self.selector.check_filter(
+        filtered, match_map = self.selector.check_filter(
             empty_R, self.K, candidates, self.inverted_index
         )
         self.assertEqual(filtered, set())
+        self.assertEqual(match_map, {})
 
     def test_check_filter_empty_signature(self):
         candidates = {0, 1, 2, 3}
-        filtered = self.selector.check_filter(
+        filtered, match_map = self.selector.check_filter(
             self.R, set(), candidates, self.inverted_index
         )
         self.assertEqual(filtered, set())
+        self.assertEqual(match_map, {})
 
     def test_size_filter_contain(self):
         self.assertTrue(self.selector.verify_size(5, 5))
@@ -108,3 +115,35 @@ class TestCandidateSelector(unittest.TestCase):
         self.assertFalse(sel.verify_size(3, 5))
         self.assertTrue(sel.verify_size(5, 4))
         self.assertTrue(sel.verify_size(4, 5))
+        
+        
+    def test_nn_search_S3(self):
+        inverted_index = InvertedIndex([self.S3])
+        # Check r0 vs S3 (should match s31 with 5/6)
+        sim_r0 = self.selector._nn_search(set(self.R[0]), self.S3, 0, inverted_index)
+        self.assertAlmostEqual(sim_r0, 5/6, places=5)
+        # Check r1 vs S3 (should match s33 with 1/8)
+        sim_r1 = self.selector._nn_search(set(self.R[1]), self.S3, 0, inverted_index)
+        self.assertAlmostEqual(sim_r1, 1/8, places=5)
+
+    def test_nn_filter_example9(self):
+        # Simulate output from check_filter based on paper
+        candidates = {0, 1, 2, 3}
+        filtered, match_map = self.selector.check_filter(self.R, self.K, candidates, self.inverted_index)
+
+        # Run NN filter
+        nn_passed = self.selector.nn_filter(
+            R=self.R,
+            K=self.K,
+            candidates=filtered,
+            inverted_index=self.inverted_index,
+            threshold=0.7,
+            match_map=match_map
+        )
+
+        # S2 should be filtered out, S3 and S4 should remain
+        self.assertNotIn(1, nn_passed)  # S2
+        self.assertNotIn(2, nn_passed)  # S3
+        self.assertIn(3, nn_passed)     # S4
+
+    
