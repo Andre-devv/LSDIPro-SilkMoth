@@ -146,4 +146,16 @@ class TestCandidateSelector(unittest.TestCase):
         self.assertNotIn(2, nn_passed)  # S3
         self.assertIn(3, nn_passed)     # S4
 
-    
+    def test_filter_example_6_7(self):
+        # Example 6 from the paper
+        signature = ["MA", "Seattle", "WA", "Chicago", "IL"]
+        cand = self.selector.get_candidates(signature, self.inverted_index, 3)
+        self.assertEqual(cand, {1,2,3})
+        filtered_candidates, match_map = self.selector.check_filter(self.R, set(signature), cand, self.inverted_index)
+        self.assertEqual(filtered_candidates, {2,3})
+        # Example 7 from the paper
+        final_candidates = self.selector.nn_filter(self.R, set(signature), filtered_candidates , self.inverted_index, 0.7, match_map)
+        self.assertEqual(final_candidates, {3})
+
+
+

@@ -128,7 +128,7 @@ class CandidateSelector:
         Returns:
             float: Maximum similarity between r and any s ∈ S[c_idx].
         """
-        seen = set()
+        # seen = set()
         max_sim = 0.0
         for token in r_set:
             try:
@@ -137,10 +137,10 @@ class CandidateSelector:
                     if s_idx != c_idx:
                         continue
                     s = S[e_idx]
-                    s_key = tuple(s)
-                    if s_key in seen:
-                        continue
-                    seen.add(s_key)
+                    # s_key = tuple(s)
+                    # if s_key in seen:
+                    #     continue
+                    # seen.add(s_key)
                     sim = self.similarity(r_set, set(s))
                     max_sim = max(max_sim, sim)
             except ValueError:
@@ -168,33 +168,45 @@ class CandidateSelector:
         k_i_sets = [set(r_i).intersection(K) for r_i in R]
         final_filtered = set()
 
-        for c_idx in candidates:
-            S = inverted_index.get_set(c_idx)
-            total = 0.0
-            matched_r_indices = match_map.get(c_idx, set())
-
-            for r_idx, r_i in enumerate(R):
+        total_init = 0
+        for r_idx, r_i in enumerate(R):
                 if not r_i:
                     continue
                 base_loss = (len(r_i) - len(k_i_sets[r_idx])) / len(r_i)
-                total += base_loss
+                total_init += base_loss
+
+        for c_idx in candidates:
+            S = inverted_index.get_set(c_idx)
+            matched_r_indices = match_map.get(c_idx, set())
+            
+            # Step 1: initialize total estimate
+            total = total_init
 
             # Step 2: for matched rᵢ, compute NN and adjust total
-            for r_idx, r_i in enumerate(R):
+            for r_idx in matched_r_indices:
+                r_i = R[r_idx]
                 if not r_i:
                     continue
                 k_i = k_i_sets[r_idx]
                 base_loss = (len(r_i) - len(k_i)) / len(r_i)
 
                 r_set = set(r_i)
-                if r_idx in matched_r_indices:
-                    nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
-                    total += nn_sim - base_loss
-                else:
-                    nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
-                    total += nn_sim - base_loss
-                    if total < theta:
-                        break  # Early pruning
+                nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
+                total += nn_sim - base_loss
+
+            # Step 3: for non-matched rᵢ, compute NN and adjust total
+            for r_idx in set(range(n)) - matched_r_indices:
+                r_i = R[r_idx]
+                if not r_i:
+                    continue
+                k_i = k_i_sets[r_idx]
+                base_loss = (len(r_i) - len(k_i)) / len(r_i)
+
+                r_set = set(r_i)
+                nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
+                total += nn_sim - base_loss
+                if total < theta:
+                    break
 
             if total >= theta:
                 final_filtered.add(c_idx)
