@@ -72,10 +72,12 @@ class Experiments:
         # Load titles
         titles = self.data_loader.load_dblp_titles(data_path)
 
-        # Reduce dataset size for testing
-        titles = titles[:50]  
+        # Reduce/adjust dataset size for testing
+        titles = titles[:1000]  
 
-        related_thresholds = [0.4, 0.5, 0.6, 0.7] # use larger dataset for 0.7 to 0.85 to return results
+        #related_thresholds can be adjusted to [0.7, 0.75, 0.8, 0.85]
+        related_thresholds = [0.7] # larger data size returns better and more results for 0.7 to 0.85 
+
         elapsed_times = []
 
         for threshold in related_thresholds:
@@ -87,8 +89,8 @@ class Experiments:
                 related_thresh=threshold,
                 source_sets=titles,
                 sim_metric=similar,
-                sim_func=jaccard_similarity, # since edit sim not implemented yet, using this
-                sim_thresh=0, # alpha bc yet not implemented for alpha > 0
+                sim_func=jaccard_similarity, # later with edit similarity 
+                sim_thresh=0, 
                 reduction=False
             )
 
@@ -109,7 +111,7 @@ class Experiments:
             elapsed_times=elapsed_times,
             fig_text="Approximate String Matching (α = 0.0)",
             legend_label="WEIGHTED",
-            file_name="dblp_string_matching_experiment.png"
+            file_name="dblp_string_matching_experiment_2.png"
     )
 
 

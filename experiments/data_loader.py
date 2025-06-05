@@ -141,7 +141,7 @@ class DataLoader:
         """
 
         if not os.path.exists(data_path):
-            raise FileNotFoundError(f"DBLP csv file not found: {data_path}")
+            raise FileNotFoundError(f"DBLP CSV file not found: {data_path}")
         
         df = pd.read_csv(data_path)
         if "title" not in df.columns:
