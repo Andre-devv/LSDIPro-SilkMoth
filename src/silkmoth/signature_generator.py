@@ -1,7 +1,7 @@
 import heapq
 from collections import defaultdict
 import warnings
-from utils import SigType
+from .utils import SigType
 from math import floor
 from .inverted_index import *
 
@@ -36,16 +36,17 @@ class SignatureGenerator:
     def _generate_skyline_signature(self, reference_set, inverted_index: InvertedIndex, delta, alpha):
         weighted = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
         unflattened = [weighted & set(r_i) for r_i in reference_set]
-        skyline = []
+        skyline = set()
         for i, k in enumerate(unflattened):
             rhs = floor((1 - alpha) * len(reference_set[i])) + 1
             if len(k) < rhs:
-                skyline.extend(k)
+                skyline |= k
             else:
+                # add tokens with minimum |I[t]|
                 tokens = list(k)
                 tokens.sort(key=lambda t: len(inverted_index.get_indexes(t)))
-                skyline.extend(tokens[:rhs])
-        return skyline
+                skyline = skyline.union(tokens[:rhs])
+        return list(skyline)
 
     def _generate_weighted_signature(self, reference_set, inverted_index, delta):
         if delta <= 0.0:
