@@ -34,7 +34,10 @@ class TestEngine(unittest.TestCase):
     def test_pipeline_running_base_example(self):
         engine = SilkMothEngine(0.7, self.S, contain, jaccard_similarity)
         search_results = engine.search_sets(self.R)
-        self.assertEqual(search_results, {3})
+        self.assertEqual(len(search_results), 1)
+        i, sim = search_results[0]
+        self.assertEqual(i, 3)
+        self.assertGreaterEqual(sim, 0.7)
 
 if __name__ == '__main__':
     unittest.main()

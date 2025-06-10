@@ -71,12 +71,13 @@ class Experiments:
         
         # Load titles
         titles = self.data_loader.load_dblp_titles(data_path)
+        titles = [title.split() for title in titles]
 
         # Reduce/adjust dataset size for testing
-        titles = titles[:1000]  
+        titles = titles[:4000]  
 
         #related_thresholds can be adjusted to [0.7, 0.75, 0.8, 0.85]
-        related_thresholds = [0.7] # larger data size returns better and more results for 0.7 to 0.85 
+        related_thresholds = [0.7, 0.75, 0.8, 0.85] # larger data size returns better and more results for 0.7 to 0.85 
 
         elapsed_times = []
 
@@ -96,12 +97,12 @@ class Experiments:
 
             # Using discovery mode
             related_pairs = engine.discover_sets(titles)
+            end_time = time.time()
             print(f"\nFound {len(related_pairs)} related pairs.")
 
-            for i, j, sim in related_pairs:
-                print(f"[{sim:.3f}] {i}: {titles[i]}  ↔  {j}: {titles[j]}")
+            #for i, j, sim in related_pairs:
+            #    print(f"[{sim:.3f}] {i}: {titles[i]}  ↔  {j}: {titles[j]}")
 
-            end_time = time.time()
             elapsed = end_time - start_time
             elapsed_times.append(elapsed)
             print(f"δ = {threshold} → Elapsed time: {elapsed:.2f}s")
@@ -111,7 +112,7 @@ class Experiments:
             elapsed_times=elapsed_times,
             fig_text="Approximate String Matching (α = 0.0)",
             legend_label="WEIGHTED",
-            file_name="dblp_string_matching_experiment_2.png"
+            file_name="dblp_string_matching_experiment.png"
     )
 
 

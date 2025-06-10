@@ -4,6 +4,7 @@ from .tokenizer import *
 from .signature_generator import *
 from .candidate_selector import *
 from .verifier import *
+import sys
 
 class SilkMothEngine:
     
@@ -43,19 +44,7 @@ class SilkMothEngine:
         related_pairs = []
 
         for i, reference_set in enumerate(reference_sets):
-            r_tokens = self.tokenizer.tokenize(reference_set)
-            signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh)
-            candidates = self.candidate_selector.get_candidates(signature, self.inverted_index, len(r_tokens))
-            filtered_candidates = self.candidate_selector.check_filter(
-                r_tokens, set(signature), candidates, self.inverted_index
-            )
-
-            for j in filtered_candidates:
-                if j > i:
-                    s_tokens = self.inverted_index.get_set(j)
-                    mm_score = self.verifier._get_mm_score(r_tokens, s_tokens)
-                    sim = self.sim_metric(len(r_tokens), len(s_tokens), mm_score)
-                    if sim >= self.related_thresh:
-                        related_pairs.append((i, j, sim))
+            sets = self.search_sets(reference_set)
+            related_pairs.extend([(i, j, sim) for j, sim in sets])
 
         return related_pairs
