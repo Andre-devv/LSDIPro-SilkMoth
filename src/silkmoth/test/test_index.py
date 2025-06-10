@@ -86,3 +86,10 @@ class TestInvertedIndex(unittest.TestCase):
         self.assertEqual(I["1"], [([{"1", "2", "3"}, {"2", "3", "4"}], 
                                    {"1", "2", "3"})])
         self.assertEqual(I.get_indexes("2"), [(0,0), (0,1), (1,0)])
+
+    def test_indexes_binary(self):
+        I = InvertedIndex(self.S)
+        self.assertEqual(I.get_indexes_binary("IL",2), [(2, 1)]) 
+        self.assertEqual(I.get_indexes_binary("02115",0), [(0, 0), (0, 2)])
+        self.assertEqual(I.get_indexes_binary("02115",1), [(1, 1), (1, 2)])
+        self.assertEqual(I.get_indexes_binary("02115",3), [(3, 1)])

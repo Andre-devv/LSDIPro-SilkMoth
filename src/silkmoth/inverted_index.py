@@ -1,3 +1,4 @@
+import bisect
 
 class InvertedIndex:
 
@@ -73,4 +74,26 @@ class InvertedIndex:
             raise ValueError(f"Invalid id")
         return self.token_sets[set_id]
     
+    def get_indexes_binary(self, token, set_idx) -> list:
+        """
+        Uses binary search to get all (set_idx, element_idx) pairs for a token
+        where set_idx matches the given set_idx.
+
+        Args:
+            token: The token to search in the inverted index.
+            set_idx: The ID of the set we want the element indexes for.
+
+        Returns:
+            list: All (set_idx, element_idx) tuples where the token appears in the given set.
+        """
+        if token not in self.lookup_table:
+            raise ValueError("Unknown token")
+
+        index_list = self.lookup_table[token]
+
+        # Using bisect to find the range of entries where set_idx matches
+        left = bisect.bisect_left(index_list, (set_idx, -1))
+        right = bisect.bisect_right(index_list, (set_idx, float('inf')))
+
+        return index_list[left:right]
     
