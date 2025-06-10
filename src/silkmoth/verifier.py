@@ -69,9 +69,9 @@ class Verifier:
     
 
 
-    def _verify(self, reference_set, source_set) -> bool:
+    def _get_relatedness(self, reference_set, source_set) -> float:
         """
-        Checks if two sets are related or not by computing the maximum weighted
+        Gives the relatedness score by computing the maximum weighted
         bipartite matching.
 
         Args:
@@ -79,7 +79,7 @@ class Verifier:
             source_set: Tokenized source set S
 
         Returns:
-            bool: True if relatedness threshold is reached, False otherwise
+            float: Relatedness score of R and S
         """
         r_size = len(reference_set)
         s_size = len(source_set)
@@ -89,7 +89,7 @@ class Verifier:
 
         mm_score = self._get_mm_score(reference_set, source_set) + exact_matches
         relatedness = self.sim_metric(r_size, s_size, mm_score)
-        return relatedness >= self.related_thresh
+        return relatedness
 
 
     def get_related_sets(self, reference_set: list, candidates: set, inverted_index: InvertedIndex) -> list:
@@ -102,11 +102,13 @@ class Verifier:
             inverted_index (InvertedIndex): Inverted index instance
 
         Returns:
-            set: Indices of all related sets from the candidates
+            list: Pairs of indices of all related sets from the candidates and 
+            their relatedness with the reference set.
         """
-        related_sets = set()
+        related_sets = []
         for c in candidates:
             source_set = inverted_index.get_set(c)
-            if self._verify(reference_set, source_set):
-                related_sets.add(c)
+            relatedness = self._get_relatedness(reference_set, source_set)
+            if relatedness >= self.related_thresh:
+                related_sets.append((c, relatedness))
         return related_sets

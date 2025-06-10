@@ -33,42 +33,50 @@ class TestVerifier(unittest.TestCase):
     def test_jaccard_contain_exact(self):
         verifier = Verifier(1.0, contain, jaccard_similarity)
         result = verifier.get_related_sets(self.S1, {0, 1, 2, 3}, self.ii)
-        self.assertEqual(result, {0})
+        self.assertEqual(result, [(0, 1.0)])
 
     def test_jaccard_contain_any(self):
         verifier = Verifier(0.0, contain, jaccard_similarity)
         result = verifier.get_related_sets(self.S1, {0, 1, 2, 3}, self.ii)
-        self.assertEqual(result, {0, 1, 2, 3})
+        idxs = [i for i, _ in result]
+        self.assertEqual(set(idxs), {0, 1, 2, 3})
 
     def test_jaccard_contain_approximate(self):
         verifier = Verifier(0.7, contain, jaccard_similarity)
         result = verifier.get_related_sets(self.R, {0, 1, 2, 3}, self.ii)
-        self.assertEqual(result, {3})
+        i, sim = result[0]
+        self.assertEqual(len(result), 1)
+        self.assertEqual(i, 3)
+        self.assertGreaterEqual(sim, 0.7)
 
     def test_jaccard_not_contain_approximate(self):
         verifier = Verifier(0.8, contain, jaccard_similarity)
         result = verifier.get_related_sets(self.R, {0, 1, 2, 3}, self.ii)
-        self.assertEqual(result, set())
+        self.assertEqual(result, [])
 
     def test_jaccard_contain_exact_reduced(self):
         verifier = Verifier(1.0, contain, jaccard_similarity, reduction=True)
         result = verifier.get_related_sets(self.S1, {0, 1, 2, 3}, self.ii)
-        self.assertEqual(result, {0})
+        self.assertEqual(result, [(0, 1.0)])
 
     def test_jaccard_contain_any_reduced(self):
         verifier = Verifier(0.0, contain, jaccard_similarity, reduction=True)
         result = verifier.get_related_sets(self.S1, {0, 1, 2, 3}, self.ii)
-        self.assertEqual(result, {0, 1, 2, 3})
+        idxs = [i for i, _ in result]
+        self.assertEqual(set(idxs), {0, 1, 2, 3})
 
     def test_jaccard_contain_approximate_reduced(self):
         verifier = Verifier(0.7, contain, jaccard_similarity, reduction=True)
         result = verifier.get_related_sets(self.R, {0, 1, 2, 3}, self.ii)
-        self.assertEqual(result, {3})
+        i, sim = result[0]
+        self.assertEqual(len(result), 1)
+        self.assertEqual(i, 3)
+        self.assertGreaterEqual(sim, 0.7)
 
     def test_jaccard_not_contain_approximate_reduced(self):
         verifier = Verifier(0.8, contain, jaccard_similarity, reduction=True)
         result = verifier.get_related_sets(self.R, {0, 1, 2, 3}, self.ii)
-        self.assertEqual(result, set())
+        self.assertEqual(result, [])
 
     def test_reduce_nothing(self):
         r_reduced, s_reduced, count = _reduce(self.R, self.S1)
