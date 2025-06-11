@@ -17,7 +17,7 @@ A project inspired by the SilkMoth paper, exploring efficient techniques for rel
 ### 📘 Project Documentation
 
 #### 🔁 Core Pipeline Steps
-![Figure 1: SILKMOTH Framework Overview](docs/figures/Pipiline.png)
+![Figure 1: SILKMOTH Framework Overview](docs/figures/Pipeline.png)
 
 *Figure 1. SILKMOTH pipeline framework. Source: Deng et al., "SILKMOTH: An Efficient Method for Finding Related Sets with Maximum Matching Constraints", VLDB 2017.  
 Licensed under CC BY-NC-ND 4.0.*
