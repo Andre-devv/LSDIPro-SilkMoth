@@ -1,4 +1,4 @@
-
+from enum import Enum
 
 def jaccard_similarity(x: set, y: set, sim_thresh=0) -> float:
     """
@@ -50,3 +50,8 @@ def contain(reference_set_size: int, source_set_size: int, mm_score: float) -> f
         raise ValueError(f"Reference set too large")
 
     return mm_score / reference_set_size
+
+class SigType(Enum):
+    WEIGHTED = "weighted"
+    SKYLINE = "skyline"
+    DICHOTOMY = "dichotomy"

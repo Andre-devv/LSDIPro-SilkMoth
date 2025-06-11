@@ -1,22 +1,52 @@
 import heapq
 from collections import defaultdict
 import warnings
+from .utils import SigType
+from math import floor
+from .inverted_index import *
 
 class SignatureGenerator:
 
-    def get_signature(self, reference_set, inverted_index, delta):
+    def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED):
         """
-        Compute the weighted signature for a reference set.
+        Compute a signature for a reference set given a signature type. Uses 
+        weighted signature scheme by default.
 
         Args:
             reference_set: Tokenized reference set.
             inverted_index (InvertedIndex): Index to evaluate token cost.
             delta (float): Relatedness threshold factor.
+            alpha (float): Similarity threshold factor.
+            sig_type (SigType): Type of signature.
 
         Returns:
             list: A list of str for selected tokens forming the signature.
         """
-        return self._generate_weighted_signature(reference_set, inverted_index, delta)
+        match sig_type:
+            case SigType.WEIGHTED:
+                return self._generate_weighted_signature(reference_set, inverted_index, delta)
+            case SigType.SKYLINE:
+                return self._generate_skyline_signature(reference_set, inverted_index, delta, alpha)
+            case SigType.DICHOTOMY:
+                raise NotImplementedError("Dichotomy signature scheme not implemented yet.")
+            case _:
+                raise ValueError(f"Unknown signature type") 
+            
+    
+    def _generate_skyline_signature(self, reference_set, inverted_index: InvertedIndex, delta, alpha):
+        weighted = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
+        unflattened = [weighted & set(r_i) for r_i in reference_set]
+        skyline = set()
+        for i, k in enumerate(unflattened):
+            rhs = floor((1 - alpha) * len(reference_set[i])) + 1
+            if len(k) < rhs:
+                skyline |= k
+            else:
+                # add tokens with minimum |I[t]|
+                tokens = list(k)
+                tokens.sort(key=lambda t: len(inverted_index.get_indexes(t)))
+                skyline = skyline.union(tokens[:rhs])
+        return list(skyline)
 
     def _generate_weighted_signature(self, reference_set, inverted_index, delta):
         if delta <= 0.0:

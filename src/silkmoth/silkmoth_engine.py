@@ -7,13 +7,14 @@ from .verifier import *
 
 class SilkMothEngine:
     
-    def __init__(self, related_thresh, source_sets, sim_metric=similar, sim_func=jaccard_similarity, sim_thresh=0, reduction=False):
+    def __init__(self, related_thresh, source_sets, sim_metric=similar, sim_func=jaccard_similarity, sim_thresh=0, reduction=False, sig_type=SigType.WEIGHTED):
         self.related_thresh = related_thresh        # delta
         self.source_sets = source_sets              # S
         self.sim_metric = sim_metric                # related
         self.sim_func = sim_func                    # phi
         self.sim_thresh = sim_thresh                # alpha
         self.reduction = reduction
+        self.signature_type = sig_type
         self.tokenizer = Tokenizer(sim_func)
         self.signature_gen = SignatureGenerator()
         self.candidate_selector = CandidateSelector(similarity_func=self.sim_func, sim_metric=self.sim_metric, related_thresh=self.related_thresh)
@@ -26,7 +27,7 @@ class SilkMothEngine:
         
     def search_sets(self, reference_set):
         r_tokens = self.tokenizer.tokenize(reference_set)
-        signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh)
+        signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh, self.sim_thresh, self.signature_type)
         candidates = self.candidate_selector.get_candidates(signature, self.inverted_index, len(r_tokens))
         filtered_candidates, match_map = self.candidate_selector.check_filter(
         r_tokens, set(signature), candidates, self.inverted_index
