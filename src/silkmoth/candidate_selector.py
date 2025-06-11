@@ -83,39 +83,56 @@ class CandidateSelector:
         k_i_sets = [set(r_i).intersection(K) for r_i in R]
 
         for c_idx in candidates:
-            S = inverted_index.get_set(c_idx)
-            matched = dict()
-
-            for r_idx, (r_i, k_i) in enumerate(zip(R, k_i_sets)):
-                if not r_i or not k_i:
-                    continue
-
-                threshold = (len(r_i) - len(k_i)) / len(r_i)
-                r_set = set(r_i)
-                max_sim = 0.0
-
-                for token in k_i:
-                    try:
-                        entries = inverted_index.get_indexes_binary(token,c_idx)
-                        for s_idx, e_idx in entries:
-                            if s_idx != c_idx:
-                                continue
-                            s = S[e_idx]
-                            sim = self.similarity(r_set, set(s))                                    
-                            if sim >= threshold:
-                                max_sim = max(max_sim, sim)  
-
-                    except ValueError:
-                        continue
-
-                if max_sim >= threshold:
-                    matched[r_idx] = max_sim
+            matched = self.create_match_map(R, K, c_idx, inverted_index)
 
             if matched:
                 filtered.add(c_idx)
                 match_map[c_idx] = matched
 
         return filtered, match_map
+
+    def create_match_map(self, R, K, c_idx, inverted_index):
+        """
+        Create a match map for a specific candidate index.
+
+        Args:
+            R (list of list): Tokenized reference set.
+            K (set): Flattened signature tokens.
+            c_idx (int): Candidate set index.
+            inverted_index (InvertedIndex): For retrieving sets.
+
+        Returns:
+            dict: r_idx -> max_sim for matched reference sets.
+        """
+        S = inverted_index.get_set(c_idx)
+        k_i_sets = [set(r_i).intersection(K) for r_i in R]
+        matched = {}
+
+        for r_idx, (r_i, k_i) in enumerate(zip(R, k_i_sets)):
+            if not r_i or not k_i:
+                continue
+
+            threshold = (len(r_i) - len(k_i)) / len(r_i)
+            r_set = set(r_i)
+            max_sim = 0.0
+
+            for token in k_i:
+                try:
+                    entries = inverted_index.get_indexes_binary(token, c_idx)
+                    for s_idx, e_idx in entries:
+                        if s_idx != c_idx:
+                            continue
+                        s = S[e_idx]
+                        sim = self.similarity(r_set, set(s))
+                        if sim >= threshold:
+                            max_sim = max(max_sim, sim)
+                except ValueError:
+                    continue
+
+            if max_sim >= threshold:
+                matched[r_idx] = max_sim
+
+        return matched
 
     def _nn_search(self, r_set, S, c_idx, inverted_index):
         """
@@ -176,7 +193,13 @@ class CandidateSelector:
 
         for c_idx in candidates:
             S = inverted_index.get_set(c_idx)
-            matched = match_map.get(c_idx, {})
+
+            # Check if match_map is provided, otherwise create it
+            if match_map is None:
+                matched = self.create_match_map(R, K, c_idx, inverted_index)
+            else:
+                matched = match_map.get(c_idx, {})
+
             # Step 1: initialize total estimate
             total = total_init
 
