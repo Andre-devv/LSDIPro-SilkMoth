@@ -1,10 +1,8 @@
-from data_loader import DataLoader
-from utils import *
-from silkmoth.silkmoth_engine import SilkMothEngine
-from silkmoth.utils import jaccard_similarity, contain, similar
-
 import time
-import os
+
+from silkmoth.silkmoth_engine import SilkMothEngine
+from utils import *
+
 
 def run_filter_experiment(related_thresholds, similarity_thresholds, labels, source_sets, reference_sets,
                           sim_metric, sim_func, is_search, file_name_prefix, folder_path):
