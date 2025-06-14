@@ -33,7 +33,7 @@ class TestEngine(unittest.TestCase):
 
     def test_pipeline_running_base_example(self):
         engine = SilkMothEngine(0.7, self.S, contain, jaccard_similarity)
-        search_results = engine.search_sets(self.R)
+        search_results, _, _ = engine.search_sets(self.R)
         self.assertEqual(len(search_results), 1)
         i, sim = search_results[0]
         self.assertEqual(i, 3)
