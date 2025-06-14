@@ -52,9 +52,9 @@ if st.button("Run SilkMoth Engine"):
 
             # Open and load reference and source sets from selected files
             with open(reference_file_path, 'r', encoding='utf-8') as ref_file:
-                reference_sets = json.load(ref_file)[:50]
+                reference_sets = json.load(ref_file)
             with open(source_file_path, 'r', encoding='utf-8') as src_file:
-                source_sets = json.load(src_file)[:50_000]
+                source_sets = json.load(src_file)
 
 
 
@@ -83,9 +83,6 @@ if st.button("Run SilkMoth Engine"):
             if nn_filter:
                 labels.append("NN FILTER")
 
-            if nn_filter and check_filter:
-                labels.append("CHECK + NN FILTER")
-
 
             for label in labels:
                 elapsed_times = []
@@ -96,9 +93,6 @@ if st.button("Run SilkMoth Engine"):
                         silk_moth_engine.is_nn_filter = False
                     elif label == "NN FILTER":
                         silk_moth_engine.is_check_filter = False
-                        silk_moth_engine.is_nn_filter = True
-                    elif label == "CHECK + NN FILTER":
-                        silk_moth_engine.is_check_filter = True
                         silk_moth_engine.is_nn_filter = True
 
 
