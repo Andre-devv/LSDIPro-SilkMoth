@@ -30,8 +30,8 @@ class Experiments:
         labels = ["NO FILTER", "CHECK FILTER", "NN FILTER"]
 
         # Reduce the size of the datasets for testing purposes if needed
-        # reference_sets = reference_sets[:10]
-        # source_sets = source_sets[:100_000]
+        reference_sets = reference_sets[:10]
+        source_sets = source_sets[:100_000]
 
         # Calculate index time and RAM usage for the SilkMothEngine
         in_index_time_start = time.time()
@@ -56,7 +56,8 @@ class Experiments:
 
         print(f"Inverted Index created in {in_index_elapsed_time:.2f} seconds.")
 
-        results = []
+        results_overall = []
+        results_related_sets = []
         for sim_thresh in similarity_thresholds:
             elapsed_times_final = []
             silk_moth_engine.set_alpha(sim_thresh)
@@ -102,7 +103,7 @@ class Experiments:
 
                     elapsed_times.append(elapsed_time)
 
-                    # Create a new data dictionary for each iteration
+                    # Data for each iteration
                     data = {
                         "similarity_threshold": sim_thresh,
                         "related_threshold": related_thresh,
@@ -114,10 +115,19 @@ class Experiments:
                         "inverted_index_ram_usage": round(in_index_ram_usage, 3),
                         "candidates_amount": candidates_amount,
                         "candidates_amount_after_filtering": candidates_after,
+                    }
+
+                    data_related_sets = {
+                        "similarity_threshold": sim_thresh,
+                        "related_threshold": related_thresh,
+                        "label": label,
+                        "reference_set_amount": len(reference_sets),
+                        "source_set_amount": len(source_sets),
                         "related_sets": related_sets,
                     }
 
-                    results.append(data)
+                    results_related_sets.append(data_related_sets)
+                    results_overall.append(data)
 
                 elapsed_times_final.append(elapsed_times)
 
@@ -126,14 +136,20 @@ class Experiments:
                 elapsed_times_list=elapsed_times_final,
                 fig_text=f"Inclusion Dependency (α = {sim_thresh})",
                 legend_labels=labels,
-                file_name=f"webtable_inclusion_dependency_filter_experiment_α={sim_thresh}.png"
+                file_name=f"results/inclusion_dependency/webtable_inclusion_dependency_filter_experiment_α={sim_thresh}.png"
             )
 
-        # Save results to a CSV file
+        # Save results_overall to a CSV file
         save_experiment_results_to_csv(
-            results=results,
-            file_name="webtable_inclusion_dependency_filter_experiment_results.csv"
+            results=results_overall,
+            file_name="results/inclusion_dependency/webtable_inclusion_dependency_filter_experiment_results.csv"
         )
+        # Save results_related_sets to CSV file
+        save_experiment_results_to_csv(
+            results=results_related_sets,
+            file_name="results/inclusion_dependency/webtable_inclusion_dependency_filter_experiment_related_sets.csv"
+        )
+
 
     def run_webtable_schema_matching_filter_experiment(self):
         # Prepare data and configuration for the experiment
@@ -179,7 +195,8 @@ class Experiments:
 
         print(f"Inverted Index created in {in_index_elapsed_time:.2f} seconds.")
 
-        results = []
+        results_overall = []
+        results_related_sets = []
         for sim_thresh in similarity_thresholds:
             elapsed_times_final = []
             silk_moth_engine.set_alpha(sim_thresh)
@@ -214,7 +231,7 @@ class Experiments:
                     elapsed_times.append(elapsed_time)
 
                     # Create a new data dictionary for each iteration
-                    data = {
+                    data_overall = {
                         "similarity_threshold": sim_thresh,
                         "related_threshold": related_thresh,
                         "source_set_amount": len(source_sets),
@@ -222,10 +239,18 @@ class Experiments:
                         "elapsed_time": round(elapsed_time, 3),
                         "inverted_index_time": round(in_index_elapsed_time, 3),
                         "inverted_index_ram_usage": round(in_index_ram_usage, 3),
+                    }
+
+                    data_related_sets = {
+                        "similarity_threshold": sim_thresh,
+                        "related_threshold": related_thresh,
+                        "label": label,
+                        "source_set_amount": len(source_sets),
                         "related_sets": related_sets,
                     }
 
-                    results.append(data)
+                    results_overall.append(data_overall)
+                    results_related_sets.append(data_related_sets)
 
                 elapsed_times_final.append(elapsed_times)
 
@@ -234,13 +259,18 @@ class Experiments:
                 elapsed_times_list=elapsed_times_final,
                 fig_text=f"Schema Matching (α = {sim_thresh})",
                 legend_labels=labels,
-                file_name=f"webtable_schema_matching_filter_experiment_α={sim_thresh}.png"
+                file_name=f"results/schema_matching/webtable_schema_matching_filter_experiment_α={sim_thresh}.png"
             )
 
         # Save results to a CSV file
         save_experiment_results_to_csv(
-            results=results,
-            file_name="webtable_schema_matching_filter_experiment_results.csv"
+            results=results_overall,
+            file_name="results/schema_matching/webtable_schema_matching_filter_experiment_results.csv"
+        )
+
+        save_experiment_results_to_csv(
+            results=results_related_sets,
+            file_name="results/schema_matching/webtable_schema_matching_filter_experiment_related_sets.csv"
         )
 
 
@@ -284,7 +314,8 @@ class Experiments:
 
         print(f"Inverted Index created in {in_index_elapsed_time:.2f} seconds.")
 
-        results = []
+        results_overall = []
+        results_related_sets = []
         for sim_thresh in similarity_thresholds:
             elapsed_times_final = []
             silk_moth_engine.set_alpha(sim_thresh)
@@ -319,7 +350,7 @@ class Experiments:
                     elapsed_times.append(elapsed_time)
 
                     # Create a new data dictionary for each iteration
-                    data = {
+                    data_overall = {
                         "similarity_threshold": sim_thresh,
                         "related_threshold": related_thresh,
                         "source_set_amount": len(titles),
@@ -327,10 +358,17 @@ class Experiments:
                         "elapsed_time": round(elapsed_time, 3),
                         "inverted_index_time": round(in_index_elapsed_time, 3),
                         "inverted_index_ram_usage": round(in_index_ram_usage, 3),
+                    }
+                    data_related_sets = {
+                        "similarity_threshold": sim_thresh,
+                        "related_threshold": related_thresh,
+                        "label": label,
+                        "source_set_amount": len(titles),
                         "related_sets": related_sets,
                     }
 
-                    results.append(data)
+                    results_overall.append(data_overall)
+                    results_related_sets.append(data_related_sets)
 
                 elapsed_times_final.append(elapsed_times)
 
@@ -339,11 +377,16 @@ class Experiments:
                 elapsed_times_list=elapsed_times_final,
                 fig_text=f"String Matching (α = {sim_thresh})",
                 legend_labels=labels,
-                file_name=f"dblp_string_matching_filter_experiment_α={sim_thresh}.png"
+                file_name=f"results/string_matching/dblp_string_matching_filter_experiment_α={sim_thresh}.png"
             )
 
         # Save results to a CSV file
         save_experiment_results_to_csv(
-            results=results,
-            file_name="dblp_string_matching_filter_experiment_results.csv"
+            results=results_overall,
+            file_name="results/string_matching/dblp_string_matching_filter_experiment_results.csv"
+        )
+
+        save_experiment_results_to_csv(
+            results=results_related_sets,
+            file_name="results/string_matching/dblp_string_matching_filter_experiment_related_sets.csv"
         )

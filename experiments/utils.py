@@ -89,7 +89,7 @@ def plot_elapsed_times(related_thresholds, elapsed_times_list, fig_text, file_na
     plt.figtext(0.1, 0.01, fig_text, ha='left', fontsize=10)
 
     # Save the figure
-    plt.savefig(f"results/{file_name}", bbox_inches='tight', dpi=300)
+    plt.savefig(f"{file_name}", bbox_inches='tight', dpi=300)
 
 def save_experiment_results_to_csv(results, file_name):
     """
@@ -107,4 +107,4 @@ def save_experiment_results_to_csv(results, file_name):
                 result[key] = json.dumps({k: list(v) for k, v in value.items()})
 
     df = pd.DataFrame(results)
-    df.to_csv(f"results/{file_name}", index=False)
+    df.to_csv(f"{file_name}", index=False)
