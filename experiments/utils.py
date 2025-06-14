@@ -1,6 +1,10 @@
+from collections import defaultdict
+
 import matplotlib.pyplot as plt
 import json
 import os
+import pandas as pd
+import psutil
 
 def is_convertible_to_number(value):
     try:
@@ -42,47 +46,65 @@ def load_sets_from_files(folder_path: str, reference_file: str = "reference_sets
 
     return reference_sets, source_sets
 
+def measure_ram_usage():
+    process = psutil.Process()
+    return process.memory_info().rss / (1024 ** 2)
 
-def plot_elapsed_times(related_thresholds, elapsed_times, fig_text, file_name, xlabel=r'$\theta$', ylabel='Time (s)', title=None, legend_label="Method"):
+
+def plot_elapsed_times(related_thresholds, elapsed_times_list, fig_text, file_name, xlabel=r'$\theta$', ylabel='Time (s)', title=None, legend_labels=None):
     """
-    Utility function to plot elapsed times against related thresholds.
+    Utility function to plot elapsed times against related thresholds for multiple settings.
 
     Args:
-        file_name: (str): Name of the file to save the plot.
-        fig_text: (str): Text to display on the figure.
-        related_thresholds (list): List of related thresholds (x-axis values).
-        elapsed_times (list): List of elapsed times (y-axis values).
+        related_thresholds (list): Related thresholds (x-axis values).
+        elapsed_times_list (list of lists): List of elapsed times (y-axis values) for different settings.
+        fig_text (str): Text to display on the figure.
+        file_name (str): Name of the file to save the plot.
         xlabel (str): Label for the x-axis.
         ylabel (str): Label for the y-axis.
         title (str): Title of the plot (optional).
-        legend_label (str): Label for the legend.
+        legend_labels (list): List of labels for the legend (optional).
     """
-    plt.figure(figsize=(8, 6))
+    fig = plt.figure(figsize=(8, 6))
 
-    plt.plot(related_thresholds, elapsed_times, marker='o', label=legend_label)
+    # Plot each elapsed_times list with a different color and label
+    for i, elapsed_times in enumerate(elapsed_times_list):
+        label = legend_labels[i] if legend_labels and i < len(legend_labels) else f"Setting {i + 1}"
+        plt.plot(related_thresholds, elapsed_times, marker='o', label=label)
 
     plt.xlabel(xlabel, fontsize=14)
     plt.ylabel(ylabel, fontsize=14)
+
     plt.xticks(related_thresholds)
 
-    if elapsed_times:
-        min_time = int(min(elapsed_times))
-        max_time = int(max(elapsed_times))
-        step = max(1, int((max_time - min_time) / 10))  # Dynamically calculate step size
-        plt.ylim(max(0, min_time - step), max_time + step)
-        plt.yticks(range(max(0, min_time - step), max_time + step + 1, step))
-    else:
-        plt.ylim(0, 1000)
-        plt.yticks(range(0, 1001, 100))
+    if title:
+        plt.title(title, fontsize=16)
 
     plt.grid(True)
-    plt.legend(fontsize=12)
+    if legend_labels:
+        plt.legend(fontsize=12)
     plt.tight_layout()
-    plt.figtext(0.1, 0.01, fig_text, ha='left', fontsize=16)
 
-    # Ensure the 'results' directory exists
-    results_dir = os.path.join(os.path.dirname(__file__), "./results")
-    os.makedirs(results_dir, exist_ok=True)
+    # Add figure text
+    plt.figtext(0.1, 0.01, fig_text, ha='left', fontsize=10)
 
-    plot_path = os.path.join(results_dir, file_name)
-    plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+    # Save the figure
+    plt.savefig(f"results/{file_name}", bbox_inches='tight', dpi=300)
+
+def save_experiment_results_to_csv(results, file_name):
+    """
+    Saves experiment results to a CSV file.
+
+    Args:
+        results (list): List of dictionaries containing experiment results.
+        file_name (str): Name of the CSV file to save the results.
+    """
+
+    # Convert defaultdicts to JSON strings for saving
+    for result in results:
+        for key, value in result.items():
+            if isinstance(value, defaultdict):
+                result[key] = json.dumps({k: list(v) for k, v in value.items()})
+
+    df = pd.DataFrame(results)
+    df.to_csv(f"results/{file_name}", index=False)
