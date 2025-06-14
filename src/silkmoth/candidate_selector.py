@@ -18,7 +18,7 @@ class CandidateSelector:
         Retrieve candidate set indices using token signature lookup.
 
         Args:
-            signature (set): Signature tokens for a reference set.
+            signature (list): Signature tokens for a reference set.
             inverted_index (InvertedIndex): Instance of the custom InvertedIndex class.
             ref_size (int): Size of set R.
 

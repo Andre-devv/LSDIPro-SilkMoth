@@ -33,6 +33,9 @@ class SilkMothEngine:
         signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh, self.sim_thresh, self.signature_type)
         candidates = self.candidate_selector.get_candidates(signature, self.inverted_index, len(r_tokens))
 
+        # Count how many candidates are removed by the filters
+        candidates_start = len(candidates)
+
         # Apply check filter if enabled
         if self.is_check_filter:
             candidates, match_map = self.candidate_selector.check_filter(
@@ -43,11 +46,11 @@ class SilkMothEngine:
 
         # Apply nearest neighbor filter if enabled
         if self.is_nn_filter:
-            candidates = self.candidate_selector.nn_filter(
+            candidates= self.candidate_selector.nn_filter(
                 r_tokens, set(signature), candidates, self.inverted_index, self.related_thresh, match_map
             )
 
-        return self.verifier.get_related_sets(r_tokens, candidates, self.inverted_index)
+        return self.verifier.get_related_sets(r_tokens, candidates, self.inverted_index), candidates_start , len(candidates)
 
 
     def discover_sets(self, reference_sets):
@@ -74,6 +77,10 @@ class SilkMothEngine:
     def set_nn_filter(self, is_nn_filter):
         self.is_nn_filter = is_nn_filter
 
+    def set_alpha(self, sim_thresh):
+        self.sim_thresh = sim_thresh
+        self.verifier = self._create_verifier()
+
     def _create_verifier(self):
         return Verifier(
             self.related_thresh,
@@ -89,3 +96,4 @@ class SilkMothEngine:
             self.sim_metric,
             self.related_thresh
         )
+
