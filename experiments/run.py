@@ -11,7 +11,7 @@ def run_experiment(experiment_method, *args):
 
 
 if __name__ == "__main__":
-    data_loader = DataLoader(data_path=os.getenv("SILKMOTH_DATA_PATH"))
+    data_loader = DataLoader("/")
 
     # Labels for Filter Experiments
     labels = ["NO FILTER", "CHECK FILTER", "NN FILTER"]
@@ -20,7 +20,7 @@ if __name__ == "__main__":
     data_path = os.path.join(os.path.dirname(__file__), "data", "dblp", "DBLP_100k.csv")
     source_string_matching = data_loader.load_dblp_titles(data_path)
     source_string_matching = [title.split() for title in source_string_matching]
-    source_string_matching = source_string_matching[:3000]
+    # source_string_matching = source_string_matching[:4000]
 
     try:
         folder_path = os.path.join(os.path.dirname(__file__), "../experiments/data/webtables")
@@ -32,14 +32,14 @@ if __name__ == "__main__":
             source_file="source_sets_inclusion_dependency.json"
         )
         reference_sets_in_dep = reference_sets_in_dep[:10]
-        source_sets_in_dep = source_sets_in_dep[:100_000]
+        #source_sets_in_dep = source_sets_in_dep[:100_000]
 
         reference_sets_schema_matching, source_sets_schema_matching = load_sets_from_files(
             folder_path=folder_path,
             reference_file="webtable_schemas_sets_500k.json",
             source_file="webtable_schemas_sets_500k.json"
         )
-        source_sets_schema_matching = source_sets_schema_matching[:2_000]
+        source_sets_schema_matching = source_sets_schema_matching[:3_000]
         del reference_sets_schema_matching
     except FileNotFoundError:
         print("Datasets not found. Skipping Experiments.")
@@ -49,19 +49,19 @@ if __name__ == "__main__":
     # Define experiments to run
     experiments = [
         # String Matching Experiment
-        (run_filter_experiment, [0.7, 0.75, 0.8, 0.85], [0.7, 0.75, 0.8, 0.85],
-         labels, source_string_matching, None, similar, jaccard_similarity, False,
-         "dblp_string_matching", "results/string_matching/"),
+        #(run_filter_experiment, [0.7, 0.75, 0.8, 0.85], [0.7, 0.75, 0.8, 0.85],
+         #labels, source_string_matching, None, similar, jaccard_similarity, False,
+         #"dblp_string_matching", "results/string_matching/"),
 
         # Schema Matching Experiment
         (run_filter_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-         labels, source_sets_schema_matching, None, similar, jaccard_similarity, False,
+        labels, source_sets_schema_matching, None, similar, jaccard_similarity, False,
          "schema_matching", "results/schema_matching/"),
 
         # Inclusion Dependency Experiment
-        (run_filter_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-         labels, source_sets_in_dep, reference_sets_in_dep, contain, jaccard_similarity, True,
-         "inclusion_dependency", "results/inclusion_dependency/"),
+        #(run_filter_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+        # labels, source_sets_in_dep, reference_sets_in_dep, contain, jaccard_similarity, True,
+         #"inclusion_dependency", "results/inclusion_dependency/"),
     ]
 
     # Create and start processes for each experiment

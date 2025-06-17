@@ -7,12 +7,6 @@ from utils import *
 
 class DataLoader:
     def __init__(self, data_path):
-        if data_path is None:
-            raise ValueError("data_path must be set")
-
-        if not os.path.exists(data_path):
-            raise ValueError(f"data_path does not exist: {data_path}")
-
         self.data_path = data_path
         self.files = os.listdir(data_path)
 
