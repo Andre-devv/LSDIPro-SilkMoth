@@ -57,41 +57,23 @@ def run_filter_experiment(related_thresholds, similarity_thresholds, labels, sou
 
     print(f"Inverted Index created in {in_index_elapsed_time:.2f} seconds.")
 
-    with Manager() as manager:
-
-        # Shared lists for results
-        results_overall = manager.list()
-        results_related_sets = manager.list()
-
-        processes = []
-        for sim_thresh in similarity_thresholds:
-            process = multiprocessing.Process(
-                target=parallel_sim_threshold_process_filter,
-                args=(sim_thresh, file_name_prefix, folder_path, in_index_elapsed_time, in_index_ram_usage,
-                      is_search, labels, reference_sets, related_thresholds, results_overall,
-                      results_related_sets, silk_moth_engine, source_sets)
-            )
-            processes.append(process)
-            process.start()
-
-        # Wait for all processes to complete
-        for process in processes:
-            process.join()
-
-        # Save results to a CSV file
-        save_experiment_results_to_csv(
-            results=list(results_overall),
-            file_name=f"{folder_path}{file_name_prefix}_filter_experiment_results.csv"
+    processes = []
+    for sim_thresh in similarity_thresholds:
+        process = multiprocessing.Process(
+            target=parallel_sim_threshold_process_filter,
+            args=(sim_thresh, file_name_prefix, folder_path, in_index_elapsed_time, in_index_ram_usage,
+                  is_search, labels, reference_sets, related_thresholds, silk_moth_engine, source_sets)
         )
+        processes.append(process)
+        process.start()
 
-        save_experiment_results_to_csv(
-            results=list(results_related_sets),
-            file_name=f"{folder_path}{file_name_prefix}_filter_experiment_related_sets.csv"
-        )
+    # Wait for all processes to complete
+    for process in processes:
+        process.join()
 
 
 def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed_time, in_index_ram_usage, is_search,
-                                 labels, reference_sets, related_thresholds, results_overall, results_related_sets,
+                                 labels, reference_sets, related_thresholds,
                                  silk_moth_engine, sim_thresh, source_sets):
     elapsed_times_final = []
     silk_moth_engine.set_alpha(sim_thresh)
@@ -170,8 +152,16 @@ def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed
                 "related_sets": related_sets,
             }
 
-            results_overall.append(data_overall)
-            results_related_sets.append(data_related_sets)
+            # Save results to a CSV file
+            save_experiment_results_to_csv(
+                results=data_overall,
+                file_name=f"{folder_path}{file_name_prefix}_filter_experiment_results.csv"
+            )
+
+            save_experiment_results_to_csv(
+                results=related_sets,
+                file_name=f"{folder_path}{file_name_prefix}_filter_experiment_related_sets.csv"
+            )
 
         elapsed_times_final.append(elapsed_times)
     _ = plot_elapsed_times(
@@ -182,10 +172,12 @@ def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed
         file_name=f"{folder_path}{file_name_prefix}_filter_experiment_α={sim_thresh}.png"
     )
 
+
 # wrapper needed for multiprocessing
-def parallel_sim_threshold_process_filter(sim_thresh, file_name_prefix, folder_path, in_index_elapsed_time, in_index_ram_usage,
-                                   is_search, labels, reference_sets, related_thresholds, results_overall,
-                                   results_related_sets, silk_moth_engine, source_sets):
+def parallel_sim_threshold_process_filter(sim_thresh, file_name_prefix, folder_path, in_index_elapsed_time,
+                                          in_index_ram_usage,
+                                          is_search, labels, reference_sets, related_thresholds, silk_moth_engine,
+                                          source_sets):
     sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed_time, in_index_ram_usage,
-                                 is_search, labels, reference_sets, related_thresholds, results_overall,
-                                 results_related_sets, silk_moth_engine, sim_thresh, source_sets)
+                                 is_search, labels, reference_sets, related_thresholds, silk_moth_engine, sim_thresh,
+                                 source_sets)

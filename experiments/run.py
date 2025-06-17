@@ -39,7 +39,7 @@ if __name__ == "__main__":
             reference_file="webtable_schemas_sets_500k.json",
             source_file="webtable_schemas_sets_500k.json"
         )
-        source_sets_schema_matching = source_sets_schema_matching[:3_000]
+        source_sets_schema_matching = source_sets_schema_matching[:2_000]
         del reference_sets_schema_matching
     except FileNotFoundError:
         print("Datasets not found. Skipping Experiments.")

@@ -93,18 +93,13 @@ def plot_elapsed_times(related_thresholds, elapsed_times_list, fig_text, file_na
 
 def save_experiment_results_to_csv(results, file_name):
     """
-    Saves experiment results to a CSV file.
+    Appends experiment results to a CSV file.
 
     Args:
-        results (list): List of dictionaries containing experiment results.
+        results (dict):
         file_name (str): Name of the CSV file to save the results.
     """
+    df = pd.DataFrame([results])
 
-    # Convert defaultdicts to JSON strings for saving
-    for result in results:
-        for key, value in result.items():
-            if isinstance(value, defaultdict):
-                result[key] = json.dumps({k: list(v) for k, v in value.items()})
-
-    df = pd.DataFrame(results)
-    df.to_csv(f"{file_name}", index=False)
+    # Append to the file if it exists, otherwise create a new file
+    df.to_csv(f"{file_name}", mode='a', header=not os.path.exists(file_name), index=False)
