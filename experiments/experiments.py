@@ -113,7 +113,7 @@ def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed
                         related_sets[ref_id].update(related_sets_temp)
             else:
                 # If not searching, we are discovering sets
-                related_sets = silk_moth_engine.discover_sets(source_sets)
+                silk_moth_engine.discover_sets(source_sets)
 
             time_end = time.time()
             elapsed_time = time_end - time_start
@@ -144,6 +144,7 @@ def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed
                     "inverted_index_time": round(in_index_elapsed_time, 3),
                     "inverted_index_ram_usage": round(in_index_ram_usage, 3),
                 }
+                """
             data_related_sets = {
                 "similarity_threshold": sim_thresh,
                 "related_threshold": related_thresh,
@@ -151,17 +152,17 @@ def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed
                 "source_set_amount": len(source_sets),
                 "related_sets": related_sets,
             }
-
+            """
             # Save results to a CSV file
             save_experiment_results_to_csv(
                 results=data_overall,
                 file_name=f"{folder_path}{file_name_prefix}_filter_experiment_results.csv"
             )
 
-            save_experiment_results_to_csv(
-                results=related_sets,
-                file_name=f"{folder_path}{file_name_prefix}_filter_experiment_related_sets.csv"
-            )
+            #save_experiment_results_to_csv(
+            #    results=related_sets,
+            #    file_name=f"{folder_path}{file_name_prefix}_filter_experiment_related_sets.csv"
+            #)
 
         elapsed_times_final.append(elapsed_times)
     _ = plot_elapsed_times(
