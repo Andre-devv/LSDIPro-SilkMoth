@@ -5,6 +5,8 @@ import json
 import os
 import pandas as pd
 import psutil
+from silkmoth.utils import jaccard_similarity
+from silkmoth.tokenizer import Tokenizer
 
 def is_convertible_to_number(value):
     try:
@@ -103,3 +105,28 @@ def save_experiment_results_to_csv(results, file_name):
 
     # Append to the file if it exists, otherwise create a new file
     df.to_csv(f"{file_name}", mode='a', header=not os.path.exists(file_name), index=False)
+
+def calculate_set_ratios(source_set, sim_func):
+    tokenizer = Tokenizer(sim_func)
+
+    total_elements = 0
+    total_tokens = 0
+
+    for s in source_set:
+        total_elements += len(s)
+        for element in s:
+            total_tokens += len(tokenizer.tokenize(element))
+
+    return total_elements/len(source_set), total_tokens/total_elements
+
+def experiment_set_ratio_calc(source_set, sim_func , folder, experiment_name):
+    elem_set, tokens_elem = calculate_set_ratios(source_set, sim_func)
+    data = {
+        "experiment name": experiment_name,
+        "elem/set": elem_set,
+        "tokens/elem": tokens_elem,
+    }
+    save_experiment_results_to_csv(data, folder)
+
+
+

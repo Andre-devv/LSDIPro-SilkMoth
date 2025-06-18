@@ -7,10 +7,11 @@ from multiprocessing import Manager
 
 
 def run_filter_experiment(related_thresholds, similarity_thresholds, labels, source_sets, reference_sets,
-                          sim_metric, sim_func, is_search, file_name_prefix, folder_path):
+                          sim_metric, sim_func, is_search, file_name_prefix, folder_path, multicore = False):
     """
     Parameters
     ----------
+
 
     related_thresholds : list[float]
         Thresholds for determining relatedness between sets.
@@ -32,6 +33,8 @@ def run_filter_experiment(related_thresholds, similarity_thresholds, labels, sou
         Prefix for naming output files generated during the experiment.
     folder_path: str
         Path to the folder where results will be saved.
+    multicore: bool
+        allow running in multicore or not
     """
 
     # Calculate index time and RAM usage for the SilkMothEngine
@@ -57,19 +60,27 @@ def run_filter_experiment(related_thresholds, similarity_thresholds, labels, sou
 
     print(f"Inverted Index created in {in_index_elapsed_time:.2f} seconds.")
 
-    processes = []
-    for sim_thresh in similarity_thresholds:
-        process = multiprocessing.Process(
-            target=parallel_sim_threshold_process_filter,
-            args=(sim_thresh, file_name_prefix, folder_path, in_index_elapsed_time, in_index_ram_usage,
-                  is_search, labels, reference_sets, related_thresholds, silk_moth_engine, source_sets)
-        )
-        processes.append(process)
-        process.start()
 
-    # Wait for all processes to complete
-    for process in processes:
-        process.join()
+    if multicore:
+        processes = []
+        for sim_thresh in similarity_thresholds:
+            process = multiprocessing.Process(
+                target=parallel_sim_threshold_process_filter,
+                args=(sim_thresh, file_name_prefix, folder_path, in_index_elapsed_time, in_index_ram_usage,
+                      is_search, labels, reference_sets, related_thresholds, silk_moth_engine, source_sets)
+            )
+            processes.append(process)
+            process.start()
+
+        # Wait for all processes to complete
+        for process in processes:
+            process.join()
+    else:
+        for sim_thresh in similarity_thresholds:
+            sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed_time, in_index_ram_usage,
+                                         is_search,
+                                         labels, reference_sets, related_thresholds,
+                                         silk_moth_engine, sim_thresh, source_sets)
 
 
 def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed_time, in_index_ram_usage, is_search,
@@ -159,10 +170,10 @@ def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed
                 file_name=f"{folder_path}{file_name_prefix}_filter_experiment_results.csv"
             )
 
-            #save_experiment_results_to_csv(
+            # save_experiment_results_to_csv(
             #    results=related_sets,
             #    file_name=f"{folder_path}{file_name_prefix}_filter_experiment_related_sets.csv"
-            #)
+            # )
 
         elapsed_times_final.append(elapsed_times)
     _ = plot_elapsed_times(

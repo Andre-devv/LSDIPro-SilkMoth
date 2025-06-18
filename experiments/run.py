@@ -2,7 +2,7 @@ import multiprocessing
 from experiments import run_filter_experiment
 import os
 from data_loader import DataLoader
-from utils import load_sets_from_files
+from utils import load_sets_from_files, experiment_set_ratio_calc
 from silkmoth.utils import jaccard_similarity, contain, similar
 
 
@@ -20,7 +20,6 @@ if __name__ == "__main__":
     data_path = os.path.join(os.path.dirname(__file__), "data", "dblp", "DBLP_100k.csv")
     source_string_matching = data_loader.load_dblp_titles(data_path)
     source_string_matching = [title.split() for title in source_string_matching]
-    # source_string_matching = source_string_matching[:4000]
 
     try:
         folder_path = os.path.join(os.path.dirname(__file__), "../experiments/data/webtables")
@@ -31,21 +30,24 @@ if __name__ == "__main__":
             reference_file="reference_sets_inclusion_dependency.json",
             source_file="source_sets_inclusion_dependency.json"
         )
-        reference_sets_in_dep = reference_sets_in_dep[:10]
-        #source_sets_in_dep = source_sets_in_dep[:100_000]
 
         reference_sets_schema_matching, source_sets_schema_matching = load_sets_from_files(
             folder_path=folder_path,
             reference_file="webtable_schemas_sets_500k.json",
             source_file="webtable_schemas_sets_500k.json"
         )
-        source_sets_schema_matching = source_sets_schema_matching[:2_000]
         del reference_sets_schema_matching
     except FileNotFoundError:
         print("Datasets not found. Skipping Experiments.")
         reference_sets_in_dep, source_sets_in_dep = [], []
         source_sets_schema_matching = []
 
+    # Calculate ratios:
+    """
+    experiment_set_ratio_calc(source_string_matching, jaccard_similarity ,"results/string_matching/string_matching_ratio.csv", "String Matching")
+    experiment_set_ratio_calc(source_sets_schema_matching, jaccard_similarity, "results/schema_matching/schema_matching_ratio.csv", "Schema Matching")
+    experiment_set_ratio_calc(source_sets_in_dep, jaccard_similarity, "results/inclusion_dependency/inclusion_dependency_ratio.csv", "Inclusion Dependency")
+    """
     # Define experiments to run
     experiments = [
         # String Matching Experiment
@@ -54,14 +56,14 @@ if __name__ == "__main__":
          #"dblp_string_matching", "results/string_matching/"),
 
         # Schema Matching Experiment
-        (run_filter_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-        labels, source_sets_schema_matching, None, similar, jaccard_similarity, False,
-         "schema_matching", "results/schema_matching/"),
-
-        # Inclusion Dependency Experiment
         #(run_filter_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-        # labels, source_sets_in_dep, reference_sets_in_dep, contain, jaccard_similarity, True,
-         #"inclusion_dependency", "results/inclusion_dependency/"),
+        #labels, source_sets_schema_matching[:15800], None, similar, jaccard_similarity, False,
+         #"schema_matching", "results/schema_matching/"),
+
+         #Inclusion Dependency Experiment
+        (run_filter_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+         labels, source_sets_in_dep, reference_sets_in_dep[:33], contain, jaccard_similarity, True,
+         "inclusion_dependency", "results/inclusion_dependency/", False),
     ]
 
     # Create and start processes for each experiment
@@ -75,3 +77,8 @@ if __name__ == "__main__":
     # Wait for all processes to complete
     for process in processes:
         process.join()
+
+
+
+
+
