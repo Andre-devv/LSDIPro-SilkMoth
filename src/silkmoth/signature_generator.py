@@ -28,7 +28,7 @@ class SignatureGenerator:
             case SigType.SKYLINE:
                 return self._generate_skyline_signature(reference_set, inverted_index, delta, alpha)
             case SigType.DICHOTOMY:
-                raise NotImplementedError("Dichotomy signature scheme not implemented yet.")
+                return self._generate_dichotomy_signature(reference_set, inverted_index, delta, alpha)
             case _:
                 raise ValueError(f"Unknown signature type") 
             
@@ -47,6 +47,37 @@ class SignatureGenerator:
                 tokens.sort(key=lambda t: len(inverted_index.get_indexes(t)))
                 skyline = skyline.union(tokens[:rhs])
         return list(skyline)
+    
+
+    
+    def _generate_dichotomy_signature(self, reference_set, inverted_index: InvertedIndex, delta, alpha):
+
+        weighted_tokens = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
+
+        final_signatures = set()
+
+        for r_i in reference_set:
+            r_i_set = set(r_i)
+            k_i = r_i_set & weighted_tokens
+
+            # sim-thresh tokens: minimal tokens to enforce similarity
+            required = floor((1 - alpha) * len(r_i)) + 1
+            sorted_tokens = sorted(r_i, key=lambda t: len(inverted_index.get_indexes(t)))
+            m_i = set(sorted_tokens[:required])
+
+            if k_i == r_i_set:
+                # all tokens are part of weighted signature
+                final_signatures.update(k_i)
+            elif k_i.issubset(m_i):
+                # weighted tokens fit inside sim-thresh tokens
+                final_signatures.update(k_i)
+            else:
+                # use full element tokens
+                final_signatures.update(r_i_set)
+
+        return list(final_signatures)
+
+
 
     def _generate_weighted_signature(self, reference_set, inverted_index, delta):
         if delta <= 0.0:

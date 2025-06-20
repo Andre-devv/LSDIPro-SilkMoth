@@ -146,3 +146,19 @@ class TestSignatureGenerator(unittest.TestCase):
         inverted_index = InvertedIndex([self.S1,self.S2,self.S3,self.S4])
         with self.assertRaises(ValueError):
             self.generator.get_signature(self.R, inverted_index, 0.7, 0.8, "berlin")
+
+
+    def test_dichotomy_subset_or_full(self):
+        inverted_index = InvertedIndex([self.S1, self.S2, self.S3, self.S4])
+
+        weighted = self.generator.get_signature(self.R, inverted_index, 0.7)
+        dichotomy = self.generator.get_signature(self.R, inverted_index, 0.7, 0.8, SigType.DICHOTOMY)
+
+        for r_i in self.R:
+            r_i_tokens = set(r_i)
+            weighted_k_i = r_i_tokens.intersection(weighted)
+            dichotomy_k_i = r_i_tokens.intersection(dichotomy)
+
+            if dichotomy_k_i != r_i_tokens:
+                self.assertTrue(dichotomy_k_i.issubset(weighted_k_i))
+
