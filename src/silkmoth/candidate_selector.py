@@ -1,17 +1,20 @@
 from .utils import *
+from math import floor
 
 class CandidateSelector:
 
-    def __init__(self, similarity_func, sim_metric, related_thresh):
+    def __init__(self, similarity_func, sim_metric, related_thresh, sim_thresh=0.0):
         """
         Args:
             similarity_func (callable): Similarity function phi(r, s) (e.g., Jaccard).
             sim_metric (callable): Similarity metric related(R, S) (e.g., contain).
             related_thresh (float): Relatedness threshold delta.
+            sim_thresh (float): Similarity threshold alpha.
         """
         self.similarity = similarity_func
         self.sim_metric = sim_metric
         self.delta = related_thresh
+        self.alpha = sim_thresh
 
     def get_candidates(self, signature, inverted_index, ref_size):
         """
@@ -83,7 +86,7 @@ class CandidateSelector:
         k_i_sets = [set(r_i).intersection(K) for r_i in R]
 
         for c_idx in candidates:
-            matched = self.create_match_map(R, K, c_idx, inverted_index)
+            matched = self.create_match_map(R, k_i_sets, c_idx, inverted_index)
 
             if matched:
                 filtered.add(c_idx)
@@ -91,13 +94,13 @@ class CandidateSelector:
 
         return filtered, match_map
 
-    def create_match_map(self, R, K, c_idx, inverted_index):
+    def create_match_map(self, R, k_i_sets, c_idx, inverted_index):
         """
         Create a match map for a specific candidate index.
 
         Args:
             R (list of list): Tokenized reference set.
-            K (set): Flattened signature tokens.
+            k_i_sets (list of sets): Unflattened signature.
             c_idx (int): Candidate set index.
             inverted_index (InvertedIndex): For retrieving sets.
 
@@ -105,7 +108,6 @@ class CandidateSelector:
             dict: r_idx -> max_sim for matched reference sets.
         """
         S = inverted_index.get_set(c_idx)
-        k_i_sets = [set(r_i).intersection(K) for r_i in R]
         matched = {}
 
         for r_idx, (r_i, k_i) in enumerate(zip(R, k_i_sets)):
@@ -123,7 +125,7 @@ class CandidateSelector:
                         if s_idx != c_idx:
                             continue
                         s = S[e_idx]
-                        sim = self.similarity(r_set, set(s))
+                        sim = self.similarity(r_set, set(s), self.alpha)
                         if sim >= threshold:
                             max_sim = max(max_sim, sim)
                 except ValueError:
@@ -157,7 +159,7 @@ class CandidateSelector:
                     if s_idx != c_idx:
                         continue
                     s = S[e_idx]
-                    sim = self.similarity(r_set, set(s))
+                    sim = self.similarity(r_set, set(s), self.alpha)
                     max_sim = max(max_sim, sim)
             except ValueError:
                 continue
@@ -193,6 +195,10 @@ class CandidateSelector:
 
         for c_idx in candidates:
             S = inverted_index.get_set(c_idx)
+            if self.alpha > 0:
+                S_tokens = set()
+                for s in S:
+                    S_tokens.update(s)
 
             # Check if match_map is provided, otherwise create it
             if match_map is None:
@@ -221,7 +227,14 @@ class CandidateSelector:
                 base_loss = (len(r_i) - len(k_i)) / len(r_i)
 
                 r_set = set(r_i)
-                nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
+
+                # Case alpha > 0
+                if (self.alpha > 0 and len(k_i) >= floor((1 - self.alpha) * len(r_i)) + 1 
+                    and k_i.isdisjoint(S_tokens)):
+                    nn_sim = 0
+                else:
+                    nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
+                
                 total += nn_sim - base_loss
                 if total < theta:
                     break
