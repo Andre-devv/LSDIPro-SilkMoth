@@ -4,7 +4,7 @@ from .tokenizer import *
 from .signature_generator import *
 from .candidate_selector import *
 from .verifier import *
-import sys
+import warnings
 
 class SilkMothEngine:
     
@@ -20,8 +20,8 @@ class SilkMothEngine:
         self.is_check_filter = is_check_filter
         self.is_nn_filter = is_nn_filter
         self.signature_gen = SignatureGenerator()
-        self.candidate_selector = CandidateSelector(similarity_func=self.sim_func, sim_metric=self.sim_metric, related_thresh=self.related_thresh)
-        self.verifier = Verifier(related_thresh, sim_metric, sim_func, sim_thresh, reduction)
+        self.candidate_selector = self._create_candidate_selector()
+        self.verifier = self._create_verifier()
         self.inverted_index = self.build_index(source_sets)
         
     def build_index(self, source_sets):
@@ -85,8 +85,18 @@ class SilkMothEngine:
     def set_alpha(self, sim_thresh):
         self.sim_thresh = sim_thresh
         self.verifier = self._create_verifier()
+        self.candidate_selector = self._create_candidate_selector()
+
+    def set_reduction(self, reduction):
+        self.reduction = reduction
+        self.verifier = self._create_verifier()
 
     def _create_verifier(self):
+        if self.reduction and self.sim_thresh > 0:
+            self.reduction = False
+            warnings.warn(""""Reduction-based verification does not work when the 
+                          similarity threshold alpha is greater than zero. 
+                          Reduction is disabled for now.""")
         return Verifier(
             self.related_thresh,
             self.sim_metric,
@@ -99,6 +109,7 @@ class SilkMothEngine:
         return CandidateSelector(
             self.sim_func,
             self.sim_metric,
-            self.related_thresh
+            self.related_thresh,
+            self.sim_thresh
         )
 
