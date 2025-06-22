@@ -49,33 +49,29 @@ class SignatureGenerator:
         return list(skyline)
     
 
-    
     def _generate_dichotomy_signature(self, reference_set, inverted_index: InvertedIndex, delta, alpha):
+        weighted = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
+        unflattened = [weighted & set(r_i) for r_i in reference_set]
+        dichotomy = set()
 
-        weighted_tokens = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
+        for i, k in enumerate(unflattened):
+            rhs = floor((1 - alpha) * len(reference_set[i])) + 1   # sim-thresh token count 
 
-        final_signatures = set()
+            tokens = list(k)
+            tokens.sort(key=lambda t: len(inverted_index.get_indexes(t)))
+            sim_thresh = set(tokens[:rhs])
 
-        for r_i in reference_set:
-            r_i_set = set(r_i)
-            k_i = r_i_set & weighted_tokens
-
-            # sim-thresh tokens: minimal tokens to enforce similarity
-            required = floor((1 - alpha) * len(r_i)) + 1
-            sorted_tokens = sorted(r_i, key=lambda t: len(inverted_index.get_indexes(t)))
-            m_i = set(sorted_tokens[:required])
-
-            if k_i == r_i_set:
-                # all tokens are part of weighted signature
-                final_signatures.update(k_i)
-            elif k_i.issubset(m_i):
-                # weighted tokens fit inside sim-thresh tokens
-                final_signatures.update(k_i)
+            if k == set(reference_set[i]):
+                # weighted tokens cover whole element
+                dichotomy |= k
+            elif k.issubset(sim_thresh):
+                # weighted tokens are subset of sim-thresh set
+                dichotomy |= k
             else:
-                # use full element tokens
-                final_signatures.update(r_i_set)
+                # use all element tokens
+                dichotomy |= set(reference_set[i])
 
-        return list(final_signatures)
+        return list(dichotomy)
 
 
 
