@@ -1,12 +1,13 @@
 import time
 
 from silkmoth.silkmoth_engine import SilkMothEngine
+from silkmoth.utils import SigType
 from utils import *
 import multiprocessing
 from multiprocessing import Manager
 
 
-def run_filter_experiment(related_thresholds, similarity_thresholds, labels, source_sets, reference_sets,
+def run_experiment(related_thresholds, similarity_thresholds, labels, source_sets, reference_sets,
                           sim_metric, sim_func, is_search, file_name_prefix, folder_path, multicore = False):
     """
     Parameters
@@ -18,7 +19,7 @@ def run_filter_experiment(related_thresholds, similarity_thresholds, labels, sou
     similarity_thresholds : list[float]
         Thresholds for measuring similarity between sets.
     labels : list[str]
-        Labels indicating the type of filtering applied (e.g., "NO FILTER", "CHECK FILTER", "NN FILTER").
+        Labels indicating the type of setting applied (e.g., "NO FILTER", "CHECK FILTER", "WEIGHTED").
     source_sets : list[]
         The sets to be compared against the reference sets or against itself.
     reference_sets : list[]
@@ -96,6 +97,7 @@ def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed
             print(
                 f"\nRunning SilkMoth {file_name_prefix} with α = {sim_thresh}, θ = {related_thresh}, label = {label}")
 
+            # checks for filter runs
             if label == "CHECK FILTER":
                 silk_moth_engine.is_check_filter = True
                 silk_moth_engine.is_nn_filter = False
@@ -105,6 +107,17 @@ def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed
             else:  # NO FILTER
                 silk_moth_engine.is_check_filter = False
                 silk_moth_engine.is_nn_filter = False
+
+
+            # checks for signature scheme runs
+            if label == SigType.WEIGHTED:
+                silk_moth_engine.set_signature_type(SigType.WEIGHTED)
+            elif label == SigType.SKYLINE:
+                silk_moth_engine.set_signature_type(SigType.SKYLINE)
+            elif label == SigType.DICHOTOMY:
+                silk_moth_engine.set_signature_type(SigType.DICHOTOMY)
+
+
 
             silk_moth_engine.set_related_threshold(related_thresh)
             # Measure the time taken to search for related sets
@@ -167,7 +180,7 @@ def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed
             # Save results to a CSV file
             save_experiment_results_to_csv(
                 results=data_overall,
-                file_name=f"{folder_path}{file_name_prefix}_filter_experiment_results.csv"
+                file_name=f"{folder_path}{file_name_prefix}_experiment_results.csv"
             )
 
             # save_experiment_results_to_csv(
@@ -179,9 +192,9 @@ def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed
     _ = plot_elapsed_times(
         related_thresholds=related_thresholds,
         elapsed_times_list=elapsed_times_final,
-        fig_text=f"String Matching (α = {sim_thresh})",
+        fig_text=f"{file_name_prefix} (α = {sim_thresh})",
         legend_labels=labels,
-        file_name=f"{folder_path}{file_name_prefix}_filter_experiment_α={sim_thresh}.png"
+        file_name=f"{folder_path}{file_name_prefix}_experiment_α={sim_thresh}.png"
     )
 
 

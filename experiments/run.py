@@ -1,12 +1,12 @@
 import multiprocessing
-from experiments import run_filter_experiment
+from experiments import run_experiment
 import os
 from data_loader import DataLoader
 from utils import load_sets_from_files, experiment_set_ratio_calc
-from silkmoth.utils import jaccard_similarity, contain, similar
+from silkmoth.utils import jaccard_similarity, contain, similar, SigType
 
 
-def run_experiment(experiment_method, *args):
+def run_experiment_multi(experiment_method, *args):
     experiment_method(*args)
 
 
@@ -14,7 +14,10 @@ if __name__ == "__main__":
     data_loader = DataLoader("/")
 
     # Labels for Filter Experiments
-    labels = ["NO FILTER", "CHECK FILTER", "NN FILTER"]
+    labels_filter = ["NO FILTER", "CHECK FILTER", "NN FILTER"]
+
+    # Labels for Signature Scheme
+    labels_sig_schemes = [SigType.WEIGHTED, SigType.SKYLINE, SigType.DICHOTOMY]
 
     # Load the datasets for Filter Experiments
     data_path = os.path.join(os.path.dirname(__file__), "data", "dblp", "DBLP_100k.csv")
@@ -50,27 +53,42 @@ if __name__ == "__main__":
     """
     # Define experiments to run
     experiments = [
+        # Filter runs
         # String Matching Experiment
-        #(run_filter_experiment, [0.7, 0.75, 0.8, 0.85], [0.7, 0.75, 0.8, 0.85],
+        #(run_experiment, [0.7, 0.75, 0.8, 0.85], [0.7, 0.75, 0.8, 0.85],
          #labels, source_string_matching, None, similar, jaccard_similarity, False,
-         #"dblp_string_matching", "results/string_matching/"),
+         #"dblp_string_matching_filter", "results/string_matching/"),
 
         # Schema Matching Experiment
-        #(run_filter_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-        #labels, source_sets_schema_matching[:15800], None, similar, jaccard_similarity, False,
-         #"schema_matching", "results/schema_matching/"),
+        #(run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+        #labels, source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
+         #"schema_matching_filter", "results/schema_matching/", False),
 
          #Inclusion Dependency Experiment
-        (run_filter_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-         labels, source_sets_in_dep, reference_sets_in_dep[:33], contain, jaccard_similarity, True,
-         "inclusion_dependency", "results/inclusion_dependency/", False),
+        #(run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+         #labels, source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
+         #"inclusion_dependency_filter", "results/inclusion_dependency/", False),
+
+
+
+        # Signature Scheme Runs
+        # Schema Matching Experiment
+         (run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+         labels_sig_schemes, source_sets_schema_matching[:5_000], None, similar, jaccard_similarity, False,
+         "schema_matching_sig", "results/schema_matching/", True),
+
+        # Inclusion Dependency Experiment
+        #(run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+        # labels_sig_schemes, source_sets_in_dep, reference_sets_in_dep[:10], contain, jaccard_similarity, True,
+        #"inclusion_dependency_sig", "results/inclusion_dependency/", True),
+
     ]
 
     # Create and start processes for each experiment
     processes = []
     for experiment in experiments:
         method, *args = experiment
-        process = multiprocessing.Process(target=run_experiment, args=(method, *args))
+        process = multiprocessing.Process(target=run_experiment_multi, args=(method, *args))
         processes.append(process)
         process.start()
 
