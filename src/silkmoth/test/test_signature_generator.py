@@ -146,3 +146,39 @@ class TestSignatureGenerator(unittest.TestCase):
         inverted_index = InvertedIndex([self.S1,self.S2,self.S3,self.S4])
         with self.assertRaises(ValueError):
             self.generator.get_signature(self.R, inverted_index, 0.7, 0.8, "berlin")
+
+
+    def test_dichotomy_contains_weighted(self):
+        inverted_index = InvertedIndex([self.S1, self.S2, self.S3, self.S4])
+        weighted = set(self.generator.get_signature(self.R, inverted_index, 0.7))
+        dichotomy = set(self.generator.get_signature(
+            self.R, inverted_index, 0.7, 0.5, SigType.DICHOTOMY
+        ))
+        self.assertTrue(weighted.issubset(dichotomy))
+
+
+    def test_dichotomy_weighted_full_element_case1(self):
+        original = self.generator._generate_weighted_signature
+        self.generator._generate_weighted_signature = (
+            lambda R, idx, d: [t for elem in R for t in elem]
+        )
+
+        idx = InvertedIndex([self.S1, self.S2, self.S3, self.S4])
+        dichotomy = self.generator.get_signature(
+            self.R, idx, delta=0.5, alpha=0.5, sig_type=SigType.DICHOTOMY
+        )
+
+        full_union = {t for elem in self.R for t in elem}
+        self.assertEqual(set(dichotomy), full_union)
+
+        self.generator._generate_weighted_signature = original
+
+
+    def test_dichotomy_alpha_0_case2(self):
+        inverted_index = InvertedIndex([self.S1, self.S2, self.S3, self.S4])
+        weighted = set(self.generator.get_signature(self.R, inverted_index, 0.7))
+
+        dichotomy = self.generator.get_signature(
+            self.R, inverted_index, 0.7, 0.0, SigType.DICHOTOMY
+        )
+        self.assertEqual(set(dichotomy), weighted)
