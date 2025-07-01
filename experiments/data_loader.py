@@ -68,6 +68,33 @@ class DataLoader:
         reference_sets = random.sample(source_sets, reference_set_amount)
         return reference_sets, source_sets
 
+    def load_webtable_reference_sets_element_restriction(self, source_set: list, element_restriction: int) -> list:
+        """
+        Get a reference set of webtable columns with a specific element restriction.
+        Restriction is the minimal number of elements allowed in the reference set.
+
+        Args:
+            source_set (list): The source set to use for generating the reference set.
+            element_restriction (int): The number of elements in the reference set.
+        Returns:
+            list: A list of reference sets.
+        """
+        if element_restriction < 1:
+            raise ValueError("element_restriction must be at least 1")
+
+        reference_sets = []
+
+        while len(reference_sets) < 1000:
+            # Randomly select a column from the source set
+            col = random.choice(source_set)
+
+            # Check if the column has at least element_restriction different elements
+            if len(col) >= element_restriction:
+                    reference_sets.append(col)
+                    print(f"Reference set number {len(reference_sets)} loaded")
+
+        return reference_sets
+
     def load_webtable_schemas_randomized(self, set_amount: int) -> list:
         if set_amount < 2:
             raise ValueError("source_set_amount must be at least 2")
@@ -143,4 +170,5 @@ class DataLoader:
 
         titles = df["title"].dropna().tolist()
         return titles
+
 

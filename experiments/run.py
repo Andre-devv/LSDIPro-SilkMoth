@@ -1,8 +1,8 @@
 import multiprocessing
-from experiments import run_experiment
+from experiments import run_experiment, run_reduction_experiment
 import os
 from data_loader import DataLoader
-from utils import load_sets_from_files, experiment_set_ratio_calc
+from utils import load_sets_from_files, experiment_set_ratio_calc, save_sets_to_files
 from silkmoth.utils import jaccard_similarity, contain, similar, SigType
 
 
@@ -19,7 +19,10 @@ if __name__ == "__main__":
     # Labels for Signature Scheme
     labels_sig_schemes = [SigType.WEIGHTED, SigType.SKYLINE, SigType.DICHOTOMY]
 
-    # Load the datasets for Filter Experiments
+    # Labels for Reduction
+    labels_reduction = ["REDUCTION", "NO REDUCTION"]
+
+    # Load the datasets for Experiments
     data_path = os.path.join(os.path.dirname(__file__), "data", "dblp", "DBLP_100k.csv")
     source_string_matching = data_loader.load_dblp_titles(data_path)
     source_string_matching = [title.split() for title in source_string_matching]
@@ -33,6 +36,12 @@ if __name__ == "__main__":
             reference_file="reference_sets_inclusion_dependency.json",
             source_file="source_sets_inclusion_dependency.json"
         )
+        # now load extra inclusion dependency set for reduction experiment
+        reference_sets_in_dep_reduction, _ = load_sets_from_files(
+            folder_path=folder_path,
+            reference_file="reference_sets_inclusion_dependency_reduction.json",
+            source_file="reference_sets_inclusion_dependency_reduction.json"
+        )
 
         reference_sets_schema_matching, source_sets_schema_matching = load_sets_from_files(
             folder_path=folder_path,
@@ -42,7 +51,7 @@ if __name__ == "__main__":
         del reference_sets_schema_matching
     except FileNotFoundError:
         print("Datasets not found. Skipping Experiments.")
-        reference_sets_in_dep, source_sets_in_dep = [], []
+        reference_sets_in_dep, source_sets_in_dep, reference_sets_in_dep_reduction = [], [], []
         source_sets_schema_matching = []
 
     # Calculate ratios:
@@ -54,11 +63,6 @@ if __name__ == "__main__":
     # Define experiments to run
     experiments = [
         # Filter runs
-        # String Matching Experiment
-        #(run_experiment, [0.7, 0.75, 0.8, 0.85], [0.7, 0.75, 0.8, 0.85],
-         #labels, source_string_matching, None, similar, jaccard_similarity, False,
-         #"dblp_string_matching_filter", "results/string_matching/"),
-
         # Schema Matching Experiment
         #(run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
         #labels, source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
@@ -73,14 +77,22 @@ if __name__ == "__main__":
 
         # Signature Scheme Runs
         # Schema Matching Experiment
-         (run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-         labels_sig_schemes, source_sets_schema_matching[:5_000], None, similar, jaccard_similarity, False,
-         "schema_matching_sig", "results/schema_matching/", True),
+        # (run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+        # labels_sig_schemes, source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
+        # "schema_matching_sig", "results/schema_matching/", False),
 
         # Inclusion Dependency Experiment
         #(run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-        # labels_sig_schemes, source_sets_in_dep, reference_sets_in_dep[:10], contain, jaccard_similarity, True,
-        #"inclusion_dependency_sig", "results/inclusion_dependency/", True),
+        # labels_sig_schemes, source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
+        #"inclusion_dependency_sig", "results/inclusion_dependency/", False),
+
+
+
+        # Reduction Runs
+        # Inclusion Dependency Experiment
+        (run_reduction_experiment, [0.7, 0.75, 0.8, 0.85], 0.0,
+        labels_reduction, source_sets_in_dep, reference_sets_in_dep_reduction[:25], contain, jaccard_similarity, True,
+        "inclusion_dependency_reduction", "results/inclusion_dependency/"),
 
     ]
 
@@ -95,6 +107,8 @@ if __name__ == "__main__":
     # Wait for all processes to complete
     for process in processes:
         process.join()
+
+
 
 
 
