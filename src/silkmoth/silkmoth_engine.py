@@ -30,7 +30,7 @@ class SilkMothEngine:
         
     def search_sets(self, reference_set):
         r_tokens = self.tokenizer.tokenize(reference_set)
-        signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh, self.sim_thresh, self.signature_type)
+        signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh, self.sim_thresh, self.signature_type, self.sim_func)
         candidates = self.candidate_selector.get_candidates(signature, self.inverted_index, len(r_tokens))
 
         # Count how many candidates are removed by the filters

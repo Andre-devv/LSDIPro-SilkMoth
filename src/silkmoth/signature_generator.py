@@ -1,13 +1,13 @@
 import heapq
 from collections import defaultdict
 import warnings
-from .utils import SigType
+from .utils import SigType,jaccard_similarity,edit_similarity,N_edit_similarity
 from math import floor
 from .inverted_index import *
 
 class SignatureGenerator:
 
-    def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED):
+    def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED, sim_fun = jaccard_similarity):
         """
         Compute a signature for a reference set given a signature type. Uses 
         weighted signature scheme by default.
@@ -24,7 +24,10 @@ class SignatureGenerator:
         """
         match sig_type:
             case SigType.WEIGHTED:
-                return self._generate_weighted_signature(reference_set, inverted_index, delta)
+                if sim_fun == edit_similarity or sim_fun == N_edit_similarity:
+                    return self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta)
+                else:
+                    return self._generate_weighted_signature(reference_set, inverted_index, delta)
             case SigType.SKYLINE:
                 return self._generate_skyline_signature(reference_set, inverted_index, delta, alpha)
             case SigType.DICHOTOMY:
@@ -167,6 +170,85 @@ class SignatureGenerator:
             # 4.
             total_loss = sum(
                 (r_sizes[i] - current_k_counts[i]) / r_sizes[i]
+                for i in range(n) if r_sizes[i] > 0
+            )
+
+        return list(selected_sig)
+    
+    # Following the same logic of _generate_weighted_signature
+    def _generate_weighted_signature_edit_similarity(self, reference_set, inverted_index, delta, q=3):
+        if delta <= 0.0:
+            return []
+
+        n = len(reference_set)
+        theta = delta * n  
+
+        token_to_elems = defaultdict(list)   # map q-chunk -> list of element indexes
+        token_value = {}                     # map q-chunk -> accumulated value
+
+        r_sizes = []        # number of q-chunks per element
+        element_chunks = [] # list of q-chunks per element
+
+        # Step 1: Build q-chunks and token values
+        for i, elem_tokens in enumerate(reference_set):
+            if not elem_tokens:
+                warnings.warn(f"Element at index {i} is empty and will be skipped.")
+                r_sizes.append(0)
+                element_chunks.append([])
+                continue
+
+            # Join the list of tokens into a string
+            joined = " ".join(elem_tokens)
+
+            # Extract non-overlapping q-chunks
+            chunks = [joined[j:j+q] for j in range(0, len(joined) - q + 1, q)]
+            chunk_set = set(chunks)
+            element_chunks.append(chunks)
+
+            num_chunks = len(chunk_set)
+            r_sizes.append(num_chunks)
+
+            if num_chunks == 0:
+                continue
+
+            weight = 1.0 / num_chunks
+            for chunk in chunk_set:
+                token_to_elems[chunk].append(i)
+                token_value[chunk] = token_value.get(chunk, 0.0) + weight # value = sum of weights (for each chunk)
+
+        # Step 2: Build heap (cost/value, token)
+        heap = []
+        for chunk, val in token_value.items():
+            if val <= 0:
+                continue
+            try:
+                cost = len(inverted_index.get_indexes(chunk))  # number of sets where chunk appears
+            except ValueError:
+                cost = float('inf')
+            heapq.heappush(heap, (cost / val, chunk))
+
+        # Step 3: Greedy selection
+        selected_sig = set()
+        current_k_counts = [0] * n
+        total_score = 0.0  
+
+        while heap and total_score < theta:
+            ratio, chunk = heapq.heappop(heap)
+            if chunk in selected_sig:
+                continue
+            if ratio == float('inf'):
+                break
+
+            selected_sig.add(chunk)
+
+            for i in range(n):
+                if r_sizes[i] == 0:
+                    continue
+                if chunk in element_chunks[i]:
+                    current_k_counts[i] += 1
+
+            total_score = sum(
+                r_sizes[i] / (r_sizes[i] + current_k_counts[i])
                 for i in range(n) if r_sizes[i] > 0
             )
 
