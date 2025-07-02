@@ -1,5 +1,5 @@
 import multiprocessing
-from experiments import run_experiment, run_reduction_experiment
+from experiments import run_experiment, run_reduction_experiment, run_scalability_experiment
 import os
 from data_loader import DataLoader
 from utils import load_sets_from_files, experiment_set_ratio_calc, save_sets_to_files
@@ -30,17 +30,10 @@ if __name__ == "__main__":
     try:
         folder_path = os.path.join(os.path.dirname(__file__), "../experiments/data/webtables")
         folder_path = os.path.normpath(folder_path)
-
         reference_sets_in_dep, source_sets_in_dep = load_sets_from_files(
             folder_path=folder_path,
             reference_file="reference_sets_inclusion_dependency.json",
             source_file="source_sets_inclusion_dependency.json"
-        )
-        # now load extra inclusion dependency set for reduction experiment
-        reference_sets_in_dep_reduction, _ = load_sets_from_files(
-            folder_path=folder_path,
-            reference_file="reference_sets_inclusion_dependency_reduction.json",
-            source_file="reference_sets_inclusion_dependency_reduction.json"
         )
 
         reference_sets_schema_matching, source_sets_schema_matching = load_sets_from_files(
@@ -88,11 +81,20 @@ if __name__ == "__main__":
 
 
 
+
+
         # Reduction Runs
         # Inclusion Dependency Experiment
         (run_reduction_experiment, [0.7, 0.75, 0.8, 0.85], 0.0,
-        labels_reduction, source_sets_in_dep, reference_sets_in_dep_reduction[:25], contain, jaccard_similarity, True,
+        labels_reduction, source_sets_in_dep, reference_sets_in_dep[:10], contain, jaccard_similarity, True,
         "inclusion_dependency_reduction", "results/inclusion_dependency/"),
+
+
+        # Scalability Runs
+        # Inclusion Dependency Experiment
+        #(run_scalability_experiment, [0.7, 0.75, 0.8, 0.85], 0.5, [100_000, 200_000, 300_000, 400_000, 500_000],
+        #  source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
+        # "inclusion_dependency_scalability", "results/inclusion_dependency/"),
 
     ]
 
@@ -107,10 +109,5 @@ if __name__ == "__main__":
     # Wait for all processes to complete
     for process in processes:
         process.join()
-
-
-
-
-
 
 
