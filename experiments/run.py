@@ -1,3 +1,4 @@
+# Python
 import multiprocessing
 from experiments import run_experiment, run_reduction_experiment, run_scalability_experiment
 import os
@@ -47,56 +48,72 @@ if __name__ == "__main__":
         reference_sets_in_dep, source_sets_in_dep, reference_sets_in_dep_reduction = [], [], []
         source_sets_schema_matching = []
 
-    # Calculate ratios:
-    """
-    experiment_set_ratio_calc(source_string_matching, jaccard_similarity ,"results/string_matching/string_matching_ratio.csv", "String Matching")
-    experiment_set_ratio_calc(source_sets_schema_matching, jaccard_similarity, "results/schema_matching/schema_matching_ratio.csv", "Schema Matching")
-    experiment_set_ratio_calc(source_sets_in_dep, jaccard_similarity, "results/inclusion_dependency/inclusion_dependency_ratio.csv", "Inclusion Dependency")
-    """
+    # Experiment configuration
+    experiment_config = {
+        "filter_runs": False,
+        "signature_scheme_runs": False,
+        "reduction_runs": True,
+        "scalability_runs": False,
+    }
+
     # Define experiments to run
-    experiments = [
+    experiments = []
+
+    if experiment_config["filter_runs"]:
         # Filter runs
         # Schema Matching Experiment
-        #(run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-        #labels, source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
-         #"schema_matching_filter", "results/schema_matching/", False),
+        experiments.append((
+            run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            labels_filter, source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
+            "schema_matching_filter", "results/schema_matching/", False
+        ))
 
-         #Inclusion Dependency Experiment
-        #(run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-         #labels, source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
-         #"inclusion_dependency_filter", "results/inclusion_dependency/", False),
+        # Inclusion Dependency Experiment
+        experiments.append((
+            run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            labels_filter, source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
+            "inclusion_dependency_filter", "results/inclusion_dependency/", False
+        ))
 
-
-
+    if experiment_config["signature_scheme_runs"]:
         # Signature Scheme Runs
         # Schema Matching Experiment
-        # (run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-        # labels_sig_schemes, source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
-        # "schema_matching_sig", "results/schema_matching/", False),
+        experiments.append((
+            run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            labels_sig_schemes, source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
+            "schema_matching_sig", "results/schema_matching/", False
+        ))
 
         # Inclusion Dependency Experiment
-        #(run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-        # labels_sig_schemes, source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
-        #"inclusion_dependency_sig", "results/inclusion_dependency/", False),
+        experiments.append((
+            run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            labels_sig_schemes, source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
+            "inclusion_dependency_sig", "results/inclusion_dependency/", False
+        ))
 
-
-
-
-
+    if experiment_config["reduction_runs"]:
         # Reduction Runs
-        # Inclusion Dependency Experiment
-        (run_reduction_experiment, [0.7, 0.75, 0.8, 0.85], 0.0,
-        labels_reduction, source_sets_in_dep, reference_sets_in_dep[:10], contain, jaccard_similarity, True,
-        "inclusion_dependency_reduction", "results/inclusion_dependency/"),
+        experiments.append((
+            run_reduction_experiment, [0.7, 0.75, 0.8, 0.85], 0.0,
+            labels_reduction, source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
+            "inclusion_dependency_reduction", "results/inclusion_dependency/"
+        ))
 
-
+    if experiment_config["scalability_runs"]:
         # Scalability Runs
-        # Inclusion Dependency Experiment
-        #(run_scalability_experiment, [0.7, 0.75, 0.8, 0.85], 0.5, [100_000, 200_000, 300_000, 400_000, 500_000],
-        #  source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
-        # "inclusion_dependency_scalability", "results/inclusion_dependency/"),
+        # Inclusion Dependency
+        experiments.append((
+            run_scalability_experiment, [0.7, 0.75, 0.8, 0.85], 0.5, [100_000, 200_000, 300_000, 400_000, 500_000],
+            source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
+            "inclusion_dependency_scalability", "results/inclusion_dependency/"
+        ))
 
-    ]
+        # Schema Matching
+        experiments.append((
+            run_scalability_experiment, [0.7, 0.75, 0.8, 0.85], 0.0, [12_000, 24_000, 36_000, 48_000, 60_000],
+            source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
+            "schema_matching_scalability", "results/schema_matching/"
+        ))
 
     # Create and start processes for each experiment
     processes = []
@@ -109,5 +126,3 @@ if __name__ == "__main__":
     # Wait for all processes to complete
     for process in processes:
         process.join()
-
-
