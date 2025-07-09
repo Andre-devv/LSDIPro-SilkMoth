@@ -43,17 +43,26 @@ if __name__ == "__main__":
             source_file="webtable_schemas_sets_500k.json"
         )
         del reference_sets_schema_matching
+
+        _, github_source_sets_schema_matching = load_sets_from_files(
+            folder_path=folder_path,
+            reference_file="github_webtable_schemas_sets_500k.json",
+            source_file="github_webtable_schemas_sets_500k.json"
+        )
+
     except FileNotFoundError:
         print("Datasets not found. Skipping Experiments.")
         reference_sets_in_dep, source_sets_in_dep, reference_sets_in_dep_reduction = [], [], []
         source_sets_schema_matching = []
+        github_source_sets_schema_matching = []
 
     # Experiment configuration
     experiment_config = {
         "filter_runs": False,
         "signature_scheme_runs": False,
-        "reduction_runs": True,
+        "reduction_runs": False,
         "scalability_runs": False,
+        "schema_github_webtable_runs": True,
     }
 
     # Define experiments to run
@@ -113,6 +122,14 @@ if __name__ == "__main__":
             run_scalability_experiment, [0.7, 0.75, 0.8, 0.85], 0.0, [12_000, 24_000, 36_000, 48_000, 60_000],
             source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
             "schema_matching_scalability", "results/schema_matching/"
+        ))
+
+    if experiment_config["schema_github_webtable_runs"]:
+        # Schema Matching with GitHub Webtable Schemas
+        experiments.append((
+            run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            labels_filter, source_sets_schema_matching[:10000], github_source_sets_schema_matching[:10000], similar, jaccard_similarity, True,
+            "github_webtable_schema_matching", "results/schema_matching/", False
         ))
 
     # Create and start processes for each experiment

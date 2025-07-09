@@ -117,14 +117,6 @@ def sim_threshold_process_filter(file_name_prefix, folder_path, in_index_elapsed
             elif label == SigType.DICHOTOMY:
                 silk_moth_engine.set_signature_type(SigType.DICHOTOMY)
 
-            # checks for reduction runs
-            if label == "REDUCTION":
-                silk_moth_engine.set_reduction(True)
-            elif label == "NO REDUCTION":
-                silk_moth_engine.set_reduction(False)
-
-
-
             silk_moth_engine.set_related_threshold(related_thresh)
             # Measure the time taken to search for related sets
             time_start = time.time()
