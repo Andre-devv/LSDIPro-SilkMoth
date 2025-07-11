@@ -28,7 +28,7 @@ class InvertedIndex:
         Gives all tokens similar like dict.keys().
 
         Returns:
-            set: A set-like object providing all keys
+            set (set): A set-like object providing all keys
         """
         return self.lookup_table.keys()
 
@@ -37,7 +37,7 @@ class InvertedIndex:
         Access inverted list from inverted index using square brackets.
 
         Args:
-            token: Input token
+            token (str): Input token
 
         Returns:
             list:   A list of all (set, element) tuples which contain the input 
@@ -53,11 +53,11 @@ class InvertedIndex:
         sufficient.
 
         Args:
-            token: Input token
+            token (str): Input token
         
         Returns:
-            list: A list of all (set index, element index) tuples for (set, 
-            element) tuples which contain the input tuple
+            list:   A list of all (set index, element index) tuples for (set, 
+                    element) tuples which contain the input tuple
         """
         if not token in self.lookup_table:
             raise ValueError(f"Unknown token") 
@@ -83,8 +83,8 @@ class InvertedIndex:
         where set_idx matches the given set_idx.
 
         Args:
-            token: The token to search in the inverted index.
-            set_idx: The ID of the set we want the element indexes for.
+            token (str): The token to search in the inverted index.
+            set_idx (int): The ID of the set we want the element indexes for.
 
         Returns:
             list: All (set_idx, element_idx) tuples where the token appears in the given set.

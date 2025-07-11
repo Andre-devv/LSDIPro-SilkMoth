@@ -7,7 +7,7 @@ def jaccard_similarity(x: set, y: set, sim_thresh=0) -> float:
     Args:
         x (set): Input element x
         y (set): Input element y
-        sim_thresh: Similarity threshold alpha
+        sim_thresh (float): Similarity threshold alpha
 
     Returns:
         float: Jaccard similarity score

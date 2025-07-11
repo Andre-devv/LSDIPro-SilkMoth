@@ -32,10 +32,10 @@ class Verifier:
         Initialize the verifier with some parameters.
 
         Args:
-            related_thresh: Relatedness threshold delta
+            related_thresh (float): Relatedness threshold delta
             sim_metric (callable): Similarity metric similar(...)/contain(...)
             sim_func (callable): Similarity function phi
-            sim_thresh: Similarity threshold alpha
+            sim_thresh (float): Similarity threshold alpha
             reduction (bool): Flag to activate/deactivate triangle inequality reduction
         """
         self.related_thresh = related_thresh
