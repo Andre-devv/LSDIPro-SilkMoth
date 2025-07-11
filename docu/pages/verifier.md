@@ -1,5 +1,3 @@
-# verifier
-
 ::: silkmoth.verifier
     rendering:
       show_signature: true

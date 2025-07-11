@@ -1,5 +1,3 @@
-# tokenizer
-
 ::: silkmoth.tokenizer
     rendering:
       show_signature: true
