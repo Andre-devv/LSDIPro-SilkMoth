@@ -1,4 +1,4 @@
-from .utils import *
+from .utils import jaccard_similarity, similar, contain, SigType
 from math import floor
 
 class CandidateSelector:

@@ -1,6 +1,9 @@
 import bisect
 
 class InvertedIndex:
+    """
+    Inverted Index.
+    """
 
     def __init__(self, token_sets: list):
         """
@@ -37,8 +40,8 @@ class InvertedIndex:
             token: Input token
 
         Returns:
-            list: A list of all (set, element) tuples which contain the input 
-            token.
+            list:   A list of all (set, element) tuples which contain the input 
+                    token.
         """
         idx_list = self.get_indexes(token)
         return [(self.get_set(s), self.get_set(s)[e]) for s, e in idx_list]
