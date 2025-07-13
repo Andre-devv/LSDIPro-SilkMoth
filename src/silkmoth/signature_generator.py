@@ -1,4 +1,5 @@
 import heapq
+import math 
 from collections import defaultdict
 import warnings
 from .utils import SigType,jaccard_similarity,edit_similarity,N_edit_similarity
@@ -25,7 +26,7 @@ class SignatureGenerator:
         match sig_type:
             case SigType.WEIGHTED:
                 if sim_fun == edit_similarity or sim_fun == N_edit_similarity:
-                    return self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta)
+                    return self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta, alpha)
                 else:
                     return self._generate_weighted_signature(reference_set, inverted_index, delta)
             case SigType.SKYLINE:
@@ -176,7 +177,23 @@ class SignatureGenerator:
         return list(selected_sig)
     
     # Following the same logic of _generate_weighted_signature
-    def _generate_weighted_signature_edit_similarity(self, reference_set, inverted_index, delta, q=3):
+    def _generate_weighted_signature_edit_similarity(self, reference_set, inverted_index, delta, alpha = 0.0, q=3): 
+        
+        # Ensures q is small enough to get at least one chunk per element (Section 7.3)
+        if delta <= 0 or delta >= 1:
+            raise ValueError("delta must be in (0,1) for edit similarity signatures")
+        
+        q_bound = delta / (1 - delta)
+        if q >= q_bound:
+            # Fallback to a safe/updated new q to ensure non-empty chunks
+            new_q = max(1, int(q_bound) - 1)
+            warnings.warn(
+                f"q={q} is too large for delta={delta:.3f}; "
+                f"reducing to q={new_q} to ensure non-empty signature."
+            )
+            q = new_q
+
+
         if delta <= 0.0:
             return []
 
@@ -216,6 +233,15 @@ class SignatureGenerator:
                 token_to_elems[chunk].append(i)
                 token_value[chunk] = token_value.get(chunk, 0.0) + weight # value = sum of weights (for each chunk)
 
+
+        # compute each element’s threshold m_i
+        alpha_thresholds = [
+            math.floor((1 - alpha) * r_sizes[i]) + 1 if r_sizes[i] > 0 else 0
+            for i in range(n)
+        ]
+
+
+
         # Step 2: Build heap (cost/value, token)
         heap = []
         for chunk, val in token_value.items():
@@ -230,8 +256,10 @@ class SignatureGenerator:
         # Step 3: Greedy selection
         selected_sig = set()
         current_k_counts = [0] * n
-        total_score = 0.0  
+        #total_score = 0.0  
+        total_loss = float(n)
 
+        """
         while heap and total_score < theta:
             ratio, chunk = heapq.heappop(heap)
             if chunk in selected_sig:
@@ -253,3 +281,40 @@ class SignatureGenerator:
             )
 
         return list(selected_sig)
+        """
+
+        while heap:
+            # stop if all m_i thresholds met and total_loss <= n - θ
+            if (all(current_k_counts[i] >= alpha_thresholds[i] for i in range(n))
+                    and total_loss <= n - theta):
+                break
+
+            ratio, chunk = heapq.heappop(heap)
+            if chunk in selected_sig or ratio == float('inf'):
+                continue
+
+            selected_sig.add(chunk)
+
+            for i in range(n):
+                if r_sizes[i] == 0:
+                    continue
+                if chunk in element_chunks[i]:
+                    total_loss -= 1 / r_sizes[i]
+                    current_k_counts[i] += 1
+
+        # safety fallback, ensure each r_i meets its m_i
+        for i in range(n):
+            while current_k_counts[i] < alpha_thresholds[i]:
+                remaining = [
+                    c for c in element_chunks[i] if c not in selected_sig
+                ]
+                if not remaining:
+                    break
+                remaining.sort(key=lambda c: len(inverted_index.get_indexes(c)))
+                c = remaining[0]
+                selected_sig.add(c)
+                current_k_counts[i] += 1
+
+        return list(selected_sig)
+
+
