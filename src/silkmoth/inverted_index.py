@@ -2,7 +2,35 @@ import bisect
 
 class InvertedIndex:
     """
-    Inverted Index.
+    The inverted index
+
+    - allows to lookup all appearances of a token in a collection of tokenized sets
+    - returns inverted lists consisting of (set, element) tuples
+    - supports full sets/elements and positional indexes of them
+    - stores source sets in [SilkMothEngine](silkmoth_engine.md)
+
+    The inverted list
+    
+    - is sorted first by the order of the sets and then by the order of the elements.
+
+    Examples
+    --------
+    ```
+    >>> from silkmoth.inverted_index import InvertedIndex
+    >>> S1 = [{"Apple", "Pear", "Car"}, {"Apple", "Sun", "Cat"}]
+    >>> S2 = [{"Apple", "Berlin", "Sun"}, {"Apple"}]
+    >>> S = [S1, S2]
+    >>> I = InvertedIndex(S)
+    >>> I.get_indexes("Sun")
+    [(0, 1), (1, 0)]
+    >>> I["Berlin"]
+    [([{'Sun', 'Apple', 'Berlin'}, {'Apple'}], {'Sun', 'Apple', 'Berlin'})]
+    ```
+
+    ![SilkMoth Inverted Index](../figures/InvertedIndex.png)
+
+    *SilkMoth Inverted Index. Source: Deng et al., "SILKMOTH: An Efficient Method for Finding Related Sets with Maximum Matching Constraints", VLDB 2017.  
+    Licensed under CC BY-NC-ND 4.0.*
     """
 
     def __init__(self, token_sets: list):
@@ -65,10 +93,10 @@ class InvertedIndex:
     
     def get_set(self, set_id: int) -> list:
         """
-        Access (tokenized) set from set id.
+        Access (tokenized) set from set ID.
 
         Args:
-            set_id: Set id
+            set_id: Set ID
 
         Returns:
             list: Tokenized set

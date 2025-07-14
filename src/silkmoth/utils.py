@@ -2,7 +2,27 @@ from enum import Enum
 
 def jaccard_similarity(x: set, y: set, sim_thresh=0) -> float:
     """
-    Gives the Jaccard similarity of two set-like objects.
+    Gives the Jaccard similarity of two set-like objects. Jaccard similarity is
+    defined as $Jac(x, y) = |x \cap y|/|x \cup y|$. 
+    
+    For some applications we may want to omit pairs with low similarity. 
+    Therefore a similarity threshold α is provided. If the similarity score 
+    does not exceed this threshold, this function returns zero.
+
+    Examples
+    --------
+    ```
+    >>> from silkmoth.utils import jaccard_similarity
+    >>> x = {"a", "b", "c"}
+    >>> y = {"a", "b", "c"}
+    >>> jaccard_similarity(x, y)
+    1.0
+    >>> y.add("d")
+    >>> jaccard_similarity(x, y)
+    0.75
+    >>> jaccard_similarity(x, y, 0.8)
+    0.0
+    ```
 
     Args:
         x (set): Input element x
@@ -21,7 +41,17 @@ def jaccard_similarity(x: set, y: set, sim_thresh=0) -> float:
 
 def similar(reference_set_size: int, source_set_size: int, mm_score: float) -> float:
     """
-    Computes Set-Similarity metric.
+    Computes Set-Similarity metric which checks whether two sets R and S are approximately 
+    equivalent. Set-Similarity is defined as $similar(R, S) = mm\_score / (|R| + |S| - mm\_score)$.
+
+    Examples
+    --------
+    ```
+    >>> similar(3, 3, 3)
+    1.0
+    >>> similar(3, 3, 1.5)
+    0.3333333333333333
+    ```
 
     Args:
         reference_set_size: Size of set R
@@ -35,8 +65,18 @@ def similar(reference_set_size: int, source_set_size: int, mm_score: float) -> f
 
 def contain(reference_set_size: int, source_set_size: int, mm_score: float) -> float:
     """
-    Computes Set-Containment metric. Set pairs (R, S) with |R| > |S| should be 
-    filtered in advance.
+    Computes Set-Containment metric which checks whether one set S is approximately
+    a superset of another set R. Set pairs (R, S) with $|R| > |S|$ should be filtered
+    in advance. Set-Containment is defined as $contain(R, S) = mm\_score / |R|$.
+
+    Examples
+    --------
+    ```
+    >>> contain(2, 3, 2)
+    1.0
+    >>> contain(2, 3, 1.5)
+    0.75
+    ```
 
     Args:
         reference_set_size: Size of set R

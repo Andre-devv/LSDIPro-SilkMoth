@@ -23,6 +23,7 @@ A project inspired by the SilkMoth paper, exploring efficient techniques for rel
 Licensed under CC BY-NC-ND 4.0.*
 #### 1. [Tokenization](pages/tokenizer.md)
 Each element in every set is tokenized based on the selected similarity function:
+
 - **Jaccard Similarity**: Elements are split into whitespace-delimited tokens.
 - **Edit Similarity**: Elements are split into overlapping `q`-grams (e.g., 3-grams).
 
@@ -31,6 +32,7 @@ An **inverted index** is built from the reference set `R` to map each token to a
 
 #### 3. [Signature Generation](pages/signature_generator.md)
 A **signature** is a subset of tokens selected from each set such that:
+
 - Any related set must share at least one signature token.
 - Signature size is minimized to reduce candidate space.
 

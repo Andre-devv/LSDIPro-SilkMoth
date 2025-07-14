@@ -1,7 +1,7 @@
 from .inverted_index import InvertedIndex
 import networkx as nx
 
-def _reduce(reference_set: list, source_set: list) -> tuple:
+def reduce_sets(reference_set: list, source_set: list) -> tuple:
     """
     Applies the triangle inequality reduction by removing every element from 
     both sets that has an identical match in the other set. 
@@ -26,6 +26,38 @@ def _reduce(reference_set: list, source_set: list) -> tuple:
 
 
 class Verifier:
+    """
+    The verifier component executes the final verification step in the SilkMoth
+    pipeline. During verification SilMoth performs the maximum matching between
+    every candidate set and the reference set R. The sets whose maximum matching
+    score surpass the relatedness threshold δ are the verified related sets to R.
+
+    For maximum matching computation we treat every element of the two sets as 
+    vertices of a bipartite graph and the weights of each edge determined by the 
+    similarity function. The maximum weighted matching is computed using the existing
+    graph library [NetworkX](https://networkx.org/).
+
+    Optionally, a triangle inequality-based reduction can be applied to further 
+    improve performance.
+
+    Examples
+    --------
+    ```
+    >>> from silkmoth.inverted_index import InvertedIndex
+    >>> from silkmoth.utils import similar, jaccard_similarity
+    >>> S1 = [{"Apple", "Pear", "Car"}, {"Apple", "Sun", "Cat"}]
+    >>> S2 = [{"Apple", "Berlin", "Sun"}, {"Apple"}]
+    >>> S = [S1, S2]
+    >>> I = InvertedIndex(S)
+    >>> R = [{"Apple"}, {"Berlin", "Sun"}]
+    >>> verifier = Verifier(0.1, similar, jaccard_similarity)
+    >>> verifier.get_related_sets(R, {0, 1}, I)
+    [(0, 0.17073170731707313), (1, 0.7142857142857142)]
+    >>> verifier = Verifier(0.7, similar, jaccard_similarity)
+    >>> verifier.get_related_sets(R, {0, 1}, I)
+    [(1, 0.7142857142857142)]
+    ```
+    """
 
     def __init__(self, related_thresh, sim_metric, sim_func, sim_thresh=0, reduction=False):
         """
@@ -44,15 +76,15 @@ class Verifier:
         self.sim_thresh = sim_thresh
         self.reduction = reduction
 
-    def _get_mm_score(self, reference_set, source_set) -> float:
+    def get_mm_score(self, reference_set, source_set) -> float:
         """
-        Computes the maximum weighted bipartite matching score, where elements 
+        Helper function that computes the maximum weighted bipartite matching score, where elements 
         correspond to nodes and the edges are weighted using the similarity 
         function.
 
         Args:
-            reference_set: Tokenized reference set R
-            source_set: Tokenized source set S
+            reference_set (list): Tokenized reference set R
+            source_set (list): Tokenized source set S
         
         Returns:
             float: Maximum matching score (sum of weights of edges in the 
@@ -69,14 +101,14 @@ class Verifier:
     
 
 
-    def _get_relatedness(self, reference_set, source_set) -> float:
+    def get_relatedness(self, reference_set, source_set) -> float:
         """
-        Gives the relatedness score by computing the maximum weighted
+        Helper function that gives the relatedness score by computing the maximum weighted
         bipartite matching.
 
         Args:
-            reference_set: Tokenized reference set R
-            source_set: Tokenized source set S
+            reference_set (list): Tokenized reference set R
+            source_set (list): Tokenized source set S
 
         Returns:
             float: Relatedness score of R and S
@@ -85,9 +117,9 @@ class Verifier:
         s_size = len(source_set)
         exact_matches = 0
         if self.reduction:
-            reference_set, source_set, exact_matches = _reduce(reference_set, source_set)
+            reference_set, source_set, exact_matches = reduce_sets(reference_set, source_set)
 
-        mm_score = self._get_mm_score(reference_set, source_set) + exact_matches
+        mm_score = self.get_mm_score(reference_set, source_set) + exact_matches
         relatedness = self.sim_metric(r_size, s_size, mm_score)
         return relatedness
 
@@ -108,7 +140,7 @@ class Verifier:
         related_sets = []
         for c in candidates:
             source_set = inverted_index.get_set(c)
-            relatedness = self._get_relatedness(reference_set, source_set)
+            relatedness = self.get_relatedness(reference_set, source_set)
             if relatedness >= self.related_thresh:
                 related_sets.append((c, relatedness))
         return related_sets
