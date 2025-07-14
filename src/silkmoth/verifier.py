@@ -28,7 +28,7 @@ def reduce_sets(reference_set: list, source_set: list) -> tuple:
 class Verifier:
     """
     The verifier component executes the final verification step in the SilkMoth
-    pipeline. During verification SilMoth performs the maximum matching between
+    pipeline. During verification SilkMoth performs the maximum matching between
     every candidate set and the reference set R. The sets whose maximum matching
     score surpass the relatedness threshold δ are the verified related sets to R.
 
