@@ -55,18 +55,13 @@ class SilkMothEngine:
 
     def discover_sets(self, reference_sets):
         
-        related_pairs = []
+        #related_pairs = []
 
         for i, reference_set in enumerate(reference_sets):
             sets, _, _ = self.search_sets(reference_set)
-            for found_set in sets:
-                if reference_sets[found_set[0]] is reference_set:
-                    # remove this pair as it is the same set
-                    sets.remove(found_set)
+            #related_pairs.extend([(i, j, sim) for j, sim in sets])
 
-            related_pairs.extend([(i, j, sim) for j, sim in sets])
-
-        return related_pairs
+        #return related_pairs
 
     def set_related_threshold(self, related_thresh):
         self.related_thresh = related_thresh
