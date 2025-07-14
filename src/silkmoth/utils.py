@@ -47,6 +47,7 @@ def similar(reference_set_size: int, source_set_size: int, mm_score: float) -> f
     Examples
     --------
     ```
+    >>> from silkmoth.utils import similar
     >>> similar(3, 3, 3)
     1.0
     >>> similar(3, 3, 1.5)
@@ -72,6 +73,7 @@ def contain(reference_set_size: int, source_set_size: int, mm_score: float) -> f
     Examples
     --------
     ```
+    >>> from silkmoth.utils contain
     >>> contain(2, 3, 2)
     1.0
     >>> contain(2, 3, 1.5)

@@ -45,6 +45,7 @@ class Verifier:
     ```
     >>> from silkmoth.inverted_index import InvertedIndex
     >>> from silkmoth.utils import similar, jaccard_similarity
+    >>> from silkmoth.verifier import Verifier
     >>> S1 = [{"Apple", "Pear", "Car"}, {"Apple", "Sun", "Cat"}]
     >>> S2 = [{"Apple", "Berlin", "Sun"}, {"Apple"}]
     >>> S = [S1, S2]
