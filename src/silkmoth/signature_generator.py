@@ -1,5 +1,4 @@
 import heapq
-import math 
 from collections import defaultdict
 import warnings
 from .utils import SigType,jaccard_similarity,edit_similarity,N_edit_similarity
@@ -8,10 +7,9 @@ from .inverted_index import *
 
 class SignatureGenerator:
 
-    def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED, sim_fun = jaccard_similarity):
+    def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED, sim_fun = jaccard_similarity, q=3):
         """
-        Compute a signature for a reference set given a signature type. Uses 
-        weighted signature scheme by default.
+        Compute a signature for a reference set according to the chosen signature type.
 
         Args:
             reference_set: Tokenized reference set.
@@ -19,22 +17,86 @@ class SignatureGenerator:
             delta (float): Relatedness threshold factor.
             alpha (float): Similarity threshold factor.
             sig_type (SigType): Type of signature.
+            sim_fun (callable): Similarity function (phi) to use.
+            q (int): Length of each q-chunk for edit similarity.
 
         Returns:
             list: A list of str for selected tokens forming the signature.
         """
+        if sim_fun in (edit_similarity, N_edit_similarity):
+            # If q is too large, no valid weighted signature exists
+            q_bound = delta / (1 - delta)
+
+            if q >= q_bound:
+                warnings.warn(
+                    f"q={q} is too large for delta = {delta:.3f}; "
+                    "no valid weighted signature exists -> falling back to brute-force."
+                )
+                # returning all non-overlapping q-chunks so nothing is pruned
+                all_chunks = []
+                for elem in reference_set:
+                    joined = " ".join(elem)
+                    all_chunks += [
+                        joined[i:i+q]
+                        for i in range(0, len(joined) - q + 1, q)
+                    ]
+                return all_chunks
+
         match sig_type:
             case SigType.WEIGHTED:
                 if sim_fun == edit_similarity or sim_fun == N_edit_similarity:
-                    return self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta, alpha)
+                    return self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta, q)
                 else:
                     return self._generate_weighted_signature(reference_set, inverted_index, delta)
             case SigType.SKYLINE:
-                return self._generate_skyline_signature(reference_set, inverted_index, delta, alpha)
+                if sim_fun in (edit_similarity, N_edit_similarity) and alpha > 0:
+                    return self._generate_simthresh_signature_edit_similarity(reference_set, inverted_index, delta, alpha, q)
+                else:
+                    return self._generate_skyline_signature(reference_set, inverted_index, delta, alpha)
             case SigType.DICHOTOMY:
-                return self._generate_dichotomy_signature(reference_set, inverted_index, delta, alpha)
+                if sim_fun in (edit_similarity, N_edit_similarity) and alpha > 0:
+                    return self._generate_simthresh_signature_edit_similarity(reference_set, inverted_index, delta, alpha, q)
+                else:
+                    return self._generate_dichotomy_signature(reference_set, inverted_index, delta, alpha)
             case _:
                 raise ValueError(f"Unknown signature type") 
+            
+
+    def _generate_simthresh_signature_edit_similarity(self, reference_set, inverted_index, delta, alpha, q):
+        """
+        Builds a similarity-threshold signature for edit similarity as described in the SILKMOTH Paper in 
+        Section 7.2.
+
+        For each element r_i in the reference set, it ensures that the signature contains at least 
+        m_i = floor((1 - alpha)/alpha * |q_chunks(r_i)|) + 1 q-chunks, so that any element 
+        sharing fewer than m_i chunks cannot achieve Eds ≥ alpha.        
+        """
+
+        weighted_sig_edit_sim = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta, q))
+        simthresh_sig = set(weighted_sig_edit_sim)
+
+        for elem_tokens in reference_set:
+            # compute all q-chunks of each element
+            joined = " ".join(elem_tokens)
+            chunks = [joined[j:j+q] for j in range(0, len(joined) - q + 1)]
+            r = set(chunks)
+            m_i = floor((1 - alpha) / alpha * len(r)) + 1
+
+            # determine how many base chunks from this element are already in weighted signature
+            k_i = list(weighted_sig_edit_sim & r)
+            if len(k_i) < m_i:
+                # need cheapest additional chunks -> sort all chunks by cost = inverted_index size
+                sorted_chunks = sorted(
+                    r,
+                    key=lambda t: len(inverted_index.get_indexes(t)) if t in inverted_index.lookup_table else float('inf')
+                )
+                # add cheapest chunks up to m_i
+                for chunk in sorted_chunks:
+                    if len(simthresh_sig & r) >= m_i:
+                        break
+                    simthresh_sig.add(chunk)
+
+        return list(simthresh_sig)    
             
     
     def _generate_skyline_signature(self, reference_set, inverted_index: InvertedIndex, delta, alpha):
@@ -177,23 +239,7 @@ class SignatureGenerator:
         return list(selected_sig)
     
     # Following the same logic of _generate_weighted_signature
-    def _generate_weighted_signature_edit_similarity(self, reference_set, inverted_index, delta, alpha = 0.0, q=3): 
-        
-        # Ensures q is small enough to get at least one chunk per element (Section 7.3)
-        if delta <= 0 or delta >= 1:
-            raise ValueError("delta must be in (0,1) for edit similarity signatures")
-        
-        q_bound = delta / (1 - delta)
-        if q >= q_bound:
-            # Fallback to a safe/updated new q to ensure non-empty chunks
-            new_q = max(1, int(q_bound) - 1)
-            warnings.warn(
-                f"q={q} is too large for delta={delta:.3f}; "
-                f"reducing to q={new_q} to ensure non-empty signature."
-            )
-            q = new_q
-
-
+    def _generate_weighted_signature_edit_similarity(self, reference_set, inverted_index, delta, q):
         if delta <= 0.0:
             return []
 
@@ -233,15 +279,6 @@ class SignatureGenerator:
                 token_to_elems[chunk].append(i)
                 token_value[chunk] = token_value.get(chunk, 0.0) + weight # value = sum of weights (for each chunk)
 
-
-        # compute each element’s threshold m_i
-        alpha_thresholds = [
-            math.floor((1 - alpha) * r_sizes[i]) + 1 if r_sizes[i] > 0 else 0
-            for i in range(n)
-        ]
-
-
-
         # Step 2: Build heap (cost/value, token)
         heap = []
         for chunk, val in token_value.items():
@@ -256,10 +293,8 @@ class SignatureGenerator:
         # Step 3: Greedy selection
         selected_sig = set()
         current_k_counts = [0] * n
-        #total_score = 0.0  
-        total_loss = float(n)
+        total_score = 0.0  
 
-        """
         while heap and total_score < theta:
             ratio, chunk = heapq.heappop(heap)
             if chunk in selected_sig:
@@ -281,40 +316,3 @@ class SignatureGenerator:
             )
 
         return list(selected_sig)
-        """
-
-        while heap:
-            # stop if all m_i thresholds met and total_loss <= n - θ
-            if (all(current_k_counts[i] >= alpha_thresholds[i] for i in range(n))
-                    and total_loss <= n - theta):
-                break
-
-            ratio, chunk = heapq.heappop(heap)
-            if chunk in selected_sig or ratio == float('inf'):
-                continue
-
-            selected_sig.add(chunk)
-
-            for i in range(n):
-                if r_sizes[i] == 0:
-                    continue
-                if chunk in element_chunks[i]:
-                    total_loss -= 1 / r_sizes[i]
-                    current_k_counts[i] += 1
-
-        # safety fallback, ensure each r_i meets its m_i
-        for i in range(n):
-            while current_k_counts[i] < alpha_thresholds[i]:
-                remaining = [
-                    c for c in element_chunks[i] if c not in selected_sig
-                ]
-                if not remaining:
-                    break
-                remaining.sort(key=lambda c: len(inverted_index.get_indexes(c)))
-                c = remaining[0]
-                selected_sig.add(c)
-                current_k_counts[i] += 1
-
-        return list(selected_sig)
-
-

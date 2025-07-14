@@ -1,20 +1,22 @@
 from .utils import *
-from math import floor
+from math import floor, ceil
 
 class CandidateSelector:
 
-    def __init__(self, similarity_func, sim_metric, related_thresh, sim_thresh=0.0):
+    def __init__(self, similarity_func, sim_metric, related_thresh, sim_thresh=0.0, q = 3):
         """
         Args:
             similarity_func (callable): Similarity function phi(r, s) (e.g., Jaccard).
             sim_metric (callable): Similarity metric related(R, S) (e.g., contain).
             related_thresh (float): Relatedness threshold delta.
             sim_thresh (float): Similarity threshold alpha.
+            q (int): q-chunk length for edit similarity.
         """
         self.similarity = similarity_func
         self.sim_metric = sim_metric
         self.delta = related_thresh
         self.alpha = sim_thresh
+        self.q = q
 
     def get_candidates(self, signature, inverted_index, ref_size):
         """
@@ -114,7 +116,11 @@ class CandidateSelector:
             if not r_i or not k_i:
                 continue
 
-            threshold = (len(r_i) - len(k_i)) / len(r_i)
+            if self.similarity in (edit_similarity, N_edit_similarity):
+                threshold = len(r_i) / (len(r_i) + ceil(len(r_i)/self.q) - len(k_i))
+            else:
+                threshold = (len(r_i) - len(k_i)) / len(r_i)
+
             r_set = set(r_i)
             max_sim = 0.0
 
@@ -188,10 +194,15 @@ class CandidateSelector:
 
         total_init = 0
         for r_idx, r_i in enumerate(R):
-                if not r_i:
-                    continue
-                base_loss = (len(r_i) - len(k_i_sets[r_idx])) / len(r_i)
-                total_init += base_loss
+            if not r_i:
+                continue
+            k_i = k_i_sets[r_idx]
+            if self.similarity in (edit_similarity, N_edit_similarity):
+                B_i = len(r_i) / (len(r_i) + ceil(len(r_i)/self.q) - len(k_i))
+                base_loss = 1.0 - B_i
+            else:
+                base_loss = (len(r_i) - len(k_i)) / len(r_i)
+            total_init += base_loss
 
         for c_idx in candidates:
             S = inverted_index.get_set(c_idx)
@@ -210,13 +221,18 @@ class CandidateSelector:
             total = total_init
 
             # Step 2: for matched rᵢ, computational reuse of sim and adjust total
-            for r_idx, sim in matched.items():
-                r_i = R[r_idx]
-                if not r_i:
-                    continue
-                k_i = k_i_sets[r_idx]
-                base_loss = (len(r_i) - len(k_i)) / len(r_i)
-                total += sim - base_loss
+            if matched:
+                for r_idx, sim in matched.items():
+                    r_i = R[r_idx]
+                    if not r_i:
+                        continue
+                    k_i = k_i_sets[r_idx]
+                    if self.similarity in (edit_similarity, N_edit_similarity):
+                        B_i = len(r_i) / (len(r_i) + ceil(len(r_i)/self.q) - len(k_i))
+                        base_loss = 1.0 - B_i   
+                    else:
+                        base_loss = (len(r_i) - len(k_i)) / len(r_i)
+                    total += sim - base_loss 
 
             # Step 3: for non-matched rᵢ, compute NN and adjust total
             for r_idx in set(range(n)) - matched.keys():
@@ -224,7 +240,11 @@ class CandidateSelector:
                 if not r_i:
                     continue
                 k_i = k_i_sets[r_idx]
-                base_loss = (len(r_i) - len(k_i)) / len(r_i)
+                if self.similarity in (edit_similarity, N_edit_similarity):
+                    B_i = len(r_i) / (len(r_i) + ceil(len(r_i)/self.q) - len(k_i))
+                    base_loss = 1.0 - B_i
+                else:
+                    base_loss = (len(r_i) - len(k_i)) / len(r_i)
 
                 r_set = set(r_i)
 
