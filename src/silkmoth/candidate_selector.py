@@ -1,4 +1,4 @@
-from .utils import *
+from .utils import jaccard_similarity, similar, contain, SigType
 from math import floor
 
 class CandidateSelector:
@@ -16,7 +16,7 @@ class CandidateSelector:
         self.delta = related_thresh
         self.alpha = sim_thresh
 
-    def get_candidates(self, signature, inverted_index, ref_size):
+    def get_candidates(self, signature, inverted_index, ref_size) -> set:
         """
         Retrieve candidate set indices using token signature lookup.
 
@@ -54,8 +54,7 @@ class CandidateSelector:
             src_size (int): Size of (possible) set S.
         
         Returns:
-            bool: True if both sets could be related based on their size, False
-            otherwise.
+            bool: True if both sets could be related based on their size, False otherwise.
         """
         # case 1: Set-Containment
         if self.sim_metric == contain and ref_size > src_size:
@@ -66,7 +65,7 @@ class CandidateSelector:
                 return False
         return True   
 
-    def check_filter(self, R, K, candidates, inverted_index):
+    def check_filter(self, R, K, candidates, inverted_index) -> tuple:
         """
         Apply check filter to prune weak candidate sets.
 
@@ -94,7 +93,7 @@ class CandidateSelector:
 
         return filtered, match_map
 
-    def create_match_map(self, R, k_i_sets, c_idx, inverted_index):
+    def create_match_map(self, R, k_i_sets, c_idx, inverted_index) -> dict:
         """
         Create a match map for a specific candidate index.
 
@@ -166,7 +165,7 @@ class CandidateSelector:
         return max_sim
 
 
-    def nn_filter(self, R, K, candidates, inverted_index, threshold, match_map):
+    def nn_filter(self, R, K, candidates, inverted_index, threshold, match_map) -> set:
         """
         Nearest Neighbor Filter (Algorithm 2 from SilkMoth paper).
 

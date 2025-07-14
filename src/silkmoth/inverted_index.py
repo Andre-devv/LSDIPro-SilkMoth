@@ -1,6 +1,37 @@
 import bisect
 
 class InvertedIndex:
+    """
+    The inverted index
+
+    - allows to lookup all appearances of a token in a collection of tokenized sets
+    - returns inverted lists consisting of (set, element) tuples
+    - supports full sets/elements and positional indexes of them
+    - stores source sets in [SilkMothEngine](silkmoth_engine.md)
+
+    The inverted list
+    
+    - is sorted first by the order of the sets and then by the order of the elements.
+
+    Examples
+    --------
+    ```
+    >>> from silkmoth.inverted_index import InvertedIndex
+    >>> S1 = [{"Apple", "Pear", "Car"}, {"Apple", "Sun", "Cat"}]
+    >>> S2 = [{"Apple", "Berlin", "Sun"}, {"Apple"}]
+    >>> S = [S1, S2]
+    >>> I = InvertedIndex(S)
+    >>> I.get_indexes("Sun")
+    [(0, 1), (1, 0)]
+    >>> I["Berlin"]
+    [([{'Sun', 'Apple', 'Berlin'}, {'Apple'}], {'Sun', 'Apple', 'Berlin'})]
+    ```
+
+    ![SilkMoth Inverted Index](../figures/InvertedIndex.png)
+
+    *SilkMoth Inverted Index. Source: Deng et al., "SILKMOTH: An Efficient Method for Finding Related Sets with Maximum Matching Constraints", VLDB 2017.  
+    Licensed under CC BY-NC-ND 4.0.*
+    """
 
     def __init__(self, token_sets: list):
         """
@@ -25,7 +56,7 @@ class InvertedIndex:
         Gives all tokens similar like dict.keys().
 
         Returns:
-            set: A set-like object providing all keys
+            set (set): A set-like object providing all keys
         """
         return self.lookup_table.keys()
 
@@ -34,11 +65,11 @@ class InvertedIndex:
         Access inverted list from inverted index using square brackets.
 
         Args:
-            token: Input token
+            token (str): Input token
 
         Returns:
-            list: A list of all (set, element) tuples which contain the input 
-            token.
+            list:   A list of all (set, element) tuples which contain the input 
+                    token.
         """
         idx_list = self.get_indexes(token)
         return [(self.get_set(s), self.get_set(s)[e]) for s, e in idx_list]
@@ -50,11 +81,11 @@ class InvertedIndex:
         sufficient.
 
         Args:
-            token: Input token
+            token (str): Input token
         
         Returns:
-            list: A list of all (set index, element index) tuples for (set, 
-            element) tuples which contain the input tuple
+            list:   A list of all (set index, element index) tuples for (set, 
+                    element) tuples which contain the input tuple
         """
         if not token in self.lookup_table:
             raise ValueError(f"Unknown token") 
@@ -62,10 +93,10 @@ class InvertedIndex:
     
     def get_set(self, set_id: int) -> list:
         """
-        Access (tokenized) set from set id.
+        Access (tokenized) set from set ID.
 
         Args:
-            set_id: Set id
+            set_id: Set ID
 
         Returns:
             list: Tokenized set
@@ -80,8 +111,8 @@ class InvertedIndex:
         where set_idx matches the given set_idx.
 
         Args:
-            token: The token to search in the inverted index.
-            set_idx: The ID of the set we want the element indexes for.
+            token (str): The token to search in the inverted index.
+            set_idx (int): The ID of the set we want the element indexes for.
 
         Returns:
             list: All (set_idx, element_idx) tuples where the token appears in the given set.

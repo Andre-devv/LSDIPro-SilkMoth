@@ -3,17 +3,17 @@ from collections import defaultdict
 import warnings
 from .utils import SigType
 from math import floor
-from .inverted_index import *
+from .inverted_index import InvertedIndex
 
 class SignatureGenerator:
 
-    def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED):
+    def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED) -> list:
         """
         Compute a signature for a reference set given a signature type. Uses 
         weighted signature scheme by default.
 
         Args:
-            reference_set: Tokenized reference set.
+            reference_set (list): Tokenized reference set.
             inverted_index (InvertedIndex): Index to evaluate token cost.
             delta (float): Relatedness threshold factor.
             alpha (float): Similarity threshold factor.

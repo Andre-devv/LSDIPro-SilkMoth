@@ -1,0 +1,44 @@
+site_name: SilkMoth Documentation
+docs_dir: docu
+
+nav:
+  - Home: index.md
+  - API:
+      - Engine:               pages/silkmoth_engine.md
+      - Tokenizer:            pages/tokenizer.md
+      - Inverted Index:       pages/inverted_index.md
+      - Signature Generator:  pages/signature_generator.md
+      - Candidate Selector:   pages/candidate_selector.md
+      - Verifier:             pages/verifier.md
+      - Utils:                pages/utils.md
+
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+
+plugins:
+  - search
+
+  - mkdocstrings:
+      handlers:
+        python:
+          paths:
+            - src
+          options:
+            extra:
+              selection:
+                include:
+                  - "silkmoth.*"
+                exclude:
+                  - "silkmoth.test.*"
+              rendering:
+                show_signature: true
+                show_source: true
+
+  - awesome-pages
+
+
+
