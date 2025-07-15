@@ -1,9 +1,9 @@
-from .utils import *
-from .inverted_index import *
-from .tokenizer import *
-from .signature_generator import *
-from .candidate_selector import *
-from .verifier import *
+from .utils import jaccard_similarity, similar, SigType
+from .inverted_index import InvertedIndex
+from .tokenizer import Tokenizer
+from .signature_generator import SignatureGenerator
+from .candidate_selector import CandidateSelector
+from .verifier import Verifier
 import warnings
 
 class SilkMothEngine:

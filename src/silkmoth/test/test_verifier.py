@@ -1,5 +1,5 @@
 import unittest
-from silkmoth.verifier import Verifier, _reduce
+from silkmoth.verifier import Verifier, reduce_sets
 from silkmoth.inverted_index import InvertedIndex
 from silkmoth.utils import *
 
@@ -79,13 +79,13 @@ class TestVerifier(unittest.TestCase):
         self.assertEqual(result, [])
 
     def test_reduce_nothing(self):
-        r_reduced, s_reduced, count = _reduce(self.R, self.S1)
+        r_reduced, s_reduced, count = reduce_sets(self.R, self.S1)
         self.assertEqual(r_reduced, self.R)
         self.assertEqual(s_reduced, self.S1)
         self.assertEqual(count, 0)
 
     def test_reduce_all(self):
-        r_reduced, s_reduced, count = _reduce(self.R, self.R)
+        r_reduced, s_reduced, count = reduce_sets(self.R, self.R)
         self.assertEqual(r_reduced, [])
         self.assertEqual(s_reduced, [])
         self.assertEqual(count, len(self.R))
@@ -93,12 +93,12 @@ class TestVerifier(unittest.TestCase):
     def test_reduce_duplicates(self):
         ref = [{"0", "1"}, {"0", "1"}, {"2"}, {"3"}, {"1"}]
         src = [{"2"}, {"2"}, {"3"}, {"1", "0"}]
-        r_reduced, s_reduced, count = _reduce(ref, src)
+        r_reduced, s_reduced, count = reduce_sets(ref, src)
         self.assertEqual(r_reduced, [{"0", "1"}, {"1"}])
         self.assertEqual(s_reduced, [{"2"}])
         self.assertEqual(count, 3)
 
     def test_mm_score(self):
         verifier = Verifier(0.7, contain, jaccard_similarity)
-        mm_score = verifier._get_mm_score(self.R, self.S4)
+        mm_score = verifier.get_mm_score(self.R, self.S4)
         self.assertEqual(round(mm_score, 3), 2.229)

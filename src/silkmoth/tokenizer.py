@@ -1,4 +1,4 @@
-from .utils import *
+from .utils import jaccard_similarity
 
 
 def jaccard_tokenize(input_set: list) -> list:
