@@ -3,16 +3,16 @@ from collections import defaultdict
 import warnings
 from .utils import SigType,jaccard_similarity,edit_similarity,N_edit_similarity
 from math import floor
-from .inverted_index import *
+from .inverted_index import InvertedIndex
 
 class SignatureGenerator:
 
-    def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED, sim_fun = jaccard_similarity, q=3):
+    def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED, sim_fun = jaccard_similarity, q=3) -> list:
         """
         Compute a signature for a reference set according to the chosen signature type.
 
         Args:
-            reference_set: Tokenized reference set.
+            reference_set (list): Tokenized reference set.
             inverted_index (InvertedIndex): Index to evaluate token cost.
             delta (float): Relatedness threshold factor.
             alpha (float): Similarity threshold factor.
@@ -62,14 +62,23 @@ class SignatureGenerator:
                 raise ValueError(f"Unknown signature type") 
             
 
-    def _generate_simthresh_signature_edit_similarity(self, reference_set, inverted_index, delta, alpha, q):
+    def _generate_simthresh_signature_edit_similarity(self, reference_set, inverted_index, delta, alpha, q) -> list:
         """
         Builds a similarity-threshold signature for edit similarity as described in the SILKMOTH Paper in 
         Section 7.2.
 
         For each element r_i in the reference set, it ensures that the signature contains at least 
         m_i = floor((1 - alpha)/alpha * |q_chunks(r_i)|) + 1 q-chunks, so that any element 
-        sharing fewer than m_i chunks cannot achieve Eds ≥ alpha.        
+        sharing fewer than m_i chunks cannot achieve Eds ≥ alpha.
+
+        Args:
+            reference_set (list): Tokenized reference set.
+            inverted_index (InvertedIndex): Index to evaluate token cost.
+            delta (float): Relatedness threshold factor.
+            alpha (float): Similarity threshold factor.
+            q (int): Length of each q-chunk for edit similarity.
+        Returns:
+            list: A list of str for selected q-chunks forming the signature.
         """
 
         weighted_sig_edit_sim = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta, q))
