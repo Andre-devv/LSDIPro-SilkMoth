@@ -1,4 +1,4 @@
-from .utils import contain, similar, edit_similarity, N_edit_similarity
+from .utils import contain, similar, edit_similarity, N_edit_similarity, jaccard_similarity, get_q_chunks
 from math import floor, ceil
 
 class CandidateSelector:
@@ -84,7 +84,12 @@ class CandidateSelector:
         """
         filtered = set()
         match_map = dict()
-        k_i_sets = [set(r_i).intersection(K) for r_i in R]
+        if self.similarity is jaccard_similarity:
+            k_i_sets = [set(r_i).intersection(K) for r_i in R]
+        elif self.similarity in (edit_similarity, N_edit_similarity):
+            k_i_sets = [set(get_q_chunks(r_i, self.q)).intersection(K) for r_i in R]
+        else:
+            raise ValueError("Unsupported similarity function.")
 
         for c_idx in candidates:
             matched = self.create_match_map(R, k_i_sets, c_idx, inverted_index)
@@ -116,9 +121,13 @@ class CandidateSelector:
                 continue
 
             if self.similarity in (edit_similarity, N_edit_similarity):
-                threshold = len(r_i) / (len(r_i) + ceil(len(r_i)/self.q) - len(k_i))
+                r_i = get_q_chunks(r_i, self.q)
+                k_i = set(get_q_chunks(k_i, self.q))
+                denominator = len(r_i) + ceil(len(r_i) / self.q) - len(k_i)
+                threshold = len(r_i) / denominator if denominator != 0 else 0.0
             else:
-                threshold = (len(r_i) - len(k_i)) / len(r_i)
+                denominator = len(r_i)
+                threshold = (len(r_i) - len(k_i)) / denominator if denominator != 0 else 0.0
 
             r_set = set(r_i)
             max_sim = 0.0
@@ -188,7 +197,16 @@ class CandidateSelector:
         """
         n = len(R)
         theta = threshold * n
-        k_i_sets = [set(r_i).intersection(K) for r_i in R]
+
+        if self.similarity is jaccard_similarity:
+            k_i_sets = [set(r_i).intersection(K) for r_i in R]
+            r_i_list = R
+        elif self.similarity in (edit_similarity, N_edit_similarity):
+            k_i_sets = [set(get_q_chunks(r_i, self.q)).intersection(K) for r_i in R]
+            r_i_list = [get_q_chunks(r, self.q) for r in R]
+        else:
+            raise ValueError("Unsupported similarity function.")
+
         final_filtered = set()
 
         total_init = 0
@@ -196,11 +214,7 @@ class CandidateSelector:
             if not r_i:
                 continue
             k_i = k_i_sets[r_idx]
-            if self.similarity in (edit_similarity, N_edit_similarity):
-                B_i = len(r_i) / (len(r_i) + ceil(len(r_i)/self.q) - len(k_i))
-                base_loss = 1.0 - B_i
-            else:
-                base_loss = (len(r_i) - len(k_i)) / len(r_i)
+            base_loss = self.calc_base_loss(k_i, r_i)
             total_init += base_loss
 
         for c_idx in candidates:
@@ -222,28 +236,20 @@ class CandidateSelector:
             # Step 2: for matched rᵢ, computational reuse of sim and adjust total
             if matched:
                 for r_idx, sim in matched.items():
-                    r_i = R[r_idx]
+                    r_i = r_i_list[r_idx]
                     if not r_i:
                         continue
                     k_i = k_i_sets[r_idx]
-                    if self.similarity in (edit_similarity, N_edit_similarity):
-                        B_i = len(r_i) / (len(r_i) + ceil(len(r_i)/self.q) - len(k_i))
-                        base_loss = 1.0 - B_i   
-                    else:
-                        base_loss = (len(r_i) - len(k_i)) / len(r_i)
+                    base_loss = self.calc_base_loss(k_i, r_i)
                     total += sim - base_loss 
 
             # Step 3: for non-matched rᵢ, compute NN and adjust total
             for r_idx in set(range(n)) - matched.keys():
-                r_i = R[r_idx]
+                r_i = r_i_list[r_idx]
                 if not r_i:
                     continue
                 k_i = k_i_sets[r_idx]
-                if self.similarity in (edit_similarity, N_edit_similarity):
-                    B_i = len(r_i) / (len(r_i) + ceil(len(r_i)/self.q) - len(k_i))
-                    base_loss = 1.0 - B_i
-                else:
-                    base_loss = (len(r_i) - len(k_i)) / len(r_i)
+                base_loss = self.calc_base_loss(k_i, r_i)
 
                 r_set = set(r_i)
 
@@ -262,5 +268,15 @@ class CandidateSelector:
                 final_filtered.add(c_idx)
 
         return final_filtered
+
+    def calc_base_loss(self, k_i, r_i):
+        if self.similarity in (edit_similarity, N_edit_similarity):
+            denominator = len(r_i) + ceil(len(r_i) / self.q) - len(k_i)
+            B_i = len(r_i) / denominator if denominator != 0 else 0.0
+            base_loss = 1.0 - B_i
+        else:
+            denominator = len(r_i)
+            base_loss = (len(r_i) - len(k_i)) / denominator if denominator != 0 else 0.0
+        return base_loss
 
 
