@@ -37,7 +37,7 @@ def jaccard_tokenize(input_set: list) -> list:
             raise ValueError(f"Unsupported element type: {type(element)}")
     return tokens
 
-def qgram_tokenize(input_set: list, q: int = 3) -> list[set[str]]:
+def qgram_tokenize(input_set: list, q: int) -> list[set[str]]:
     """
     Tokenizes the input using q-gram tokenization.
 
@@ -84,14 +84,16 @@ def qgram_tokenize(input_set: list, q: int = 3) -> list[set[str]]:
 
 class Tokenizer:
 
-    def __init__(self, sim_func):
+    def __init__(self, sim_func, q=3):
         """
         Initialize the Tokenizer with a similarity function.
 
         Args:
             sim_func (callable): The similarity function that influences tokenization behavior.
+            q (int): The q-gram size for tokenization, default is 3.
         """
         self.sim_func = sim_func
+        self.q = q
 
     def tokenize(self, input_set: list) -> list:
         """
@@ -107,7 +109,7 @@ class Tokenizer:
         if self.sim_func == jaccard_similarity:
             tokens = jaccard_tokenize(input_set)
         elif self.sim_func == edit_similarity or self.sim_func == N_edit_similarity:
-            tokens = qgram_tokenize(input_set)
+            tokens = qgram_tokenize(input_set, self.q)
         else:
             raise ValueError("Unsupported similarity function")
         return tokens
