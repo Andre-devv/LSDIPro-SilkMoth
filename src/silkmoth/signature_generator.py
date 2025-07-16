@@ -1,11 +1,14 @@
 import heapq
 from collections import defaultdict
 import warnings
-from .utils import SigType,jaccard_similarity,edit_similarity,N_edit_similarity
+from .utils import SigType,jaccard_similarity,edit_similarity,N_edit_similarity, get_q_chunks
 from math import floor
 from .inverted_index import InvertedIndex
 
 class SignatureGenerator:
+    def __init__(self):
+        self.sim_fun = jaccard_similarity
+        self.q = 3
 
     def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED, sim_fun = jaccard_similarity, q=3) -> list:
         """
@@ -24,6 +27,9 @@ class SignatureGenerator:
             list: A list of str for selected tokens forming the signature.
         """
         if sim_fun in (edit_similarity, N_edit_similarity):
+            self.sim_fun = sim_fun
+            self.q = q
+
             # If q is too large, no valid weighted signature exists
             q_bound = delta / (1 - delta)
 
@@ -109,11 +115,26 @@ class SignatureGenerator:
             
     
     def _generate_skyline_signature(self, reference_set, inverted_index: InvertedIndex, delta, alpha):
-        weighted = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
-        unflattened = [weighted & set(r_i) for r_i in reference_set]
+        if self.sim_fun == jaccard_similarity:
+            weighted = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
+            unflattened = [weighted & set(r_i) for r_i in reference_set]
+        elif self.sim_fun in (edit_similarity, N_edit_similarity):
+            weighted = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta, self.q))
+            unflattened = [weighted & set(" ".join(r_i)[i:i+self.q] for i in range(0, len(" ".join(r_i)) - self.q + 1, self.q)) for r_i in reference_set]
+        else:
+            raise ValueError(f"Unknown similarity function: {self.sim_fun}")
+
         skyline = set()
         for i, k in enumerate(unflattened):
-            rhs = floor((1 - alpha) * len(reference_set[i])) + 1
+            if self.sim_fun == jaccard_similarity:
+                rhs = floor((1 - alpha) * len(reference_set[i])) + 1
+            elif self.sim_fun in (edit_similarity, N_edit_similarity):
+                chunks = get_q_chunks(reference_set[i], self.q)
+                r = set(chunks)
+                rhs = floor((1 - alpha) / alpha * len(r)) + 1
+            else:
+                raise ValueError(f"Unknown similarity function: {self.sim_fun}")
+
             if len(k) < rhs:
                 skyline |= k
             else:
@@ -132,13 +153,25 @@ class SignatureGenerator:
         sim-thresh signature (m_i).
         """
         # 1. First, generate the optimal weighted signature, K.
-        weighted_signature_K = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
+        if self.sim_fun == jaccard_similarity:
+            weighted_signature_K = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
+        elif self.sim_fun in (edit_similarity, N_edit_similarity):
+            weighted_signature_K = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta, self.q))
+        else:
+            raise ValueError(f"Unknown similarity function: {self.sim_fun}")
 
         final_dichotomy_sig = set()
 
         # 2. For each element r_i, decide whether to use its k_i or the full r_i.
         for r_i_list in reference_set:
-            r_i = set(r_i_list)
+            if self.sim_fun == jaccard_similarity:
+                r_i = set(r_i_list)
+            elif self.sim_fun in (edit_similarity, N_edit_similarity):
+                chunks = get_q_chunks(r_i_list, self.q)
+                r_i = set(chunks)
+            else:
+                raise ValueError(f"Unknown similarity function: {self.sim_fun}")
+
             if not r_i:
                 continue
 
@@ -148,7 +181,14 @@ class SignatureGenerator:
             # 4. Determine m_i: the optimal sim-thresh signature for this element.
 
             # 4a. Calculate the required size for the sim-thresh signature.
-            m_i_size = floor((1 - alpha) * len(r_i)) + 1
+            if self.sim_fun == jaccard_similarity:
+                m_i_size = floor((1 - alpha) * len(r_i)) + 1
+            elif self.sim_fun in (edit_similarity, N_edit_similarity):
+                chunks = get_q_chunks(r_i_list, self.q)
+                r = set(chunks)
+                m_i_size = floor((1 - alpha) / alpha * len(r)) + 1
+            else:
+                raise ValueError(f"Unknown similarity function: {self.sim_fun}")
 
             # 4b. Get all tokens from the original element r_i and sort by cost.
             element_tokens = list(r_i)

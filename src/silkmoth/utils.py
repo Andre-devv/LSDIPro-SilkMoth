@@ -167,3 +167,8 @@ class SigType(Enum):
     WEIGHTED = "weighted"
     SKYLINE = "skyline"
     DICHOTOMY = "dichotomy"
+
+def get_q_chunks(tokens, q):
+    joined = " ".join(tokens)
+    chunks = [joined[j:j + q] for j in range(0, len(joined) - q + 1)]
+    return chunks
