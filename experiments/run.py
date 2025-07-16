@@ -1,10 +1,10 @@
 # Python
 import multiprocessing
-from experiments import run_experiment, run_reduction_experiment, run_scalability_experiment
+from experiments import run_experiment_filter_schemes, run_reduction_experiment, run_scalability_experiment
 import os
 from data_loader import DataLoader
 from utils import load_sets_from_files, experiment_set_ratio_calc, save_sets_to_files
-from silkmoth.utils import jaccard_similarity, contain, similar, SigType
+from silkmoth.utils import jaccard_similarity, contain, similar, SigType, edit_similarity
 
 
 def run_experiment_multi(experiment_method, *args):
@@ -58,11 +58,11 @@ if __name__ == "__main__":
 
     # Experiment configuration
     experiment_config = {
-        "filter_runs": False,
+        "filter_runs": True,
         "signature_scheme_runs": False,
         "reduction_runs": False,
         "scalability_runs": False,
-        "schema_github_webtable_runs": True,
+        "schema_github_webtable_runs": False,
     }
 
     # Define experiments to run
@@ -70,34 +70,49 @@ if __name__ == "__main__":
 
     if experiment_config["filter_runs"]:
         # Filter runs
+        # String Matching Experiment
+        experiments.append((
+            run_experiment_filter_schemes, [0.7, 0.75, 0.8, 0.85], [0.7, 0.75, 0.8, 0.85],
+            labels_filter, source_string_matching[:60_000], None, similar, edit_similarity , False,
+            "string_matching_filter", "results/string_matching/"
+        ))
+
         # Schema Matching Experiment
         experiments.append((
-            run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            run_experiment_filter_schemes(), [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
             labels_filter, source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
-            "schema_matching_filter", "results/schema_matching/", False
+            "schema_matching_filter", "results/schema_matching/"
         ))
 
         # Inclusion Dependency Experiment
         experiments.append((
-            run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            run_experiment_filter_schemes(), [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
             labels_filter, source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
-            "inclusion_dependency_filter", "results/inclusion_dependency/", False
+            "inclusion_dependency_filter", "results/inclusion_dependency/"
         ))
+
 
     if experiment_config["signature_scheme_runs"]:
         # Signature Scheme Runs
+        #String Matching Experiment
+        experiments.append((
+            run_experiment_filter_schemes, [0.7, 0.75, 0.8, 0.85], [0.7, 0.75, 0.8, 0.85],
+            labels_sig_schemes, source_string_matching[:60_000], None, similar, edit_similarity , False,
+            "string_matching_sig", "results/string_matching/"
+        ))
+
         # Schema Matching Experiment
         experiments.append((
-            run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            run_experiment_filter_schemes, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
             labels_sig_schemes, source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
-            "schema_matching_sig", "results/schema_matching/", False
+            "schema_matching_sig", "results/schema_matching/"
         ))
 
         # Inclusion Dependency Experiment
         experiments.append((
-            run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            run_experiment_filter_schemes, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
             labels_sig_schemes, source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
-            "inclusion_dependency_sig", "results/inclusion_dependency/", False
+            "inclusion_dependency_sig", "results/inclusion_dependency/"
         ))
 
     if experiment_config["reduction_runs"]:
@@ -110,6 +125,13 @@ if __name__ == "__main__":
 
     if experiment_config["scalability_runs"]:
         # Scalability Runs
+        # String Matching
+        experiments.append((
+            run_scalability_experiment, [0.7, 0.75, 0.8, 0.85], 0.7, [12_000, 24_000, 36_000, 48_000, 60_000],
+            source_string_matching[:500_000], None, similar, edit_similarity, False,
+            "string_matching_scalability", "results/string_matching/"
+        ))
+
         # Inclusion Dependency
         experiments.append((
             run_scalability_experiment, [0.7, 0.75, 0.8, 0.85], 0.5, [100_000, 200_000, 300_000, 400_000, 500_000],
@@ -127,9 +149,9 @@ if __name__ == "__main__":
     if experiment_config["schema_github_webtable_runs"]:
         # Schema Matching with GitHub Webtable Schemas
         experiments.append((
-            run_experiment, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            run_experiment_filter_schemes, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
             labels_filter, source_sets_schema_matching[:10000], github_source_sets_schema_matching[:10000], similar, jaccard_similarity, True,
-            "github_webtable_schema_matching", "results/schema_matching/", False
+            "github_webtable_schema_matching", "results/schema_matching/"
         ))
 
     # Create and start processes for each experiment
