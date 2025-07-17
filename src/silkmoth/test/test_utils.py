@@ -62,5 +62,20 @@ class TestUtils(unittest.TestCase):
 
     def test_similar(self):
         self.assertEqual(round(similar(3, 3, 2.229), 3), 0.591)
+    
+    def test_edit_sim(self):
+        x = "50 Vassar St MA"
+        y = "50 Vassar Street MA"
+        self.assertEqual(edit_similarity(x,y),15/19)
+
+    def test_edit_zero(self):
+        self.assertEqual(edit_similarity({}, {"a", "b"}), 0)
+        self.assertEqual(edit_similarity({"a", "b"}, {}), 0)
+
+    def test_N_edit_sim(self):
+        x = "50 Vassar St MA"
+        y = "50 Vassar Street MA"
+        self.assertEqual(N_edit_similarity(x,y),15/19)
+
 
     

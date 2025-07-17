@@ -1,6 +1,6 @@
 import unittest
 from silkmoth.tokenizer import Tokenizer
-from silkmoth.utils import jaccard_similarity
+from silkmoth.utils import jaccard_similarity,edit_similarity,N_edit_similarity
 from io import StringIO
 import csv
 
@@ -9,6 +9,7 @@ class TestTokenizer(unittest.TestCase):
 
     def setUp(self):
         self.tokenizer_jaccard = Tokenizer(sim_func=jaccard_similarity)
+        self.tokenizer_qgram = Tokenizer(sim_func=edit_similarity)
         self.tokenizer_unsupported = Tokenizer(sim_func=None)
 
     def test_unsupported_similarity_function(self):
@@ -94,6 +95,26 @@ class TestTokenizer(unittest.TestCase):
 
         self.assertEqual(tokens, expected_tokens)
 
+    def test_qgram_tokenize_simple_string(self):
+        input_data = ["Mass Ave"]
+        expected = [{"Mas", "ass", "ss ", "s A", " Av", "Ave"}]
+        tokens = self.tokenizer_qgram.tokenize(input_data)
+        self.assertEqual(tokens, expected)
+
+    def test_qgram_tokenize_mixed_types(self):
+        input_data = ["Hello World", 123, [True, 45.67]]
+        tokens = self.tokenizer_qgram.tokenize(input_data)
+        self.assertTrue(all(isinstance(s, set) for s in tokens))
+        self.assertIn("Hel", tokens[0])
+        self.assertIn("123", tokens[1])
+        self.assertIn("45.", tokens[2])
+
+    def test_qgram_tokenize_nested_lists(self):
+        input_data = [[["77 Mass Ave", "Boston"], ["MA", 123]]]
+        tokens = self.tokenizer_qgram.tokenize(input_data)
+        flat = set.union(*tokens)
+        self.assertIn("Bos", flat)
+        self.assertIn("123", flat)
 
 if __name__ == "__main__":
     unittest.main()
