@@ -1,5 +1,5 @@
 from .utils import jaccard_similarity, N_edit_similarity, edit_similarity
-
+from ordered_set import OrderedSet
 
 def jaccard_tokenize(input_set: list) -> list:
     """
@@ -48,18 +48,18 @@ def qgram_tokenize(input_set: list, q: int) -> list[set[str]]:
     Returns:
         list[set[str]]: A list of sets, each containing q-gram tokens
     """
-    def to_qgrams(s: str) -> set[str]:
+    def to_qgrams(s: str) -> OrderedSet[str]:
         s = s.strip()
         if len(s) < q:
-            return {s}
-        return {s[i:i+q] for i in range(len(s) - q + 1)}
+            return OrderedSet([s])
+        return OrderedSet(s[i:i+q] for i in range(len(s) - q + 1))
 
     tokens = []
     for element in input_set:
         if isinstance(element, (str, int, float, bool)):
             tokens.append(to_qgrams(str(element)))
         elif isinstance(element, (list, tuple)):
-            sub_tokens = set()
+            sub_tokens = OrderedSet()
             for sub_element in element:
                 if isinstance(sub_element, (str, int, float, bool)):
                     sub_tokens.update(to_qgrams(str(sub_element)))

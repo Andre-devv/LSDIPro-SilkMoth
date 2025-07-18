@@ -1,6 +1,6 @@
 import unittest
 from silkmoth.silkmoth_engine import SilkMothEngine
-from silkmoth.utils import contain, jaccard_similarity
+from silkmoth.utils import contain, jaccard_similarity, similar, edit_similarity, SigType
 
 class TestEngine(unittest.TestCase):
 
@@ -38,6 +38,11 @@ class TestEngine(unittest.TestCase):
         i, sim = search_results[0]
         self.assertEqual(i, 3)
         self.assertGreaterEqual(sim, 0.7)
+
+    def test_pipeline_edit_sim(self):
+        engine = SilkMothEngine(0.8, self.S, contain, edit_similarity, sim_thresh=0.7, sig_type=SigType.SKYLINE)
+        search_results, _, _ = engine.search_sets(["77 Mas Ave Boston MA"])
+        self.assertGreaterEqual(len(search_results), 1)
 
 if __name__ == '__main__':
     unittest.main()

@@ -69,8 +69,8 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(edit_similarity(x,y),15/19)
 
     def test_edit_zero(self):
-        self.assertEqual(edit_similarity({}, {"a", "b"}), 0)
-        self.assertEqual(edit_similarity({"a", "b"}, {}), 0)
+        self.assertEqual(edit_similarity(OrderedSet(), OrderedSet(["a", "b"])), 0)
+        self.assertEqual(edit_similarity(OrderedSet(["a", "b"]), OrderedSet()), 0)
 
     def test_N_edit_sim(self):
         x = "50 Vassar St MA"

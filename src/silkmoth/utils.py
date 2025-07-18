@@ -1,5 +1,6 @@
 from enum import Enum
 from rapidfuzz.distance import Levenshtein
+from ordered_set import OrderedSet
 
 def jaccard_similarity(x: set, y: set, sim_thresh=0) -> float:
     """
@@ -44,8 +45,7 @@ def edit_similarity (x, y, sim_thresh=0) -> float:
     """
         Computes the edit similarity between two strings based on
         the formula given in the SILKMOTH paper:
-        
-            Eds(x, y) = 1 - (2 * LD(x, y)) / (|x| + |y| + LD(x, y))
+        $Eds(x, y) = 1 - (2 * LD(x, y)) / (|x| + |y| + LD(x, y))$
 
         Args:
             x (str or set/list of str): First input
@@ -55,8 +55,8 @@ def edit_similarity (x, y, sim_thresh=0) -> float:
         Returns:
             float: Edit similarity score (0 if below threshold)
         """
-    x_str = flatten_tokens(x)
-    y_str = flatten_tokens(y)
+    x_str = reverse_qgrams(x)
+    y_str = reverse_qgrams(y)
 
     if not x_str or not y_str:
         return .0
@@ -68,8 +68,7 @@ def edit_similarity (x, y, sim_thresh=0) -> float:
 def N_edit_similarity(x, y, sim_thresh=0) -> float:
     """
     Computes the normalized edit similarity NEds between two strings or sets/lists of tokens:
-    
-        NEds(x, y) = 1 - LD(x, y) / max(|x|, |y|)
+    $NEds(x, y) = 1 - LD(x, y) / max(|x|, |y|)$
 
     Args:
         x (str or set/list of str): First input
@@ -79,8 +78,8 @@ def N_edit_similarity(x, y, sim_thresh=0) -> float:
     Returns:
         float: Similarity score in [0, 1], or 0 if below threshold
     """
-    x_str = flatten_tokens(x)
-    y_str = flatten_tokens(y)
+    x_str = reverse_qgrams(x)
+    y_str = reverse_qgrams(y)
 
     if not x_str or not y_str:
         return .0
@@ -108,6 +107,24 @@ def flatten_tokens(input_val):
                 flat.append(elem)
         return " ".join(flat)
     return input_val  # assume it's already a string
+
+def reverse_qgrams(input_val) -> str:
+    """
+    Reverse qgrams back to their original text.
+    """
+    if isinstance(input_val, (OrderedSet)):
+        if len(input_val) == 0:
+            return ""
+        if len(input_val) == 1:
+            return input_val[0]
+        result = ""
+        for gram in input_val[:-1]:
+            result += gram[0]
+        last_gram = input_val[-1]
+        return result + last_gram
+    return input_val # assume it's already a string
+
+
 
 def similar(reference_set_size: int, source_set_size: int, mm_score: float) -> float:
     """
@@ -164,6 +181,9 @@ def contain(reference_set_size: int, source_set_size: int, mm_score: float) -> f
     return mm_score / reference_set_size
 
 class SigType(Enum):
+    """
+    Signature type enum.  
+    """
     WEIGHTED = "weighted"
     SKYLINE = "skyline"
     DICHOTOMY = "dichotomy"

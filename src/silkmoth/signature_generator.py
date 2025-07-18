@@ -6,7 +6,39 @@ from math import floor
 from .inverted_index import InvertedIndex
 
 class SignatureGenerator:
+    """
+    The signature generator executes the signature generation step in the SilkMoth
+    pipeline. During signature generation SilkMoth constructs a signature for a 
+    reference set R by selecting the “smallest” set of tokens from R such that 
+    if another set S does not share any tokens with R's signature, R and S are 
+    not related.
+
+    SilkMoth supports three different signature schemes: Weighted Signature Scheme
+    (Def. 5 in [paper](https://doi.org/10.14778/3115404.3115413)), Skyline Signature
+    Scheme (Def. 9), and Dichotomy Signature Scheme (Def. 10).
+
+    Examples
+    --------
+    ```
+    >>> from silkmoth.inverted_index import InvertedIndex
+    >>> from silkmoth.signature_generator import SignatureGenerator
+    >>> S1 = [{"Apple", "Pear", "Car"}, {"Apple", "Sun", "Cat"}]
+    >>> S2 = [{"Apple", "Berlin", "Sun"}, {"Apple"}]
+    >>> S = [S1, S2]
+    >>> I = InvertedIndex(S)
+    >>> R = [{"Apple"}, {"Sun", "Berlin", "Paris"}]
+    >>> sig_gen = SignatureGenerator()
+    >>> sig_gen.get_signature(R, I, 0.3)
+    ['Apple', 'Sun', 'Berlin']
+    >>> sig_gen.get_signature(R, I, 0.5)
+    ['Apple', 'Berlin']
+    ```
+    """
+
     def __init__(self):
+        """
+        Initialize the signature generator with default parameters.
+        """
         self.sim_fun = jaccard_similarity
         self.q = 3
 

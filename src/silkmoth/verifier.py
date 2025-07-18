@@ -11,8 +11,8 @@ def reduce_sets(reference_set: list, source_set: list) -> tuple:
         source_set: Tokenized source set S
 
     Returns:
-        (list, list, int): Reduced reference set, reduced source set and number
-        of identical elements.
+        (list, list, int):  Reduced reference set, reduced source set and number
+                            of identical elements.
     """
     r_reduced = reference_set[:]
     s_reduced = source_set[:]
@@ -88,8 +88,8 @@ class Verifier:
             source_set (list): Tokenized source set S
         
         Returns:
-            float: Maximum matching score (sum of weights of edges in the 
-            matching)
+            float:  Maximum matching score (sum of weights of edges in the 
+                    matching)
         """
         G = nx.Graph()
         for r_idx, r_elem in enumerate(reference_set):
