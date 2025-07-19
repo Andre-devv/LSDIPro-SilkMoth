@@ -2,9 +2,37 @@ from .utils import contain, similar, edit_similarity, N_edit_similarity, jaccard
 from math import floor, ceil
 
 class CandidateSelector:
+    """
+    The candidate selector executes the candidate selection step in the SilkMoth
+    pipeline. After signature generation SilkMoth accesses the inverted index to 
+    get all sets which contain a token in the signature to form an initial set 
+    of candidates.
+
+    The size of the candidate set can be reduced further by applying the check 
+    or nearest neighbour filters in the refinement step of the SilkMoth pipeline.
+
+    Examples
+    --------
+    ```
+    >>> from silkmoth.candidate_selector import CandidateSelector
+    >>> from silkmoth.utils import similar, jaccard_similarity
+    >>> from silkmoth.inverted_index import InvertedIndex
+    >>> S1 = [{"Apple", "Pear", "Car"}, {"Apple", "Sun", "Cat"}]
+    >>> S2 = [{"Something", "Else"}]
+    >>> S3 = [{"Apple", "Berlin", "Sun"}, {"Apple"}]
+    >>> S = [S1, S2, S3]
+    >>> signature = ["Apple", "Berlin"]
+    >>> I = InvertedIndex(S)
+    >>> cand_selector = CandidateSelector(jaccard_similarity, similar, 0.7)
+    >>> cand_selector.get_candidates(signature, I, 2)
+    {0, 2}
+    ```
+    """
 
     def __init__(self, similarity_func, sim_metric, related_thresh, sim_thresh=0.0, q = 3):
         """
+        Initialize the candidate selector with some parameters.
+
         Args:
             similarity_func (callable): Similarity function phi(r, s) (e.g., Jaccard).
             sim_metric (callable): Similarity metric related(R, S) (e.g., contain).

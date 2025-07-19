@@ -3,7 +3,7 @@ from silkmoth.tokenizer import Tokenizer
 from silkmoth.utils import jaccard_similarity,edit_similarity,N_edit_similarity
 from io import StringIO
 import csv
-
+from ordered_set import OrderedSet
 
 class TestTokenizer(unittest.TestCase):
 
@@ -104,7 +104,7 @@ class TestTokenizer(unittest.TestCase):
     def test_qgram_tokenize_mixed_types(self):
         input_data = ["Hello World", 123, [True, 45.67]]
         tokens = self.tokenizer_qgram.tokenize(input_data)
-        self.assertTrue(all(isinstance(s, set) for s in tokens))
+        self.assertTrue(all(isinstance(s, OrderedSet) for s in tokens))
         self.assertIn("Hel", tokens[0])
         self.assertIn("123", tokens[1])
         self.assertIn("45.", tokens[2])
@@ -112,7 +112,7 @@ class TestTokenizer(unittest.TestCase):
     def test_qgram_tokenize_nested_lists(self):
         input_data = [[["77 Mass Ave", "Boston"], ["MA", 123]]]
         tokens = self.tokenizer_qgram.tokenize(input_data)
-        flat = set.union(*tokens)
+        flat = OrderedSet.union(*tokens)
         self.assertIn("Bos", flat)
         self.assertIn("123", flat)
 
