@@ -80,27 +80,24 @@ class SignatureGenerator:
                     ]
                 return all_chunks
 
+        is_edit_sim = sim_fun in (edit_similarity, N_edit_similarity)
         match sig_type:
             case SigType.WEIGHTED:
-                if sim_fun == edit_similarity or sim_fun == N_edit_similarity:
-                    return self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta, q)
+                if is_edit_sim and alpha > 0:
+                    return self._generate_simthresh_signature_edit_similarity(reference_set, inverted_index, delta, alpha)
+                elif is_edit_sim and alpha == 0:
+                    return self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta)
                 else:
                     return self._generate_weighted_signature(reference_set, inverted_index, delta)
             case SigType.SKYLINE:
-                if sim_fun in (edit_similarity, N_edit_similarity) and alpha > 0:
-                    return self._generate_simthresh_signature_edit_similarity(reference_set, inverted_index, delta, alpha, q)
-                else:
-                    return self._generate_skyline_signature(reference_set, inverted_index, delta, alpha)
+                return self._generate_skyline_signature(reference_set, inverted_index, delta, alpha)
             case SigType.DICHOTOMY:
-                if sim_fun in (edit_similarity, N_edit_similarity) and alpha > 0:
-                    return self._generate_simthresh_signature_edit_similarity(reference_set, inverted_index, delta, alpha, q)
-                else:
-                    return self._generate_dichotomy_signature(reference_set, inverted_index, delta, alpha)
+                return self._generate_dichotomy_signature(reference_set, inverted_index, delta, alpha)
             case _:
                 raise ValueError(f"Unknown signature type") 
             
 
-    def _generate_simthresh_signature_edit_similarity(self, reference_set, inverted_index, delta, alpha, q) -> list:
+    def _generate_simthresh_signature_edit_similarity(self, reference_set, inverted_index, delta, alpha) -> list:
         """
         Builds a similarity-threshold signature for edit similarity as described in the SILKMOTH Paper in 
         Section 7.2.
@@ -114,18 +111,17 @@ class SignatureGenerator:
             inverted_index (InvertedIndex): Index to evaluate token cost.
             delta (float): Relatedness threshold factor.
             alpha (float): Similarity threshold factor.
-            q (int): Length of each q-chunk for edit similarity.
         Returns:
             list: A list of str for selected q-chunks forming the signature.
         """
 
-        weighted_sig_edit_sim = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta, q))
+        weighted_sig_edit_sim = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta))
         simthresh_sig = set(weighted_sig_edit_sim)
 
         for elem_tokens in reference_set:
             # compute all q-chunks of each element
             joined = " ".join(elem_tokens)
-            chunks = [joined[j:j+q] for j in range(0, len(joined) - q + 1)]
+            chunks = [joined[j:j+self.q] for j in range(0, len(joined) - self.q + 1)]
             r = set(chunks)
             m_i = floor((1 - alpha) / alpha * len(r)) + 1
 
@@ -151,7 +147,7 @@ class SignatureGenerator:
             weighted = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
             unflattened = [weighted & set(r_i) for r_i in reference_set]
         elif self.sim_fun in (edit_similarity, N_edit_similarity):
-            weighted = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta, self.q))
+            weighted = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta))
             unflattened = [weighted & set(" ".join(r_i)[i:i+self.q] for i in range(0, len(" ".join(r_i)) - self.q + 1, self.q)) for r_i in reference_set]
         else:
             raise ValueError(f"Unknown similarity function: {self.sim_fun}")
@@ -188,7 +184,7 @@ class SignatureGenerator:
         if self.sim_fun == jaccard_similarity:
             weighted_signature_K = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
         elif self.sim_fun in (edit_similarity, N_edit_similarity):
-            weighted_signature_K = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta, self.q))
+            weighted_signature_K = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta))
         else:
             raise ValueError(f"Unknown similarity function: {self.sim_fun}")
 
@@ -320,7 +316,7 @@ class SignatureGenerator:
         return list(selected_sig)
     
     # Following the same logic of _generate_weighted_signature
-    def _generate_weighted_signature_edit_similarity(self, reference_set, inverted_index, delta, q):
+    def _generate_weighted_signature_edit_similarity(self, reference_set, inverted_index, delta):
         if delta <= 0.0:
             return []
 
@@ -345,7 +341,7 @@ class SignatureGenerator:
             joined = " ".join(elem_tokens)
 
             # Extract non-overlapping q-chunks
-            chunks = [joined[j:j+q] for j in range(0, len(joined) - q + 1, q)]
+            chunks = [joined[j:j+self.q] for j in range(0, len(joined) - self.q + 1, self.q)]
             chunk_set = set(chunks)
             element_chunks.append(chunks)
 
