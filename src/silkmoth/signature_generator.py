@@ -121,7 +121,7 @@ class SignatureGenerator:
         for elem_tokens in reference_set:
             # compute all q-chunks of each element
             joined = " ".join(elem_tokens)
-            chunks = [joined[j:j+self.q] for j in range(0, len(joined) - self.q + 1)]
+            chunks = [joined[j:j+self.q] for j in range(0, len(joined) - self.q + 1, self.q)]
             r = set(chunks)
             m_i = floor((1 - alpha) / alpha * len(r)) + 1
 

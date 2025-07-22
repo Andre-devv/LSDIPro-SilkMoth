@@ -1,4 +1,4 @@
-from .utils import contain, similar, edit_similarity, N_edit_similarity, jaccard_similarity, get_q_chunks
+from .utils import contain, similar, edit_similarity, N_edit_similarity, jaccard_similarity, get_q_chunks, get_q_grams
 from math import floor, ceil
 
 class CandidateSelector:
@@ -115,7 +115,7 @@ class CandidateSelector:
         if self.similarity is jaccard_similarity:
             k_i_sets = [set(r_i).intersection(K) for r_i in R]
         elif self.similarity in (edit_similarity, N_edit_similarity):
-            k_i_sets = [set(get_q_chunks(r_i, self.q)).intersection(K) for r_i in R]
+            k_i_sets = [set(get_q_grams(r_i, self.q)).intersection(K) for r_i in R]
         else:
             raise ValueError("Unsupported similarity function.")
 
@@ -149,8 +149,8 @@ class CandidateSelector:
                 continue
 
             if self.similarity in (edit_similarity, N_edit_similarity):
-                r_i = get_q_chunks(r_i, self.q)
-                k_i = set(get_q_chunks(k_i, self.q))
+                r_i = get_q_grams(r_i, self.q)
+                k_i = set(get_q_grams(k_i, self.q))
                 denominator = len(r_i) + ceil(len(r_i) / self.q) - len(k_i)
                 threshold = len(r_i) / denominator if denominator != 0 else 0.0
             else:
@@ -230,8 +230,8 @@ class CandidateSelector:
             k_i_sets = [set(r_i).intersection(K) for r_i in R]
             r_i_list = R
         elif self.similarity in (edit_similarity, N_edit_similarity):
-            k_i_sets = [set(get_q_chunks(r_i, self.q)).intersection(K) for r_i in R]
-            r_i_list = [get_q_chunks(r, self.q) for r in R]
+            k_i_sets = [set(get_q_grams(r_i, self.q)).intersection(K) for r_i in R]
+            r_i_list = [get_q_grams(r, self.q) for r in R]
         else:
             raise ValueError("Unsupported similarity function.")
 
