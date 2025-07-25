@@ -1,4 +1,5 @@
 import bisect
+from silkmoth.utils import jaccard_similarity, edit_similarity, N_edit_similarity
 
 class InvertedIndex:
     """
@@ -38,18 +39,37 @@ class InvertedIndex:
         Initialize the inverted index.
 
         Args:
-            token_sets (list): Collection of (tokenized) sets
+            token_sets (list): Collection of tokenized sets
+            sim_func (function): Similarity function
         """
-        self.token_sets = token_sets
+        #self.sim_func = sim_func
+        self.token_sets = []
         self.lookup_table = dict()
-        for set_idx, token_set in enumerate(self.token_sets):
+
+        # if sim_func in (edit_similarity, N_edit_similarity):
+        #     # Treat entire token list as a single flat element (preserving order + duplicates)
+        #     for set_idx, token_list in enumerate(token_sets):
+        #         self.token_sets.append(token_list)
+        #         for _, token in enumerate(token_list):
+        #             key = (set_idx, 0)  # Only one "element"
+        #             if token not in self.lookup_table:
+        #                 self.lookup_table[token] = [key]
+        #             elif self.lookup_table[token][-1] != key:
+        #                 self.lookup_table[token].append(key)
+
+        # elif sim_func == jaccard_similarity:
+        #     # Standard Jaccard logic — token_sets is a list of sets of sets
+        for set_idx, token_set in enumerate(token_sets):
+            self.token_sets.append(token_set)
             for element_idx, tokens in enumerate(token_set):
                 for token in tokens:
-                    if not token in self.lookup_table:
-                        self.lookup_table[token] = [(set_idx, element_idx)]
-                    # avoid duplicates in inverted list
-                    elif self.lookup_table[token][-1] != (set_idx, element_idx):
-                        self.lookup_table[token].append((set_idx, element_idx))
+                    key = (set_idx, element_idx)
+                    if token not in self.lookup_table:
+                        self.lookup_table[token] = [key]
+                    elif self.lookup_table[token][-1] != key:
+                        self.lookup_table[token].append(key)
+        # else:
+        #     raise ValueError("Unsupported similarity function")
 
     def keys(self):
         """
@@ -125,6 +145,12 @@ class InvertedIndex:
         # Using bisect to find the range of entries where set_idx matches
         left = bisect.bisect_left(index_list, (set_idx, -1))
         right = bisect.bisect_right(index_list, (set_idx, float('inf')))
-
         return index_list[left:right]
     
+    def print_index(self):
+        """
+        Prints the inverted index in a readable format.
+        """
+        print("=== Inverted Index ===")
+        for token, locations in self.lookup_table.items():
+            print(f"Token: {token} → Locations: {locations}")

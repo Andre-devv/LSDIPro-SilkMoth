@@ -151,7 +151,7 @@ class CandidateSelector:
             if self.similarity in (edit_similarity, N_edit_similarity):
                 r_i = get_q_grams(r_i, self.q)
                 k_i = set(get_q_grams(k_i, self.q))
-                denominator = len(r_i) + ceil(len(r_i) / self.q) - len(k_i)
+                denominator = len(r_i) + len(k_i)
                 threshold = len(r_i) / denominator if denominator != 0 else 0.0
             else:
                 denominator = len(r_i)
@@ -299,9 +299,8 @@ class CandidateSelector:
 
     def calc_base_loss(self, k_i, r_i):
         if self.similarity in (edit_similarity, N_edit_similarity):
-            denominator = len(r_i) + ceil(len(r_i) / self.q) - len(k_i)
-            B_i = len(r_i) / denominator if denominator != 0 else 0.0
-            base_loss = 1.0 - B_i
+            denominator = len(r_i) + len(k_i)
+            base_loss = len(r_i) / denominator if denominator != 0 else 0.0
         else:
             denominator = len(r_i)
             base_loss = (len(r_i) - len(k_i)) / denominator if denominator != 0 else 0.0

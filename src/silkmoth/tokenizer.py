@@ -37,47 +37,69 @@ def jaccard_tokenize(input_set: list) -> list:
             raise ValueError(f"Unsupported element type: {type(element)}")
     return tokens
 
-def qgram_tokenize(input_set: list, q: int) -> list[set[str]]:
+def qgram_tokenize(input_set: list, q: int) -> list[list[str]]:
     """
     Tokenizes the input using q-gram tokenization.
 
     Args:
-        input_set (list): The input set (e.g., a record with strings or nested values)
-        q (int): The q-gram length (default: 3)
+        input_set (list): Input set with strings or nested values.
+        q (int): Length of q-gram.
 
     Returns:
-        list[set[str]]: A list of sets, each containing q-gram tokens
+        list[list[str]]: A list of lists, each containing ordered q-gram tokens.
     """
-    def to_qgrams(s: str) -> OrderedSet[str]:
+    # def to_qgrams(s: str) -> list[str]:
+    #     s = s.strip()
+    #     if len(s) < q:
+    #         return [s]
+    #     return [s[i:i+q] for i in range(len(s) - q + 1)]
+
+    # tokens = []
+    # for element in input_set:
+    #     if isinstance(element, (str, int, float, bool)):
+    #         tokens.append(to_qgrams(str(element)))
+    #     elif isinstance(element, (list, tuple)):
+    #         sub_tokens = []
+    #         for sub_element in element:
+    #             if isinstance(sub_element, (str, int, float, bool)):
+    #                 sub_tokens.extend(to_qgrams(str(sub_element)))
+    #             elif isinstance(sub_element, (list, tuple)):
+    #                 for sub_sub_element in sub_element:
+    #                     if isinstance(sub_sub_element, (str, int, float, bool)):
+    #                         sub_tokens.extend(to_qgrams(str(sub_sub_element)))
+    #                     else:
+    #                         raise ValueError(f"Unsupported nested type: {type(sub_sub_element)}")
+    #             else:
+    #                 raise ValueError(f"Unsupported nested type: {type(sub_element)}")
+    #         tokens.append(sub_tokens)
+    #     else:
+    #         raise ValueError(f"Unsupported element type: {type(element)}")
+    # return tokens
+    def to_qgrams(s: str) -> list[str]:
         s = s.strip()
         if len(s) < q:
-            return OrderedSet([s])
-        return OrderedSet(s[i:i+q] for i in range(len(s) - q + 1))
+            return []
+        return [s[i:i+q] for i in range(len(s) - q + 1)]
+
+    def flatten(x):
+        for el in x:
+            if isinstance(el, (list, tuple)):
+                yield from flatten(el)
+            else:
+                yield el
 
     tokens = []
     for element in input_set:
         if isinstance(element, (str, int, float, bool)):
-            tokens.append(to_qgrams(str(element)))
+            s = str(element)
         elif isinstance(element, (list, tuple)):
-            sub_tokens = OrderedSet()
-            for sub_element in element:
-                if isinstance(sub_element, (str, int, float, bool)):
-                    sub_tokens.update(to_qgrams(str(sub_element)))
-                elif isinstance(sub_element, (list, tuple)):
-                    for sub_sub_element in sub_element:
-                        if isinstance(sub_sub_element, (str, int, float, bool)):
-                            sub_tokens.update(to_qgrams(str(sub_sub_element)))
-                        else:
-                            raise ValueError(
-                                f"Unsupported nested type: {type(sub_sub_element)}"
-                            )
-                else:
-                    raise ValueError(
-                        f"Unsupported nested type: {type(sub_element)}"
-                    )
-            tokens.append(sub_tokens)
+            # Flatten nested elements and join with space
+            s = " ".join(str(x) for x in flatten(element))
         else:
             raise ValueError(f"Unsupported element type: {type(element)}")
+        
+        tokens.append(to_qgrams(s))  # generate q-grams for the full string
+
     return tokens
 
 

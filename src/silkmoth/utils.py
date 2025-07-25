@@ -112,7 +112,7 @@ def reverse_qgrams(input_val) -> str:
     """
     Reverse qgrams back to their original text.
     """
-    if isinstance(input_val, (OrderedSet)):
+    if isinstance(input_val, (list,OrderedSet)):
         if len(input_val) == 0:
             return ""
         if len(input_val) == 1:
