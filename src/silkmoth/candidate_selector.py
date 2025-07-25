@@ -151,6 +151,7 @@ class CandidateSelector:
             if self.similarity in (edit_similarity, N_edit_similarity):
                 r_i = get_q_grams(r_i, self.q)
                 k_i = set(get_q_grams(k_i, self.q))
+
                 denominator = len(r_i) + len(k_i)
                 threshold = len(r_i) / denominator if denominator != 0 else 0.0
             else:

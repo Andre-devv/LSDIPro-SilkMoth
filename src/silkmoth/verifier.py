@@ -1,5 +1,6 @@
 from .inverted_index import InvertedIndex
-import networkx as nx
+import numpy as np
+from scipy.optimize import linear_sum_assignment
 
 def reduce_sets(reference_set: list, source_set: list) -> tuple:
     """
@@ -35,7 +36,7 @@ class Verifier:
     For maximum matching computation we treat every element of the two sets as 
     vertices of a bipartite graph and the weights of each edge determined by the 
     similarity function. The maximum weighted matching is computed using the existing
-    graph library [NetworkX](https://networkx.org/).
+    library [SciPy](https://scipy.org/).
 
     Optionally, a triangle inequality-based reduction can be applied to further 
     improve performance.
@@ -76,11 +77,11 @@ class Verifier:
         self.sim_func = sim_func
         self.sim_thresh = sim_thresh
         self.reduction = reduction
-
+    
     def get_mm_score(self, reference_set, source_set) -> float:
         """
-        Helper function that computes the maximum weighted bipartite matching score, where elements 
-        correspond to nodes and the edges are weighted using the similarity 
+        Helper function that computes the maximum weighted bipartite matching score, 
+        where elements correspond to nodes and the edges are weighted using the similarity 
         function.
 
         Args:
@@ -91,15 +92,19 @@ class Verifier:
             float:  Maximum matching score (sum of weights of edges in the 
                     matching)
         """
-        G = nx.Graph()
-        for r_idx, r_elem in enumerate(reference_set):
-            for s_idx, s_elem in enumerate(source_set):
-                w = self.sim_func(r_elem, s_elem, self.sim_thresh)
-                G.add_edge(r_idx, s_idx + len(reference_set), weight=w)
-        
-        matching = nx.max_weight_matching(G)
-        return sum(G[u][v]['weight'] for u, v in matching)
-    
+        n, m = len(reference_set), len(source_set)
+        if n == 0 or m == 0:
+            return 0.0
+
+        weights = np.zeros((n, m), dtype=float)
+        for i, r_elem in enumerate(reference_set):
+            for j, s_elem in enumerate(source_set):
+                weights[i, j] = self.sim_func(r_elem, s_elem, self.sim_thresh)
+
+        # use negative weights to search for minimal cost
+        cost = -weights
+        row_ind, col_ind = linear_sum_assignment(cost)
+        return float(weights[row_ind, col_ind].sum())
 
 
     def get_relatedness(self, reference_set, source_set) -> float:
