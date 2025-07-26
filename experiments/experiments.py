@@ -108,12 +108,14 @@ def run_experiment_filter_schemes(related_thresholds, similarity_thresholds, lab
                 # Used for search to see how many candidates were found and how many were removed
                 candidates_amount = 0
                 candidates_after = 0
+                related_sets_found = 0
                 if is_search:
                     for ref_id, ref_set in enumerate(reference_sets):
                         related_sets_temp, candidates_amount_temp, candidates_removed_temp = silk_moth_engine.search_sets(
                             ref_set)
                         candidates_amount += candidates_amount_temp
                         candidates_after += candidates_removed_temp
+                        related_sets_found += len(related_sets_temp)
                 else:
                     # If not searching, we are discovering sets
                     silk_moth_engine.discover_sets(source_sets)
@@ -136,6 +138,7 @@ def run_experiment_filter_schemes(related_thresholds, similarity_thresholds, lab
                         "inverted_index_ram_usage": round(in_index_ram_usage, 3),
                         "candidates_amount": candidates_amount,
                         "candidates_amount_after_filtering": candidates_after,
+                        "related_sets_found": related_sets_found,
                     }
                 else:
                     data_overall = {
