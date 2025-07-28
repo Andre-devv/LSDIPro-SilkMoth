@@ -389,7 +389,7 @@ class SignatureGenerator:
 
 
             total_loss = sum(
-               (r_sizes[i] - current_k_counts[i]) / r_sizes[i]
+               r_sizes[i] / (r_sizes[i] + current_k_counts[i])
                for i in range(n) if r_sizes[i] > 0
             )
 

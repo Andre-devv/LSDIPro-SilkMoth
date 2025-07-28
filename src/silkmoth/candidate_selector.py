@@ -112,13 +112,8 @@ class CandidateSelector:
         """
         filtered = set()
         match_map = dict()
-        if self.similarity is jaccard_similarity:
-            k_i_sets = [set(r_i).intersection(K) for r_i in R]
-        elif self.similarity in (edit_similarity, N_edit_similarity):
-            k_i_sets = [set(r_i).intersection(K) for r_i in R]
-        else:
-            raise ValueError("Unsupported similarity function.")
-
+        k_i_sets = [set(r_i).intersection(K) for r_i in R]
+        
         for c_idx in candidates:
             matched = self.create_match_map(R, k_i_sets, c_idx, inverted_index)
 
@@ -181,7 +176,7 @@ class CandidateSelector:
 
         return matched
 
-    def _nn_search(self, r_set, S, c_idx, inverted_index) -> float:
+    def _nn_search(self, r_elem, S, c_idx, inverted_index) -> float:
         """
         Find the maximum similarity between r and elements s ∈ S[C] that share at least one token with r using
         the inverted index for efficiency.
@@ -197,14 +192,19 @@ class CandidateSelector:
         """
         # seen = set()
         max_sim = 0.0
-        for token in r_set:
+        is_edit = self.similarity in (edit_similarity, N_edit_similarity)
+
+        for token in r_elem:
             try:
                 entries = inverted_index.get_indexes_binary(token,c_idx)
                 for s_idx, e_idx in entries:
                     if s_idx != c_idx:
                         continue
                     s = S[e_idx]
-                    sim = self.similarity(r_set, set(s), self.alpha)
+                    if is_edit:
+                        sim = self.similarity(r_elem, s, self.alpha)
+                    else:
+                        sim = self.similarity(set(r_elem), set(s), self.alpha)
                     max_sim = max(max_sim, sim)
             except ValueError:
                 continue
@@ -231,15 +231,9 @@ class CandidateSelector:
 
         is_edit = self.similarity in (edit_similarity, N_edit_similarity)
 
-        if self.similarity is jaccard_similarity:
-            k_i_sets = [set(r_i).intersection(K) for r_i in R]
-            r_i_list = R
-        elif self.similarity in (edit_similarity, N_edit_similarity):
-            k_i_sets = [set(r_i).intersection(K) for r_i in R]
-            r_i_list = R
-        else:
-            raise ValueError("Unsupported similarity function.")
-        
+        k_i_sets = [set(r_i).intersection(K) for r_i in R]
+        r_i_list = R
+      
         final_filtered = set()
 
         total_init = 0
