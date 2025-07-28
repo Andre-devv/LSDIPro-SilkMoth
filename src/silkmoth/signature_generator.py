@@ -370,9 +370,9 @@ class SignatureGenerator:
         # Step 3: Greedy selection
         selected_sig = set()
         current_k_counts = [0] * n
-        total_score = 0.0  
+        total_loss = float(n)     
 
-        while heap and total_score < theta:
+        while heap and total_loss >= theta:
             ratio, chunk = heapq.heappop(heap)
             if chunk in selected_sig:
                 continue
@@ -387,9 +387,10 @@ class SignatureGenerator:
                 if chunk in element_chunks[i]:
                     current_k_counts[i] += 1
 
-            total_score = sum(
-                r_sizes[i] / (r_sizes[i] + current_k_counts[i])
-                for i in range(n) if r_sizes[i] > 0
+
+            total_loss = sum(
+               (r_sizes[i] - current_k_counts[i]) / r_sizes[i]
+               for i in range(n) if r_sizes[i] > 0
             )
 
         return list(selected_sig)
