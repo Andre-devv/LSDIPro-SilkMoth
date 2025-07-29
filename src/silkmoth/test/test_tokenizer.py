@@ -97,14 +97,14 @@ class TestTokenizer(unittest.TestCase):
 
     def test_qgram_tokenize_simple_string(self):
         input_data = ["Mass Ave"]
-        expected = [{"Mas", "ass", "ss ", "s A", " Av", "Ave"}]
+        expected = [['Mas', 'ass', 'ss ', 's A', ' Av', 'Ave']]
         tokens = self.tokenizer_qgram.tokenize(input_data)
         self.assertEqual(tokens, expected)
 
     def test_qgram_tokenize_mixed_types(self):
         input_data = ["Hello World", 123, [True, 45.67]]
         tokens = self.tokenizer_qgram.tokenize(input_data)
-        self.assertTrue(all(isinstance(s, OrderedSet) for s in tokens))
+        self.assertTrue(all(isinstance(s, list) for s in tokens))
         self.assertIn("Hel", tokens[0])
         self.assertIn("123", tokens[1])
         self.assertIn("45.", tokens[2])
