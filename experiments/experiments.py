@@ -1,11 +1,9 @@
 import time
 from math import floor
 
-from silkmoth.silkmoth_engine import SilkMothEngine
-from silkmoth.utils import SigType, edit_similarity
+from src.silkmoth.silkmoth_engine import SilkMothEngine
+from src.silkmoth.utils import SigType, edit_similarity
 from utils import *
-import multiprocessing
-from multiprocessing import Manager
 
 
 def run_experiment_filter_schemes(related_thresholds, similarity_thresholds, labels, source_sets, reference_sets,

@@ -3,8 +3,8 @@ import multiprocessing
 from experiments import run_experiment_filter_schemes, run_reduction_experiment, run_scalability_experiment
 import os
 from data_loader import DataLoader
-from utils import load_sets_from_files, experiment_set_ratio_calc, save_sets_to_files
-from silkmoth.utils import jaccard_similarity, contain, similar, SigType, edit_similarity
+from utils import load_sets_from_files
+from src.silkmoth.utils import jaccard_similarity, contain, similar, SigType, edit_similarity
 
 
 def run_experiment_multi(experiment_method, *args):
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     source_string_matching = [title.split() for title in source_string_matching]
 
     try:
-        folder_path = os.path.join(os.path.dirname(__file__), "../experiments/data/webtables")
+        folder_path = os.path.join(os.path.dirname(__file__), "../experiments/data/web tables")
         folder_path = os.path.normpath(folder_path)
         reference_sets_in_dep, source_sets_in_dep = load_sets_from_files(
             folder_path=folder_path,
@@ -58,7 +58,7 @@ if __name__ == "__main__":
 
     # Experiment configuration
     experiment_config = {
-        "filter_runs": True,
+        "filter_runs": False,
         "signature_scheme_runs": False,
         "reduction_runs": False,
         "scalability_runs": False,
@@ -73,23 +73,24 @@ if __name__ == "__main__":
         # String Matching Experiment
         experiments.append((
             run_experiment_filter_schemes, [0.7, 0.75, 0.8, 0.85], [0.7, 0.75, 0.8, 0.85],
-            labels_filter, source_string_matching[:60_000], None, similar, edit_similarity , False,
+            labels_filter, source_string_matching[:10_000], None, similar, edit_similarity , False,
             "string_matching_filter", "results/string_matching/"
         ))
 
         # Schema Matching Experiment
         experiments.append((
-            run_experiment_filter_schemes(), [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            run_experiment_filter_schemes, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
             labels_filter, source_sets_schema_matching[:60_000], None, similar, jaccard_similarity, False,
             "schema_matching_filter", "results/schema_matching/"
         ))
 
         # Inclusion Dependency Experiment
         experiments.append((
-            run_experiment_filter_schemes(), [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
+            run_experiment_filter_schemes, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
             labels_filter, source_sets_in_dep, reference_sets_in_dep[:200], contain, jaccard_similarity, True,
             "inclusion_dependency_filter", "results/inclusion_dependency/"
         ))
+
 
 
     if experiment_config["signature_scheme_runs"]:
@@ -97,7 +98,7 @@ if __name__ == "__main__":
         #String Matching Experiment
         experiments.append((
             run_experiment_filter_schemes, [0.7, 0.75, 0.8, 0.85], [0.7, 0.75, 0.8, 0.85],
-            labels_sig_schemes, source_string_matching[:60_000], None, similar, edit_similarity , False,
+            labels_sig_schemes, source_string_matching[:10_000], None, similar, edit_similarity , False,
             "string_matching_sig", "results/string_matching/"
         ))
 
@@ -115,6 +116,7 @@ if __name__ == "__main__":
             "inclusion_dependency_sig", "results/inclusion_dependency/"
         ))
 
+
     if experiment_config["reduction_runs"]:
         # Reduction Runs
         experiments.append((
@@ -127,8 +129,8 @@ if __name__ == "__main__":
         # Scalability Runs
         # String Matching
         experiments.append((
-            run_scalability_experiment, [0.7, 0.75, 0.8, 0.85], 0.7, [12_000, 24_000, 36_000, 48_000, 60_000],
-            source_string_matching[:500_000], None, similar, edit_similarity, False,
+            run_scalability_experiment, [0.7, 0.75, 0.8, 0.85], 0.7, [1_000, 10_000, 100_000],
+            source_string_matching[:100_000], None, similar, edit_similarity, False,
             "string_matching_scalability", "results/string_matching/"
         ))
 
@@ -150,7 +152,7 @@ if __name__ == "__main__":
         # Schema Matching with GitHub Webtable Schemas
         experiments.append((
             run_experiment_filter_schemes, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
-            labels_filter, source_sets_schema_matching[:10000], github_source_sets_schema_matching[:10000], similar, jaccard_similarity, True,
+            labels_filter, source_sets_schema_matching[:10_000], github_source_sets_schema_matching[:10_000], similar, jaccard_similarity, True,
             "github_webtable_schema_matching", "results/schema_matching/"
         ))
 

@@ -332,7 +332,7 @@ class SignatureGenerator:
         # Step 1: Build q-chunks and token values
         for i, elem_tokens in enumerate(reference_set):
             if not elem_tokens:
-                warnings.warn(f"Element at index {i} is empty and will be skipped.")
+                # warnings.warn(f"Element at index {i} is empty and will be skipped.")
                 r_sizes.append(0)
                 element_chunks.append([])
                 continue
