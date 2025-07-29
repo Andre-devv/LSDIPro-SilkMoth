@@ -112,13 +112,8 @@ class CandidateSelector:
         """
         filtered = set()
         match_map = dict()
-        if self.similarity is jaccard_similarity:
-            k_i_sets = [set(r_i).intersection(K) for r_i in R]
-        elif self.similarity in (edit_similarity, N_edit_similarity):
-            k_i_sets = [set(get_q_grams(r_i, self.q)).intersection(K) for r_i in R]
-        else:
-            raise ValueError("Unsupported similarity function.")
-
+        k_i_sets = [set(r_i).intersection(K) for r_i in R]
+        
         for c_idx in candidates:
             matched = self.create_match_map(R, k_i_sets, c_idx, inverted_index)
 
@@ -148,17 +143,14 @@ class CandidateSelector:
             if not r_i or not k_i:
                 continue
 
-            if self.similarity in (edit_similarity, N_edit_similarity):
-                r_i = get_q_grams(r_i, self.q)
-                k_i = set(get_q_grams(k_i, self.q))
+            denominator = len(r_i)
+            threshold   = (denominator - len(k_i)) / denominator if denominator != 0 else 0.0
+            is_edit = self.similarity in (edit_similarity, N_edit_similarity)
 
-                denominator = len(r_i) + len(k_i)
-                threshold = len(r_i) / denominator if denominator != 0 else 0.0
-            else:
-                denominator = len(r_i)
-                threshold = (len(r_i) - len(k_i)) / denominator if denominator != 0 else 0.0
-
-            r_set = set(r_i)
+            # for Jaccard set is needed, for edit list is needed
+            if not is_edit:
+                r_set = set(r_i)
+                
             max_sim = 0.0
 
             for token in k_i:
@@ -168,7 +160,12 @@ class CandidateSelector:
                         if s_idx != c_idx:
                             continue
                         s = S[e_idx]
-                        sim = self.similarity(r_set, set(s), self.alpha)
+
+                        # call signature based on edit vs. jaccard
+                        if is_edit:
+                            sim = self.similarity(r_i, s, self.alpha)
+                        else:
+                            sim = self.similarity(r_set, set(s), self.alpha)
                         if sim >= threshold:
                             max_sim = max(max_sim, sim)
                 except ValueError:
@@ -179,7 +176,7 @@ class CandidateSelector:
 
         return matched
 
-    def _nn_search(self, r_set, S, c_idx, inverted_index) -> float:
+    def _nn_search(self, r_elem, S, c_idx, inverted_index) -> float:
         """
         Find the maximum similarity between r and elements s ∈ S[C] that share at least one token with r using
         the inverted index for efficiency.
@@ -195,14 +192,19 @@ class CandidateSelector:
         """
         # seen = set()
         max_sim = 0.0
-        for token in r_set:
+        is_edit = self.similarity in (edit_similarity, N_edit_similarity)
+
+        for token in r_elem:
             try:
                 entries = inverted_index.get_indexes_binary(token,c_idx)
                 for s_idx, e_idx in entries:
                     if s_idx != c_idx:
                         continue
                     s = S[e_idx]
-                    sim = self.similarity(r_set, set(s), self.alpha)
+                    if is_edit:
+                        sim = self.similarity(r_elem, s, self.alpha)
+                    else:
+                        sim = self.similarity(set(r_elem), set(s), self.alpha)
                     max_sim = max(max_sim, sim)
             except ValueError:
                 continue
@@ -227,15 +229,11 @@ class CandidateSelector:
         n = len(R)
         theta = threshold * n
 
-        if self.similarity is jaccard_similarity:
-            k_i_sets = [set(r_i).intersection(K) for r_i in R]
-            r_i_list = R
-        elif self.similarity in (edit_similarity, N_edit_similarity):
-            k_i_sets = [set(get_q_grams(r_i, self.q)).intersection(K) for r_i in R]
-            r_i_list = [get_q_grams(r, self.q) for r in R]
-        else:
-            raise ValueError("Unsupported similarity function.")
+        is_edit = self.similarity in (edit_similarity, N_edit_similarity)
 
+        k_i_sets = [set(r_i).intersection(K) for r_i in R]
+        r_i_list = R
+      
         final_filtered = set()
 
         total_init = 0
@@ -287,8 +285,18 @@ class CandidateSelector:
                     and k_i.isdisjoint(S_tokens)):
                     nn_sim = 0
                 else:
-                    nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
-                
+                    if is_edit:
+                        # brute‑force search over q‑gram lists for edit_similarity
+                        r_list = r_i_list[r_idx]
+                        nn_sim = 0.0
+                        for s_list in S:
+                            sim = self.similarity(r_list, s_list, self.alpha)
+                            if sim > nn_sim:
+                                nn_sim = sim
+                    else:
+                        # inverted‐index search for jaccard
+                        nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
+                            
                 total += nn_sim - base_loss
                 if total < theta:
                     break

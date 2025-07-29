@@ -1,5 +1,4 @@
 import bisect
-from silkmoth.utils import jaccard_similarity, edit_similarity, N_edit_similarity
 
 class InvertedIndex:
     """
@@ -46,19 +45,6 @@ class InvertedIndex:
         self.token_sets = []
         self.lookup_table = dict()
 
-        # if sim_func in (edit_similarity, N_edit_similarity):
-        #     # Treat entire token list as a single flat element (preserving order + duplicates)
-        #     for set_idx, token_list in enumerate(token_sets):
-        #         self.token_sets.append(token_list)
-        #         for _, token in enumerate(token_list):
-        #             key = (set_idx, 0)  # Only one "element"
-        #             if token not in self.lookup_table:
-        #                 self.lookup_table[token] = [key]
-        #             elif self.lookup_table[token][-1] != key:
-        #                 self.lookup_table[token].append(key)
-
-        # elif sim_func == jaccard_similarity:
-        #     # Standard Jaccard logic — token_sets is a list of sets of sets
         for set_idx, token_set in enumerate(token_sets):
             self.token_sets.append(token_set)
             for element_idx, tokens in enumerate(token_set):
@@ -68,8 +54,6 @@ class InvertedIndex:
                         self.lookup_table[token] = [key]
                     elif self.lookup_table[token][-1] != key:
                         self.lookup_table[token].append(key)
-        # else:
-        #     raise ValueError("Unsupported similarity function")
 
     def keys(self):
         """
