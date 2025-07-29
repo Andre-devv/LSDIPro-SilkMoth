@@ -188,10 +188,7 @@ class SigType(Enum):
     SKYLINE = "skyline"
     DICHOTOMY = "dichotomy"
 
-def get_q_grams(tokens, q):
-    joined = " ".join(tokens)
-    chunks = [joined[j:j + q] for j in range(0, len(joined) - q + 1)]
-    return chunks
+
 
 def get_q_chunks(tokens, q):
     joined = " ".join(tokens)

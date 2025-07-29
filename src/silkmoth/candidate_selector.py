@@ -1,4 +1,4 @@
-from .utils import contain, similar, edit_similarity, N_edit_similarity, jaccard_similarity, get_q_chunks, get_q_grams
+from .utils import contain, similar, edit_similarity, N_edit_similarity, jaccard_similarity, get_q_chunks
 from math import floor, ceil
 
 class CandidateSelector:

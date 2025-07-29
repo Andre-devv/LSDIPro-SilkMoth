@@ -212,9 +212,7 @@ class SignatureGenerator:
             if self.sim_fun == jaccard_similarity:
                 m_i_size = floor((1 - alpha) * len(r_i)) + 1
             elif self.sim_fun in (edit_similarity, N_edit_similarity):
-                chunks = get_q_chunks(r_i_list, self.q)
-                r = set(chunks)
-                m_i_size = floor((1 - alpha) / alpha * len(r)) + 1
+                m_i_size = floor((1 - alpha) / alpha * len(r_i)) + 1
             else:
                 raise ValueError(f"Unknown similarity function: {self.sim_fun}")
 
