@@ -1,0 +1,1497 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://Andre-devv.github.io/LSDIPro-SilkMoth/pages/silkmoth_engine/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Engine - SilkMoth Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">SilkMoth Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Engine</a>
+</li>
+                                    
+<li>
+    <a href="../tokenizer/" class="dropdown-item">Tokenizer</a>
+</li>
+                                    
+<li>
+    <a href="../inverted_index/" class="dropdown-item">Inverted Index</a>
+</li>
+                                    
+<li>
+    <a href="../signature_generator/" class="dropdown-item">Signature Generator</a>
+</li>
+                                    
+<li>
+    <a href="../candidate_selector/" class="dropdown-item">Candidate Selector</a>
+</li>
+                                    
+<li>
+    <a href="../verifier/" class="dropdown-item">Verifier</a>
+</li>
+                                    
+<li>
+    <a href="../utils/" class="dropdown-item">Utils</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../.." class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../tokenizer/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.silkmoth_engine" class="nav-link">silkmoth_engine</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.silkmoth_engine.SilkMothEngine" class="nav-link">SilkMothEngine</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="silkmoth.silkmoth_engine"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="silkmoth.silkmoth_engine.SilkMothEngine" class="doc doc-heading">
+            <code>SilkMothEngine</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>The SilkMothEngine is the system's main component. It brings all the SilkMoth
+components together, enabling users to easily vary the system's setup and
+explore the relationships between their input sets.</p>
+<h4 id="silkmoth.silkmoth_engine.SilkMothEngine--examples">Examples</h4>
+<pre><code>&gt;&gt;&gt; from silkmoth.silkmoth_engine import SilkMothEngine
+&gt;&gt;&gt; from silkmoth.utils import contain
+&gt;&gt;&gt; S = [
+...     ['Mass Ave St Boston 02115', '77 Mass 5th St Boston', '77 Mass Ave 5th 02115'],
+...     ['77 Boston MA', '77 5th St Boston 02115', '77 Mass Ave 02115 Seattle'],
+...     ['77 Mass Ave 5th Boston MA', 'Mass Ave Chicago IL', '77 Mass Ave St'],
+...     ['77 Mass Ave MA', '5th St 02115 Seattle WA', '77 5th St Boston Seattle']
+... ]
+&gt;&gt;&gt; R = ['77 Mass Ave Boston MA', '5th St 02115 Seattle WA', '77 5th St Chicago IL']
+&gt;&gt;&gt; engine = SilkMothEngine(0.7, S, contain)
+&gt;&gt;&gt; results, _, _ = engine.search_sets(R)
+&gt;&gt;&gt; results
+[(3, 0.7428571428571429)]
+&gt;&gt;&gt; engine.set_related_threshold(0.3)
+&gt;&gt;&gt; results, _, _ = engine.search_sets(R)
+&gt;&gt;&gt; results
+[(0, 0.36904761904761907), (1, 0.4261904761904762), (2, 0.4146825396825397), (3, 0.7428571428571429)]
+</code></pre>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+                <pre class="highlight"><code class="language-python">class SilkMothEngine:
+    """
+    The SilkMothEngine is the system's main component. It brings all the SilkMoth
+    components together, enabling users to easily vary the system's setup and
+    explore the relationships between their input sets.
+
+    Examples
+    --------
+    ```
+    &gt;&gt;&gt; from silkmoth.silkmoth_engine import SilkMothEngine
+    &gt;&gt;&gt; from silkmoth.utils import contain
+    &gt;&gt;&gt; S = [
+    ...     ['Mass Ave St Boston 02115', '77 Mass 5th St Boston', '77 Mass Ave 5th 02115'],
+    ...     ['77 Boston MA', '77 5th St Boston 02115', '77 Mass Ave 02115 Seattle'],
+    ...     ['77 Mass Ave 5th Boston MA', 'Mass Ave Chicago IL', '77 Mass Ave St'],
+    ...     ['77 Mass Ave MA', '5th St 02115 Seattle WA', '77 5th St Boston Seattle']
+    ... ]
+    &gt;&gt;&gt; R = ['77 Mass Ave Boston MA', '5th St 02115 Seattle WA', '77 5th St Chicago IL']
+    &gt;&gt;&gt; engine = SilkMothEngine(0.7, S, contain)
+    &gt;&gt;&gt; results, _, _ = engine.search_sets(R)
+    &gt;&gt;&gt; results
+    [(3, 0.7428571428571429)]
+    &gt;&gt;&gt; engine.set_related_threshold(0.3)
+    &gt;&gt;&gt; results, _, _ = engine.search_sets(R)
+    &gt;&gt;&gt; results
+    [(0, 0.36904761904761907), (1, 0.4261904761904762), (2, 0.4146825396825397), (3, 0.7428571428571429)]
+    ```
+    """
+
+    def __init__(self, related_thresh, source_sets, sim_metric=similar, sim_func=jaccard_similarity, sim_thresh=0, reduction=False, sig_type=SigType.WEIGHTED, is_check_filter=False, is_nn_filter=False, q=3):
+        """
+        Initialize the SilkMothEngine with all the necessary parameters.
+
+        Args:
+            related_thresh (float): Relatedness threshold delta
+            source_sets (list): Collection of source sets
+            sim_metric (callable): Similarity metric similar(...)/contain(...)
+            sim_func (callable): Similarity function phi
+            sim_thresh (float): Similarity threshold alpha
+            reduction (bool): Flag to activate/deactivate triangle inequality reduction
+            sig_type (SigType): Type of signature.
+            is_check_filter (bool): Flag to activate/deactivate check filter
+            is_nn_filter (bool): Flag to activate/deactivate nearest neighbor filter
+            q (int): The q-gram size for tokenization
+        """
+        self.related_thresh = related_thresh        # delta
+        self.source_sets = source_sets              # S
+        self.sim_metric = sim_metric                # related
+        self.sim_func = sim_func                    # phi
+        self.sim_thresh = sim_thresh                # alpha
+        self.q = q                                  # q-gram size
+        self.reduction = reduction
+        self.signature_type = sig_type
+        self.tokenizer = Tokenizer(sim_func, q)
+        self.is_check_filter = is_check_filter
+        self.is_nn_filter = is_nn_filter
+        self.signature_gen = SignatureGenerator()
+        self.candidate_selector = self._create_candidate_selector()
+        self.verifier = self._create_verifier()
+        self.inverted_index = self.build_index(source_sets)
+
+    def build_index(self, source_sets) -&gt; InvertedIndex:
+        """
+        Tokenizes all source sets and creates the inverted index.
+
+        Args:
+            source_sets (list): Collection of "raw" source sets
+
+        Returns:
+            InvertedIndex: Inverted index
+        """
+        token_sets = [self.tokenizer.tokenize(s) for s in source_sets]
+        return InvertedIndex(token_sets)
+
+    def search_sets(self, reference_set) -&gt; tuple[list, int, int]:
+        """
+        Search mode, where, given a reference set, we search for all related sets
+        in the dataset.
+
+        Args:
+            reference_set (list): "Raw" reference set
+
+        Returns:
+            list:   Pairs of indices of all related sets from the candidates and 
+                    their relatedness with the reference set.
+            int:    Number of candidates before applying filters.
+            int:    Number of candidates after applying filters. 
+        """
+        r_tokens = self.tokenizer.tokenize(reference_set)
+        signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh, self.sim_thresh, self.signature_type, self.sim_func, self.q)
+        candidates = self.candidate_selector.get_candidates(signature, self.inverted_index, len(r_tokens))
+
+        # Count how many candidates are removed by the filters
+        candidates_start = len(candidates)
+
+        # Apply check filter if enabled
+        if self.is_check_filter:
+            candidates, match_map = self.candidate_selector.check_filter(
+                r_tokens, set(signature), candidates, self.inverted_index
+            )
+        else:
+            match_map = None
+
+        # Apply nearest neighbor filter if enabled
+        if self.is_nn_filter:
+            candidates= self.candidate_selector.nn_filter(
+                r_tokens, set(signature), candidates, self.inverted_index, self.related_thresh, match_map
+            )
+
+        return self.verifier.get_related_sets(r_tokens, candidates, self.inverted_index), candidates_start , len(candidates)
+
+
+    def discover_sets(self, reference_sets) -&gt; list:
+        """
+        Discovery mode, where we search for all pairs of related sets within a 
+        collection of reference sets.
+
+        Args:
+            reference_sets (list): Collection of "raw" reference set
+
+        Returns:
+            list:   Tuples (i, j, sim) of all related sets with reference index i,
+                    source set index j and the computed similarity score sim.
+        """
+        #related_pairs = []
+
+        for i, reference_set in enumerate(reference_sets):
+            sets, _, _ = self.search_sets(reference_set)
+            #related_pairs.extend([(i, j, sim) for j, sim in sets])
+
+        #return related_pairs
+
+    def set_related_threshold(self, related_thresh):
+        """
+        Updates the relatedness threshold.
+
+        Args:
+            related_thresh (float): Relatedness threshold delta
+        """
+        self.related_thresh = related_thresh
+        self.verifier = self._create_verifier()
+        self.candidate_selector = self._create_candidate_selector()
+
+    def set_signature_type(self, sig_type):
+        """
+        Updates the signature type.
+
+        Args:
+            sig_type (SigType): Signature type
+        """
+        self.signature_type = sig_type
+
+    def set_check_filter(self, is_check_filter):
+        """
+        Updates the check filter flag.
+
+        Args:
+            is_check_filter (bool): Flag to activate/deactivate check filter
+        """
+        self.is_check_filter = is_check_filter
+
+    def set_nn_filter(self, is_nn_filter):
+        """
+        Updates the nearest neighbor filter flag.
+
+        Args:
+            is_nn_filter (bool): Flag to activate/deactivate nearest neighbor filter
+        """
+        self.is_nn_filter = is_nn_filter
+
+    def set_alpha(self, sim_thresh):
+        """
+        Updates the similarity threshold.
+
+        Args:
+            sim_thresh (float): Similarity threshold alpha
+        """
+        self.sim_thresh = sim_thresh
+        self.verifier = self._create_verifier()
+        self.candidate_selector = self._create_candidate_selector()
+
+    def set_reduction(self, reduction):
+        """
+        Updates the reduction flag.
+
+        Args:
+            reduction (bool): Flag to activate/deactivate reduction
+        """
+        self.reduction = reduction
+        self.verifier = self._create_verifier()
+
+    def _create_verifier(self):
+        if self.reduction and self.sim_thresh &gt; 0:
+            self.reduction = False
+            warnings.warn(""""Reduction-based verification does not work when the 
+                          similarity threshold alpha is greater than zero. 
+                          Reduction is disabled for now.""")
+        return Verifier(
+            self.related_thresh,
+            self.sim_metric,
+            self.sim_func,
+            self.sim_thresh,
+            self.reduction
+        )
+
+    def _create_candidate_selector(self):
+        return CandidateSelector(
+            self.sim_func,
+            self.sim_metric,
+            self.related_thresh,
+            self.sim_thresh
+        )
+
+    def set_q(self, q):
+        """
+        Updates q-gram size.
+
+        Args:
+            q (int): The q-gram size for tokenization
+        """
+        self.q = q
+        self.tokenizer = Tokenizer(self.sim_func, q)
+        self.inverted_index = self.build_index(self.source_sets)
+        self.signature_gen = SignatureGenerator()
+        self.candidate_selector = self._create_candidate_selector()
+        self.verifier = self._create_verifier()</code></pre>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.silkmoth_engine.SilkMothEngine.__init__" class="doc doc-heading">
+            <code class="highlight language-python">__init__(related_thresh, source_sets, sim_metric=similar, sim_func=jaccard_similarity, sim_thresh=0, reduction=False, sig_type=SigType.WEIGHTED, is_check_filter=False, is_nn_filter=False, q=3)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the SilkMothEngine with all the necessary parameters.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>related_thresh</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relatedness threshold delta</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>source_sets</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Collection of source sets</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_metric</code>
+            </td>
+            <td>
+                  <code><span title="callable">callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity metric similar(...)/contain(...)</p>
+              </div>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="similar(reference_set_size, source_set_size, mm_score) (silkmoth.utils.similar)" href="../utils/#silkmoth.utils.similar">similar</a></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_func</code>
+            </td>
+            <td>
+                  <code><span title="callable">callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity function phi</p>
+              </div>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="jaccard_similarity(x, y, sim_thresh=0) (silkmoth.utils.jaccard_similarity)" href="../utils/#silkmoth.utils.jaccard_similarity">jaccard_similarity</a></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_thresh</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity threshold alpha</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>reduction</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag to activate/deactivate triangle inequality reduction</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sig_type</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="SigType (silkmoth.utils.SigType)" href="../utils/#silkmoth.utils.SigType">SigType</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Type of signature.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="silkmoth.utils.SigType.WEIGHTED">WEIGHTED</span></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>is_check_filter</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag to activate/deactivate check filter</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>is_nn_filter</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag to activate/deactivate nearest neighbor filter</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>q</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The q-gram size for tokenization</p>
+              </div>
+            </td>
+            <td>
+                  <code>3</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+              <pre class="highlight"><code class="language-python">def __init__(self, related_thresh, source_sets, sim_metric=similar, sim_func=jaccard_similarity, sim_thresh=0, reduction=False, sig_type=SigType.WEIGHTED, is_check_filter=False, is_nn_filter=False, q=3):
+    """
+    Initialize the SilkMothEngine with all the necessary parameters.
+
+    Args:
+        related_thresh (float): Relatedness threshold delta
+        source_sets (list): Collection of source sets
+        sim_metric (callable): Similarity metric similar(...)/contain(...)
+        sim_func (callable): Similarity function phi
+        sim_thresh (float): Similarity threshold alpha
+        reduction (bool): Flag to activate/deactivate triangle inequality reduction
+        sig_type (SigType): Type of signature.
+        is_check_filter (bool): Flag to activate/deactivate check filter
+        is_nn_filter (bool): Flag to activate/deactivate nearest neighbor filter
+        q (int): The q-gram size for tokenization
+    """
+    self.related_thresh = related_thresh        # delta
+    self.source_sets = source_sets              # S
+    self.sim_metric = sim_metric                # related
+    self.sim_func = sim_func                    # phi
+    self.sim_thresh = sim_thresh                # alpha
+    self.q = q                                  # q-gram size
+    self.reduction = reduction
+    self.signature_type = sig_type
+    self.tokenizer = Tokenizer(sim_func, q)
+    self.is_check_filter = is_check_filter
+    self.is_nn_filter = is_nn_filter
+    self.signature_gen = SignatureGenerator()
+    self.candidate_selector = self._create_candidate_selector()
+    self.verifier = self._create_verifier()
+    self.inverted_index = self.build_index(source_sets)</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.silkmoth_engine.SilkMothEngine.build_index" class="doc doc-heading">
+            <code class="highlight language-python">build_index(source_sets)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Tokenizes all source sets and creates the inverted index.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>source_sets</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Collection of "raw" source sets</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>InvertedIndex</code></td>            <td>
+                  <code><a class="autorefs autorefs-internal" title="InvertedIndex (silkmoth.inverted_index.InvertedIndex)" href="../inverted_index/#silkmoth.inverted_index.InvertedIndex">InvertedIndex</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Inverted index</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+              <pre class="highlight"><code class="language-python">def build_index(self, source_sets) -&gt; InvertedIndex:
+    """
+    Tokenizes all source sets and creates the inverted index.
+
+    Args:
+        source_sets (list): Collection of "raw" source sets
+
+    Returns:
+        InvertedIndex: Inverted index
+    """
+    token_sets = [self.tokenizer.tokenize(s) for s in source_sets]
+    return InvertedIndex(token_sets)</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.silkmoth_engine.SilkMothEngine.discover_sets" class="doc doc-heading">
+            <code class="highlight language-python">discover_sets(reference_sets)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Discovery mode, where we search for all pairs of related sets within a 
+collection of reference sets.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_sets</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Collection of "raw" reference set</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>list</code></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tuples (i, j, sim) of all related sets with reference index i,
+    source set index j and the computed similarity score sim.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+              <pre class="highlight"><code class="language-python">def discover_sets(self, reference_sets) -&gt; list:
+    """
+    Discovery mode, where we search for all pairs of related sets within a 
+    collection of reference sets.
+
+    Args:
+        reference_sets (list): Collection of "raw" reference set
+
+    Returns:
+        list:   Tuples (i, j, sim) of all related sets with reference index i,
+                source set index j and the computed similarity score sim.
+    """
+    #related_pairs = []
+
+    for i, reference_set in enumerate(reference_sets):
+        sets, _, _ = self.search_sets(reference_set)</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.silkmoth_engine.SilkMothEngine.search_sets" class="doc doc-heading">
+            <code class="highlight language-python">search_sets(reference_set)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Search mode, where, given a reference set, we search for all related sets
+in the dataset.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_set</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>"Raw" reference set</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>list</code></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Pairs of indices of all related sets from the candidates and 
+    their relatedness with the reference set.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td><code>int</code></td>            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of candidates before applying filters.</p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td><code>int</code></td>            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Number of candidates after applying filters.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+              <pre class="highlight"><code class="language-python">def search_sets(self, reference_set) -&gt; tuple[list, int, int]:
+    """
+    Search mode, where, given a reference set, we search for all related sets
+    in the dataset.
+
+    Args:
+        reference_set (list): "Raw" reference set
+
+    Returns:
+        list:   Pairs of indices of all related sets from the candidates and 
+                their relatedness with the reference set.
+        int:    Number of candidates before applying filters.
+        int:    Number of candidates after applying filters. 
+    """
+    r_tokens = self.tokenizer.tokenize(reference_set)
+    signature = self.signature_gen.get_signature(r_tokens, self.inverted_index, self.related_thresh, self.sim_thresh, self.signature_type, self.sim_func, self.q)
+    candidates = self.candidate_selector.get_candidates(signature, self.inverted_index, len(r_tokens))
+
+    # Count how many candidates are removed by the filters
+    candidates_start = len(candidates)
+
+    # Apply check filter if enabled
+    if self.is_check_filter:
+        candidates, match_map = self.candidate_selector.check_filter(
+            r_tokens, set(signature), candidates, self.inverted_index
+        )
+    else:
+        match_map = None
+
+    # Apply nearest neighbor filter if enabled
+    if self.is_nn_filter:
+        candidates= self.candidate_selector.nn_filter(
+            r_tokens, set(signature), candidates, self.inverted_index, self.related_thresh, match_map
+        )
+
+    return self.verifier.get_related_sets(r_tokens, candidates, self.inverted_index), candidates_start , len(candidates)</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.silkmoth_engine.SilkMothEngine.set_alpha" class="doc doc-heading">
+            <code class="highlight language-python">set_alpha(sim_thresh)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Updates the similarity threshold.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_thresh</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity threshold alpha</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+              <pre class="highlight"><code class="language-python">def set_alpha(self, sim_thresh):
+    """
+    Updates the similarity threshold.
+
+    Args:
+        sim_thresh (float): Similarity threshold alpha
+    """
+    self.sim_thresh = sim_thresh
+    self.verifier = self._create_verifier()
+    self.candidate_selector = self._create_candidate_selector()</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.silkmoth_engine.SilkMothEngine.set_check_filter" class="doc doc-heading">
+            <code class="highlight language-python">set_check_filter(is_check_filter)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Updates the check filter flag.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>is_check_filter</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag to activate/deactivate check filter</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+              <pre class="highlight"><code class="language-python">def set_check_filter(self, is_check_filter):
+    """
+    Updates the check filter flag.
+
+    Args:
+        is_check_filter (bool): Flag to activate/deactivate check filter
+    """
+    self.is_check_filter = is_check_filter</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.silkmoth_engine.SilkMothEngine.set_nn_filter" class="doc doc-heading">
+            <code class="highlight language-python">set_nn_filter(is_nn_filter)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Updates the nearest neighbor filter flag.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>is_nn_filter</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag to activate/deactivate nearest neighbor filter</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+              <pre class="highlight"><code class="language-python">def set_nn_filter(self, is_nn_filter):
+    """
+    Updates the nearest neighbor filter flag.
+
+    Args:
+        is_nn_filter (bool): Flag to activate/deactivate nearest neighbor filter
+    """
+    self.is_nn_filter = is_nn_filter</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.silkmoth_engine.SilkMothEngine.set_q" class="doc doc-heading">
+            <code class="highlight language-python">set_q(q)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Updates q-gram size.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>q</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The q-gram size for tokenization</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+              <pre class="highlight"><code class="language-python">def set_q(self, q):
+    """
+    Updates q-gram size.
+
+    Args:
+        q (int): The q-gram size for tokenization
+    """
+    self.q = q
+    self.tokenizer = Tokenizer(self.sim_func, q)
+    self.inverted_index = self.build_index(self.source_sets)
+    self.signature_gen = SignatureGenerator()
+    self.candidate_selector = self._create_candidate_selector()
+    self.verifier = self._create_verifier()</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.silkmoth_engine.SilkMothEngine.set_reduction" class="doc doc-heading">
+            <code class="highlight language-python">set_reduction(reduction)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Updates the reduction flag.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reduction</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag to activate/deactivate reduction</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+              <pre class="highlight"><code class="language-python">def set_reduction(self, reduction):
+    """
+    Updates the reduction flag.
+
+    Args:
+        reduction (bool): Flag to activate/deactivate reduction
+    """
+    self.reduction = reduction
+    self.verifier = self._create_verifier()</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.silkmoth_engine.SilkMothEngine.set_related_threshold" class="doc doc-heading">
+            <code class="highlight language-python">set_related_threshold(related_thresh)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Updates the relatedness threshold.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>related_thresh</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relatedness threshold delta</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+              <pre class="highlight"><code class="language-python">def set_related_threshold(self, related_thresh):
+    """
+    Updates the relatedness threshold.
+
+    Args:
+        related_thresh (float): Relatedness threshold delta
+    """
+    self.related_thresh = related_thresh
+    self.verifier = self._create_verifier()
+    self.candidate_selector = self._create_candidate_selector()</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.silkmoth_engine.SilkMothEngine.set_signature_type" class="doc doc-heading">
+            <code class="highlight language-python">set_signature_type(sig_type)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Updates the signature type.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>sig_type</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="SigType (silkmoth.utils.SigType)" href="../utils/#silkmoth.utils.SigType">SigType</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Signature type</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/silkmoth_engine.py</code></summary>
+              <pre class="highlight"><code class="language-python">def set_signature_type(self, sig_type):
+    """
+    Updates the signature type.
+
+    Args:
+        sig_type (SigType): Signature type
+    """
+    self.signature_type = sig_type</code></pre>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

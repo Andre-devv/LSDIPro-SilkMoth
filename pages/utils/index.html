@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://Andre-devv.github.io/LSDIPro-SilkMoth/pages/utils/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Utils - SilkMoth Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">SilkMoth Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../silkmoth_engine/" class="dropdown-item">Engine</a>
+</li>
+                                    
+<li>
+    <a href="../tokenizer/" class="dropdown-item">Tokenizer</a>
+</li>
+                                    
+<li>
+    <a href="../inverted_index/" class="dropdown-item">Inverted Index</a>
+</li>
+                                    
+<li>
+    <a href="../signature_generator/" class="dropdown-item">Signature Generator</a>
+</li>
+                                    
+<li>
+    <a href="../candidate_selector/" class="dropdown-item">Candidate Selector</a>
+</li>
+                                    
+<li>
+    <a href="../verifier/" class="dropdown-item">Verifier</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Utils</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../verifier/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.utils" class="nav-link">utils</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.utils.SigType" class="nav-link">SigType</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.utils.N_edit_similarity" class="nav-link">N_edit_similarity</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.utils.contain" class="nav-link">contain</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.utils.edit_similarity" class="nav-link">edit_similarity</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.utils.flatten_tokens" class="nav-link">flatten_tokens</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.utils.jaccard_similarity" class="nav-link">jaccard_similarity</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.utils.reverse_qgrams" class="nav-link">reverse_qgrams</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.utils.similar" class="nav-link">similar</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="silkmoth.utils"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="silkmoth.utils.SigType" class="doc doc-heading">
+            <code>SigType</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="enum.Enum">Enum</span></code></p>
+
+
+        <p>Signature type enum.</p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src/silkmoth/utils.py</code></summary>
+                <pre class="highlight"><code class="language-python">class SigType(Enum):
+    """
+    Signature type enum.  
+    """
+    WEIGHTED = "weighted"
+    SKYLINE = "skyline"
+    DICHOTOMY = "dichotomy"</code></pre>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="silkmoth.utils.N_edit_similarity" class="doc doc-heading">
+            <code class="highlight language-python">N_edit_similarity(x, y, sim_thresh=0)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Computes the normalized edit similarity NEds between two strings or sets/lists of tokens:
+<span class="arithmatex">\(NEds(x, y) = 1 - LD(x, y) / max(|x|, |y|)\)</span></p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>x</code>
+            </td>
+            <td>
+                  <code>str or set/list of str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>First input</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>y</code>
+            </td>
+            <td>
+                  <code>str or set/list of str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Second input</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_thresh</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity threshold (default: 0)</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>float</code></td>            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity score in [0, 1], or 0 if below threshold</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/utils.py</code></summary>
+              <pre class="highlight"><code class="language-python">def N_edit_similarity(x, y, sim_thresh=0) -&gt; float:
+    """
+    Computes the normalized edit similarity NEds between two strings or sets/lists of tokens:
+    $NEds(x, y) = 1 - LD(x, y) / max(|x|, |y|)$
+
+    Args:
+        x (str or set/list of str): First input
+        y (str or set/list of str): Second input
+        sim_thresh (float): Similarity threshold (default: 0)
+
+    Returns:
+        float: Similarity score in [0, 1], or 0 if below threshold
+    """
+    x_str = reverse_qgrams(x)
+    y_str = reverse_qgrams(y)
+
+    if not x_str or not y_str:
+        return .0
+
+    ld = Levenshtein.distance(x_str, y_str)
+    max_len = max(len(x_str), len(y_str))
+
+    if max_len == 0:
+        return 1.0 
+
+    neds_score = 1 - (ld / max_len)
+    return neds_score if neds_score &gt;= sim_thresh else .0</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="silkmoth.utils.contain" class="doc doc-heading">
+            <code class="highlight language-python">contain(reference_set_size, source_set_size, mm_score)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Computes Set-Containment metric which checks whether one set S is approximately
+a superset of another set R. Set pairs (R, S) with <span class="arithmatex">\(|R| &gt; |S|\)</span> should be filtered
+in advance. Set-Containment is defined as <span class="arithmatex">\(contain(R, S) = mm\_score / |R|\)</span>.</p>
+<h4 id="silkmoth.utils.contain--examples">Examples</h4>
+<pre><code>&gt;&gt;&gt; from silkmoth.utils contain
+&gt;&gt;&gt; contain(2, 3, 2)
+1.0
+&gt;&gt;&gt; contain(2, 3, 1.5)
+0.75
+</code></pre>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_set_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Size of set R</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>source_set_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Size of set S</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>mm_score</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Maximum matching score of R and S</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>float</code></td>            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Set-Containment</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/utils.py</code></summary>
+              <pre class="highlight"><code class="language-python">def contain(reference_set_size: int, source_set_size: int, mm_score: float) -&gt; float:
+    """
+    Computes Set-Containment metric which checks whether one set S is approximately
+    a superset of another set R. Set pairs (R, S) with $|R| &gt; |S|$ should be filtered
+    in advance. Set-Containment is defined as $contain(R, S) = mm\_score / |R|$.
+
+    Examples
+    --------
+    ```
+    &gt;&gt;&gt; from silkmoth.utils contain
+    &gt;&gt;&gt; contain(2, 3, 2)
+    1.0
+    &gt;&gt;&gt; contain(2, 3, 1.5)
+    0.75
+    ```
+
+    Args:
+        reference_set_size: Size of set R
+        source_set_size: Size of set S
+        mm_score: Maximum matching score of R and S
+
+    Returns:
+        float: Set-Containment
+    """
+    if reference_set_size &gt; source_set_size:
+        raise ValueError(f"Reference set too large")
+
+    return mm_score / reference_set_size</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="silkmoth.utils.edit_similarity" class="doc doc-heading">
+            <code class="highlight language-python">edit_similarity(x, y, sim_thresh=0)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Computes the edit similarity between two strings based on
+the formula given in the SILKMOTH paper:
+<span class="arithmatex">\(Eds(x, y) = 1 - (2 * LD(x, y)) / (|x| + |y| + LD(x, y))\)</span></p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>x</code>
+            </td>
+            <td>
+                  <code>str or set/list of str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>First input</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>y</code>
+            </td>
+            <td>
+                  <code>str or set/list of str</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Second input</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_thresh</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity threshold alpha (default is 0)</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>float</code></td>            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Edit similarity score (0 if below threshold)</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/utils.py</code></summary>
+              <pre class="highlight"><code class="language-python">def edit_similarity (x, y, sim_thresh=0) -&gt; float:
+    """
+        Computes the edit similarity between two strings based on
+        the formula given in the SILKMOTH paper:
+        $Eds(x, y) = 1 - (2 * LD(x, y)) / (|x| + |y| + LD(x, y))$
+
+        Args:
+            x (str or set/list of str): First input
+            y (str or set/list of str): Second input
+            sim_thresh (float): Similarity threshold alpha (default is 0)
+
+        Returns:
+            float: Edit similarity score (0 if below threshold)
+        """
+    x_str = reverse_qgrams(x)
+    y_str = reverse_qgrams(y)
+
+    if not x_str or not y_str:
+        return .0
+
+    ld = Levenshtein.distance(x_str, y_str)
+    eds = 1 - (2 * ld) / (len(x_str) + len(y_str) + ld)
+    return eds if eds &gt;= sim_thresh else .0</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="silkmoth.utils.flatten_tokens" class="doc doc-heading">
+            <code class="highlight language-python">flatten_tokens(input_val)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Flattens a set, list of sets, or other nested iterable into a flat list of strings.</p>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/utils.py</code></summary>
+              <pre class="highlight"><code class="language-python">def flatten_tokens(input_val):
+    """
+    Flattens a set, list of sets, or other nested iterable into a flat list of strings.
+    """
+    if isinstance(input_val, (set, list)):
+        flat = []
+        for elem in input_val:
+            if isinstance(elem, (set, list)):
+                flat.extend(elem)
+            else:
+                flat.append(elem)
+        return " ".join(flat)
+    return input_val  # assume it's already a string</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="silkmoth.utils.jaccard_similarity" class="doc doc-heading">
+            <code class="highlight language-python">jaccard_similarity(x, y, sim_thresh=0)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gives the Jaccard similarity of two set-like objects. Jaccard similarity is
+defined as <span class="arithmatex">\(Jac(x, y) = |x \cap y|/|x \cup y|\)</span>. </p>
+<p>For some applications we may want to omit pairs with low similarity. 
+Therefore a similarity threshold α is provided. If the similarity score 
+does not exceed this threshold, this function returns zero.</p>
+<h4 id="silkmoth.utils.jaccard_similarity--examples">Examples</h4>
+<pre><code>&gt;&gt;&gt; from silkmoth.utils import jaccard_similarity
+&gt;&gt;&gt; x = {&quot;a&quot;, &quot;b&quot;, &quot;c&quot;}
+&gt;&gt;&gt; y = {&quot;a&quot;, &quot;b&quot;, &quot;c&quot;}
+&gt;&gt;&gt; jaccard_similarity(x, y)
+1.0
+&gt;&gt;&gt; y.add(&quot;d&quot;)
+&gt;&gt;&gt; jaccard_similarity(x, y)
+0.75
+&gt;&gt;&gt; jaccard_similarity(x, y, 0.8)
+0.0
+</code></pre>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>x</code>
+            </td>
+            <td>
+                  <code><span title="set">set</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Input element x</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>y</code>
+            </td>
+            <td>
+                  <code><span title="set">set</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Input element y</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_thresh</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity threshold alpha</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>float</code></td>            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Jaccard similarity score</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/utils.py</code></summary>
+              <pre class="highlight"><code class="language-python">def jaccard_similarity(x: set, y: set, sim_thresh=0) -&gt; float:
+    """
+    Gives the Jaccard similarity of two set-like objects. Jaccard similarity is
+    defined as $Jac(x, y) = |x \cap y|/|x \cup y|$. 
+
+    For some applications we may want to omit pairs with low similarity. 
+    Therefore a similarity threshold α is provided. If the similarity score 
+    does not exceed this threshold, this function returns zero.
+
+    Examples
+    --------
+    ```
+    &gt;&gt;&gt; from silkmoth.utils import jaccard_similarity
+    &gt;&gt;&gt; x = {"a", "b", "c"}
+    &gt;&gt;&gt; y = {"a", "b", "c"}
+    &gt;&gt;&gt; jaccard_similarity(x, y)
+    1.0
+    &gt;&gt;&gt; y.add("d")
+    &gt;&gt;&gt; jaccard_similarity(x, y)
+    0.75
+    &gt;&gt;&gt; jaccard_similarity(x, y, 0.8)
+    0.0
+    ```
+
+    Args:
+        x (set): Input element x
+        y (set): Input element y
+        sim_thresh (float): Similarity threshold alpha
+
+    Returns:
+        float: Jaccard similarity score
+    """
+    if len(x) == 0 or len(y) == 0:
+        return .0
+    jac = len(x &amp; y) / len(x | y)
+    if jac &gt;= sim_thresh:
+        return jac
+    return .0</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="silkmoth.utils.reverse_qgrams" class="doc doc-heading">
+            <code class="highlight language-python">reverse_qgrams(input_val)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Reverse qgrams back to their original text.</p>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/utils.py</code></summary>
+              <pre class="highlight"><code class="language-python">def reverse_qgrams(input_val) -&gt; str:
+    """
+    Reverse qgrams back to their original text.
+    """
+    if isinstance(input_val, (OrderedSet)):
+        if len(input_val) == 0:
+            return ""
+        if len(input_val) == 1:
+            return input_val[0]
+        result = ""
+        for gram in input_val[:-1]:
+            result += gram[0]
+        last_gram = input_val[-1]
+        return result + last_gram
+    return input_val # assume it's already a string</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="silkmoth.utils.similar" class="doc doc-heading">
+            <code class="highlight language-python">similar(reference_set_size, source_set_size, mm_score)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Computes Set-Similarity metric which checks whether two sets R and S are approximately 
+equivalent. Set-Similarity is defined as <span class="arithmatex">\(similar(R, S) = mm\_score / (|R| + |S| - mm\_score)\)</span>.</p>
+<h4 id="silkmoth.utils.similar--examples">Examples</h4>
+<pre><code>&gt;&gt;&gt; from silkmoth.utils import similar
+&gt;&gt;&gt; similar(3, 3, 3)
+1.0
+&gt;&gt;&gt; similar(3, 3, 1.5)
+0.3333333333333333
+</code></pre>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_set_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Size of set R</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>source_set_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Size of set S</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>mm_score</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Maximum matching score of R and S</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>float</code></td>            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Set-Similarity</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/utils.py</code></summary>
+              <pre class="highlight"><code class="language-python">def similar(reference_set_size: int, source_set_size: int, mm_score: float) -&gt; float:
+    """
+    Computes Set-Similarity metric which checks whether two sets R and S are approximately 
+    equivalent. Set-Similarity is defined as $similar(R, S) = mm\_score / (|R| + |S| - mm\_score)$.
+
+    Examples
+    --------
+    ```
+    &gt;&gt;&gt; from silkmoth.utils import similar
+    &gt;&gt;&gt; similar(3, 3, 3)
+    1.0
+    &gt;&gt;&gt; similar(3, 3, 1.5)
+    0.3333333333333333
+    ```
+
+    Args:
+        reference_set_size: Size of set R
+        source_set_size: Size of set S
+        mm_score: Maximum matching score of R and S
+
+    Returns:
+        float: Set-Similarity
+    """
+    return mm_score / (reference_set_size + source_set_size - mm_score)</code></pre>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

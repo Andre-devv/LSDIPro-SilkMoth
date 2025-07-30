@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://Andre-devv.github.io/LSDIPro-SilkMoth/pages/signature_generator/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Signature Generator - SilkMoth Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">SilkMoth Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../silkmoth_engine/" class="dropdown-item">Engine</a>
+</li>
+                                    
+<li>
+    <a href="../tokenizer/" class="dropdown-item">Tokenizer</a>
+</li>
+                                    
+<li>
+    <a href="../inverted_index/" class="dropdown-item">Inverted Index</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Signature Generator</a>
+</li>
+                                    
+<li>
+    <a href="../candidate_selector/" class="dropdown-item">Candidate Selector</a>
+</li>
+                                    
+<li>
+    <a href="../verifier/" class="dropdown-item">Verifier</a>
+</li>
+                                    
+<li>
+    <a href="../utils/" class="dropdown-item">Utils</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../inverted_index/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../candidate_selector/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.signature_generator" class="nav-link">signature_generator</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.signature_generator.SignatureGenerator" class="nav-link">SignatureGenerator</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="silkmoth.signature_generator"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="silkmoth.signature_generator.SignatureGenerator" class="doc doc-heading">
+            <code>SignatureGenerator</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>The signature generator executes the signature generation step in the SilkMoth
+pipeline. During signature generation SilkMoth constructs a signature for a 
+reference set R by selecting the “smallest” set of tokens from R such that 
+if another set S does not share any tokens with R's signature, R and S are 
+not related.</p>
+<p>SilkMoth supports three different signature schemes: Weighted Signature Scheme
+(Def. 5 in <a href="https://doi.org/10.14778/3115404.3115413">paper</a>), Skyline Signature
+Scheme (Def. 9), and Dichotomy Signature Scheme (Def. 10).</p>
+<h4 id="silkmoth.signature_generator.SignatureGenerator--examples">Examples</h4>
+<pre><code>&gt;&gt;&gt; from silkmoth.inverted_index import InvertedIndex
+&gt;&gt;&gt; from silkmoth.signature_generator import SignatureGenerator
+&gt;&gt;&gt; S1 = [{&quot;Apple&quot;, &quot;Pear&quot;, &quot;Car&quot;}, {&quot;Apple&quot;, &quot;Sun&quot;, &quot;Cat&quot;}]
+&gt;&gt;&gt; S2 = [{&quot;Apple&quot;, &quot;Berlin&quot;, &quot;Sun&quot;}, {&quot;Apple&quot;}]
+&gt;&gt;&gt; S = [S1, S2]
+&gt;&gt;&gt; I = InvertedIndex(S)
+&gt;&gt;&gt; R = [{&quot;Apple&quot;}, {&quot;Sun&quot;, &quot;Berlin&quot;, &quot;Paris&quot;}]
+&gt;&gt;&gt; sig_gen = SignatureGenerator()
+&gt;&gt;&gt; sig_gen.get_signature(R, I, 0.3)
+['Apple', 'Sun', 'Berlin']
+&gt;&gt;&gt; sig_gen.get_signature(R, I, 0.5)
+['Apple', 'Berlin']
+</code></pre>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src/silkmoth/signature_generator.py</code></summary>
+                <pre class="highlight"><code class="language-python">class SignatureGenerator:
+    """
+    The signature generator executes the signature generation step in the SilkMoth
+    pipeline. During signature generation SilkMoth constructs a signature for a 
+    reference set R by selecting the “smallest” set of tokens from R such that 
+    if another set S does not share any tokens with R's signature, R and S are 
+    not related.
+
+    SilkMoth supports three different signature schemes: Weighted Signature Scheme
+    (Def. 5 in [paper](https://doi.org/10.14778/3115404.3115413)), Skyline Signature
+    Scheme (Def. 9), and Dichotomy Signature Scheme (Def. 10).
+
+    Examples
+    --------
+    ```
+    &gt;&gt;&gt; from silkmoth.inverted_index import InvertedIndex
+    &gt;&gt;&gt; from silkmoth.signature_generator import SignatureGenerator
+    &gt;&gt;&gt; S1 = [{"Apple", "Pear", "Car"}, {"Apple", "Sun", "Cat"}]
+    &gt;&gt;&gt; S2 = [{"Apple", "Berlin", "Sun"}, {"Apple"}]
+    &gt;&gt;&gt; S = [S1, S2]
+    &gt;&gt;&gt; I = InvertedIndex(S)
+    &gt;&gt;&gt; R = [{"Apple"}, {"Sun", "Berlin", "Paris"}]
+    &gt;&gt;&gt; sig_gen = SignatureGenerator()
+    &gt;&gt;&gt; sig_gen.get_signature(R, I, 0.3)
+    ['Apple', 'Sun', 'Berlin']
+    &gt;&gt;&gt; sig_gen.get_signature(R, I, 0.5)
+    ['Apple', 'Berlin']
+    ```
+    """
+
+    def __init__(self):
+        """
+        Initialize the signature generator with default parameters.
+        """
+        self.sim_fun = jaccard_similarity
+        self.q = 3
+
+    def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED, sim_fun = jaccard_similarity, q=3) -&gt; list:
+        """
+        Compute a signature for a reference set according to the chosen signature type.
+
+        Args:
+            reference_set (list): Tokenized reference set.
+            inverted_index (InvertedIndex): Index to evaluate token cost.
+            delta (float): Relatedness threshold factor.
+            alpha (float): Similarity threshold factor.
+            sig_type (SigType): Type of signature.
+            sim_fun (callable): Similarity function (phi) to use.
+            q (int): Length of each q-chunk for edit similarity.
+
+        Returns:
+            list: A list of str for selected tokens forming the signature.
+        """
+        if sim_fun in (edit_similarity, N_edit_similarity):
+            self.sim_fun = sim_fun
+            self.q = q
+
+            # If q is too large, no valid weighted signature exists
+            q_bound = delta / (1 - delta)
+
+            if q &gt;= q_bound:
+                warnings.warn(
+                    f"q={q} is too large for delta = {delta:.3f}; "
+                    "no valid weighted signature exists -&gt; falling back to brute-force."
+                )
+                # returning all non-overlapping q-chunks so nothing is pruned
+                all_chunks = []
+                for elem in reference_set:
+                    joined = " ".join(elem)
+                    all_chunks += [
+                        joined[i:i+q]
+                        for i in range(0, len(joined) - q + 1, q)
+                    ]
+                return all_chunks
+
+        is_edit_sim = sim_fun in (edit_similarity, N_edit_similarity)
+        match sig_type:
+            case SigType.WEIGHTED:
+                if is_edit_sim and alpha &gt; 0:
+                    return self._generate_simthresh_signature_edit_similarity(reference_set, inverted_index, delta, alpha)
+                elif is_edit_sim and alpha == 0:
+                    return self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta)
+                else:
+                    return self._generate_weighted_signature(reference_set, inverted_index, delta)
+            case SigType.SKYLINE:
+                return self._generate_skyline_signature(reference_set, inverted_index, delta, alpha)
+            case SigType.DICHOTOMY:
+                return self._generate_dichotomy_signature(reference_set, inverted_index, delta, alpha)
+            case _:
+                raise ValueError(f"Unknown signature type") 
+
+
+    def _generate_simthresh_signature_edit_similarity(self, reference_set, inverted_index, delta, alpha) -&gt; list:
+        """
+        Builds a similarity-threshold signature for edit similarity as described in the SILKMOTH Paper in 
+        Section 7.2.
+
+        For each element r_i in the reference set, it ensures that the signature contains at least 
+        m_i = floor((1 - alpha)/alpha * |q_chunks(r_i)|) + 1 q-chunks, so that any element 
+        sharing fewer than m_i chunks cannot achieve Eds ≥ alpha.
+
+        Args:
+            reference_set (list): Tokenized reference set.
+            inverted_index (InvertedIndex): Index to evaluate token cost.
+            delta (float): Relatedness threshold factor.
+            alpha (float): Similarity threshold factor.
+        Returns:
+            list: A list of str for selected q-chunks forming the signature.
+        """
+
+        weighted_sig_edit_sim = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta))
+        simthresh_sig = set(weighted_sig_edit_sim)
+
+        for elem_tokens in reference_set:
+            # compute all q-chunks of each element
+            joined = " ".join(elem_tokens)
+            chunks = [joined[j:j+self.q] for j in range(0, len(joined) - self.q + 1, self.q)]
+            r = set(chunks)
+            m_i = floor((1 - alpha) / alpha * len(r)) + 1
+
+            # determine how many base chunks from this element are already in weighted signature
+            k_i = list(weighted_sig_edit_sim &amp; r)
+            if len(k_i) &lt; m_i:
+                # need cheapest additional chunks -&gt; sort all chunks by cost = inverted_index size
+                sorted_chunks = sorted(
+                    r,
+                    key=lambda t: len(inverted_index.get_indexes(t)) if t in inverted_index.lookup_table else float('inf')
+                )
+                # add cheapest chunks up to m_i
+                for chunk in sorted_chunks:
+                    if len(simthresh_sig &amp; r) &gt;= m_i:
+                        break
+                    simthresh_sig.add(chunk)
+
+        return list(simthresh_sig)    
+
+
+    def _generate_skyline_signature(self, reference_set, inverted_index: InvertedIndex, delta, alpha):
+        if self.sim_fun == jaccard_similarity:
+            weighted = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
+            unflattened = [weighted &amp; set(r_i) for r_i in reference_set]
+        elif self.sim_fun in (edit_similarity, N_edit_similarity):
+            weighted = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta))
+            unflattened = [weighted &amp; set(" ".join(r_i)[i:i+self.q] for i in range(0, len(" ".join(r_i)) - self.q + 1, self.q)) for r_i in reference_set]
+        else:
+            raise ValueError(f"Unknown similarity function: {self.sim_fun}")
+
+        skyline = set()
+        for i, k in enumerate(unflattened):
+            if self.sim_fun == jaccard_similarity:
+                rhs = floor((1 - alpha) * len(reference_set[i])) + 1
+            elif self.sim_fun in (edit_similarity, N_edit_similarity):
+                chunks = get_q_chunks(reference_set[i], self.q)
+                r = set(chunks)
+                rhs = floor((1 - alpha) / alpha * len(r)) + 1
+            else:
+                raise ValueError(f"Unknown similarity function: {self.sim_fun}")
+
+            if len(k) &lt; rhs:
+                skyline |= k
+            else:
+                # add tokens with minimum |I[t]|
+                tokens = list(k)
+                tokens.sort(key=lambda t: len(inverted_index.get_indexes(t)))
+                skyline = skyline.union(tokens[:rhs])
+        return list(skyline)
+
+    def _generate_dichotomy_signature(self, reference_set, inverted_index: InvertedIndex, delta, alpha):
+        """
+        Generates a signature using the Dichotomy Scheme as described in the SILKMOTH paper.
+
+        For each element r_i, it chooses between its weighted signature part (k_i) and
+        all its tokens (r_i) based on whether k_i is a subset of an optimal
+        sim-thresh signature (m_i).
+        """
+        # 1. First, generate the optimal weighted signature, K.
+        if self.sim_fun == jaccard_similarity:
+            weighted_signature_K = set(self._generate_weighted_signature(reference_set, inverted_index, delta))
+        elif self.sim_fun in (edit_similarity, N_edit_similarity):
+            weighted_signature_K = set(self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta))
+        else:
+            raise ValueError(f"Unknown similarity function: {self.sim_fun}")
+
+        final_dichotomy_sig = set()
+
+        # 2. For each element r_i, decide whether to use its k_i or the full r_i.
+        for r_i_list in reference_set:
+            if self.sim_fun == jaccard_similarity:
+                r_i = set(r_i_list)
+            elif self.sim_fun in (edit_similarity, N_edit_similarity):
+                chunks = get_q_chunks(r_i_list, self.q)
+                r_i = set(chunks)
+            else:
+                raise ValueError(f"Unknown similarity function: {self.sim_fun}")
+
+            if not r_i:
+                continue
+
+            # 3. Determine k_i: the part of the weighted signature in this element.
+            k_i = weighted_signature_K.intersection(r_i)
+
+            # 4. Determine m_i: the optimal sim-thresh signature for this element.
+
+            # 4a. Calculate the required size for the sim-thresh signature.
+            if self.sim_fun == jaccard_similarity:
+                m_i_size = floor((1 - alpha) * len(r_i)) + 1
+            elif self.sim_fun in (edit_similarity, N_edit_similarity):
+                chunks = get_q_chunks(r_i_list, self.q)
+                r = set(chunks)
+                m_i_size = floor((1 - alpha) / alpha * len(r)) + 1
+            else:
+                raise ValueError(f"Unknown similarity function: {self.sim_fun}")
+
+            # 4b. Get all tokens from the original element r_i and sort by cost.
+            element_tokens = list(r_i)
+
+            # Sort tokens by the length of their inverted index list (cost).
+            # Handle cases where a token might not be in the index.
+            def get_token_cost(token):
+                try:
+                    return len(inverted_index.get_indexes(token))
+                except ValueError:
+                    return float('inf')  # Assign a high cost if not found
+
+            element_tokens.sort(key=get_token_cost)
+
+            # 4c. The optimal m_i consists of the cheapest tokens.
+            m_i = set(element_tokens[:m_i_size])
+
+            # 5. The Decision: Apply the paper's condition.
+            # Can we get away with the cheaper weighted signature part (k_i)?
+            # Yes, if k_i is already a subset of the optimal sim-thresh signature (m_i).
+            if k_i.issubset(m_i):
+                # Decision: Use the cheaper weighted signature tokens.
+                final_dichotomy_sig.update(k_i)
+            else:
+                # Decision: Fall back to the safe, more expensive option.
+                final_dichotomy_sig.update(r_i)
+
+        return list(final_dichotomy_sig)
+
+
+    def _generate_weighted_signature(self, reference_set, inverted_index, delta):
+        if delta &lt;= 0.0:
+            return []
+
+        n = len(reference_set)
+        theta = delta * n  # required covered fraction ,  delta * |R| in paper
+
+        # 1) Build token: elements map and aggregate token values
+        token_to_elems = defaultdict(list)
+        token_value = {}
+
+        for i, elem in enumerate(reference_set): 
+            if not elem:
+                warnings.warn(f"Element at index {i} is empty and will be skipped.")
+                continue
+            unique_tokens = set(elem) # remove duplicate tokens inside each element
+            weight = 1.0 / len(unique_tokens)
+
+            for t in unique_tokens: 
+                token_to_elems[t].append(i) 
+                token_value[t] = token_value.get(t, 0.0) + weight # value = sum of weights (for each token)
+
+        # 2) Build min-heap of (cost/value, token)
+        heap = []
+        for t, val in token_value.items():
+            if val &lt;= 0:
+                continue
+            try:
+                cost = len(inverted_index.get_indexes(t)) # look up each token in inverted index to count in how many sets it is = cost
+            except ValueError:
+                # Token not in index: assign infinite cost to deprioritize
+                cost = float('inf')
+            heapq.heappush(heap, (cost / val, t)) # goal small ratio: cost/value
+
+        # 3) Selection with greedy algorithm
+        selected_sig = set()
+        r_sizes = [len(set(elem)) if elem else 0 for elem in reference_set]
+        total_loss = float(n)
+        current_k_counts = [0] * n
+
+        # while heap and total_loss &gt;= theta:
+        while heap and total_loss &gt;= theta:
+            # 1.
+            ratio, t = heapq.heappop(heap)  # pull best token with lowest cost/value from heap
+            if t in selected_sig:
+                continue
+            if ratio == float('inf'):
+                break
+
+            # 2.
+            selected_sig.add(t)
+
+            # 3.
+            for i in range(n):
+                if r_sizes[i] == 0:
+                    continue
+
+                # Calculate |k_i|: number of tokens from reference_set[i] also in selected_sig
+                current_k_counts[i] = len(set(reference_set[i]).intersection(selected_sig))
+
+            # 4.
+            total_loss = sum(
+                (r_sizes[i] - current_k_counts[i]) / r_sizes[i]
+                for i in range(n) if r_sizes[i] &gt; 0
+            )
+
+        return list(selected_sig)
+
+    # Following the same logic of _generate_weighted_signature
+    def _generate_weighted_signature_edit_similarity(self, reference_set, inverted_index, delta):
+        if delta &lt;= 0.0:
+            return []
+
+        n = len(reference_set)
+        theta = delta * n  
+
+        token_to_elems = defaultdict(list)   # map q-chunk -&gt; list of element indexes
+        token_value = {}                     # map q-chunk -&gt; accumulated value
+
+        r_sizes = []        # number of q-chunks per element
+        element_chunks = [] # list of q-chunks per element
+
+        # Step 1: Build q-chunks and token values
+        for i, elem_tokens in enumerate(reference_set):
+            if not elem_tokens:
+                warnings.warn(f"Element at index {i} is empty and will be skipped.")
+                r_sizes.append(0)
+                element_chunks.append([])
+                continue
+
+            # Join the list of tokens into a string
+            joined = " ".join(elem_tokens)
+
+            # Extract non-overlapping q-chunks
+            chunks = [joined[j:j+self.q] for j in range(0, len(joined) - self.q + 1, self.q)]
+            chunk_set = set(chunks)
+            element_chunks.append(chunks)
+
+            num_chunks = len(chunk_set)
+            r_sizes.append(num_chunks)
+
+            if num_chunks == 0:
+                continue
+
+            weight = 1.0 / num_chunks
+            for chunk in chunk_set:
+                token_to_elems[chunk].append(i)
+                token_value[chunk] = token_value.get(chunk, 0.0) + weight # value = sum of weights (for each chunk)
+
+        # Step 2: Build heap (cost/value, token)
+        heap = []
+        for chunk, val in token_value.items():
+            if val &lt;= 0:
+                continue
+            try:
+                cost = len(inverted_index.get_indexes(chunk))  # number of sets where chunk appears
+            except ValueError:
+                cost = float('inf')
+            heapq.heappush(heap, (cost / val, chunk))
+
+        # Step 3: Greedy selection
+        selected_sig = set()
+        current_k_counts = [0] * n
+        total_score = 0.0  
+
+        while heap and total_score &lt; theta:
+            ratio, chunk = heapq.heappop(heap)
+            if chunk in selected_sig:
+                continue
+            if ratio == float('inf'):
+                break
+
+            selected_sig.add(chunk)
+
+            for i in range(n):
+                if r_sizes[i] == 0:
+                    continue
+                if chunk in element_chunks[i]:
+                    current_k_counts[i] += 1
+
+            total_score = sum(
+                r_sizes[i] / (r_sizes[i] + current_k_counts[i])
+                for i in range(n) if r_sizes[i] &gt; 0
+            )
+
+        return list(selected_sig)</code></pre>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.signature_generator.SignatureGenerator.__init__" class="doc doc-heading">
+            <code class="highlight language-python">__init__()</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the signature generator with default parameters.</p>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/signature_generator.py</code></summary>
+              <pre class="highlight"><code class="language-python">def __init__(self):
+    """
+    Initialize the signature generator with default parameters.
+    """
+    self.sim_fun = jaccard_similarity
+    self.q = 3</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.signature_generator.SignatureGenerator.get_signature" class="doc doc-heading">
+            <code class="highlight language-python">get_signature(reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED, sim_fun=jaccard_similarity, q=3)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Compute a signature for a reference set according to the chosen signature type.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_set</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokenized reference set.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>inverted_index</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="InvertedIndex (silkmoth.inverted_index.InvertedIndex)" href="../inverted_index/#silkmoth.inverted_index.InvertedIndex">InvertedIndex</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Index to evaluate token cost.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>delta</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relatedness threshold factor.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>alpha</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity threshold factor.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sig_type</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="SigType (silkmoth.utils.SigType)" href="../utils/#silkmoth.utils.SigType">SigType</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Type of signature.</p>
+              </div>
+            </td>
+            <td>
+                  <code><span title="silkmoth.utils.SigType.WEIGHTED">WEIGHTED</span></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_fun</code>
+            </td>
+            <td>
+                  <code><span title="callable">callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity function (phi) to use.</p>
+              </div>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="jaccard_similarity(x, y, sim_thresh=0) (silkmoth.utils.jaccard_similarity)" href="../utils/#silkmoth.utils.jaccard_similarity">jaccard_similarity</a></code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>q</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Length of each q-chunk for edit similarity.</p>
+              </div>
+            </td>
+            <td>
+                  <code>3</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>list</code></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of str for selected tokens forming the signature.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/signature_generator.py</code></summary>
+              <pre class="highlight"><code class="language-python">def get_signature(self, reference_set, inverted_index, delta, alpha=0, sig_type=SigType.WEIGHTED, sim_fun = jaccard_similarity, q=3) -&gt; list:
+    """
+    Compute a signature for a reference set according to the chosen signature type.
+
+    Args:
+        reference_set (list): Tokenized reference set.
+        inverted_index (InvertedIndex): Index to evaluate token cost.
+        delta (float): Relatedness threshold factor.
+        alpha (float): Similarity threshold factor.
+        sig_type (SigType): Type of signature.
+        sim_fun (callable): Similarity function (phi) to use.
+        q (int): Length of each q-chunk for edit similarity.
+
+    Returns:
+        list: A list of str for selected tokens forming the signature.
+    """
+    if sim_fun in (edit_similarity, N_edit_similarity):
+        self.sim_fun = sim_fun
+        self.q = q
+
+        # If q is too large, no valid weighted signature exists
+        q_bound = delta / (1 - delta)
+
+        if q &gt;= q_bound:
+            warnings.warn(
+                f"q={q} is too large for delta = {delta:.3f}; "
+                "no valid weighted signature exists -&gt; falling back to brute-force."
+            )
+            # returning all non-overlapping q-chunks so nothing is pruned
+            all_chunks = []
+            for elem in reference_set:
+                joined = " ".join(elem)
+                all_chunks += [
+                    joined[i:i+q]
+                    for i in range(0, len(joined) - q + 1, q)
+                ]
+            return all_chunks
+
+    is_edit_sim = sim_fun in (edit_similarity, N_edit_similarity)
+    match sig_type:
+        case SigType.WEIGHTED:
+            if is_edit_sim and alpha &gt; 0:
+                return self._generate_simthresh_signature_edit_similarity(reference_set, inverted_index, delta, alpha)
+            elif is_edit_sim and alpha == 0:
+                return self._generate_weighted_signature_edit_similarity(reference_set, inverted_index, delta)
+            else:
+                return self._generate_weighted_signature(reference_set, inverted_index, delta)
+        case SigType.SKYLINE:
+            return self._generate_skyline_signature(reference_set, inverted_index, delta, alpha)
+        case SigType.DICHOTOMY:
+            return self._generate_dichotomy_signature(reference_set, inverted_index, delta, alpha)
+        case _:
+            raise ValueError(f"Unknown signature type") </code></pre>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

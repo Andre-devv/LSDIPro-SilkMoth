@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://Andre-devv.github.io/LSDIPro-SilkMoth/pages/candidate_selector/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Candidate Selector - SilkMoth Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">SilkMoth Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../silkmoth_engine/" class="dropdown-item">Engine</a>
+</li>
+                                    
+<li>
+    <a href="../tokenizer/" class="dropdown-item">Tokenizer</a>
+</li>
+                                    
+<li>
+    <a href="../inverted_index/" class="dropdown-item">Inverted Index</a>
+</li>
+                                    
+<li>
+    <a href="../signature_generator/" class="dropdown-item">Signature Generator</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Candidate Selector</a>
+</li>
+                                    
+<li>
+    <a href="../verifier/" class="dropdown-item">Verifier</a>
+</li>
+                                    
+<li>
+    <a href="../utils/" class="dropdown-item">Utils</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../signature_generator/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../verifier/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.candidate_selector" class="nav-link">candidate_selector</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.candidate_selector.CandidateSelector" class="nav-link">CandidateSelector</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="silkmoth.candidate_selector"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="silkmoth.candidate_selector.CandidateSelector" class="doc doc-heading">
+            <code>CandidateSelector</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>The candidate selector executes the candidate selection step in the SilkMoth
+pipeline. After signature generation SilkMoth accesses the inverted index to 
+get all sets which contain a token in the signature to form an initial set 
+of candidates.</p>
+<p>The size of the candidate set can be reduced further by applying the check 
+or nearest neighbour filters in the refinement step of the SilkMoth pipeline.</p>
+<h4 id="silkmoth.candidate_selector.CandidateSelector--examples">Examples</h4>
+<pre><code>&gt;&gt;&gt; from silkmoth.candidate_selector import CandidateSelector
+&gt;&gt;&gt; from silkmoth.utils import similar, jaccard_similarity
+&gt;&gt;&gt; from silkmoth.inverted_index import InvertedIndex
+&gt;&gt;&gt; S1 = [{&quot;Apple&quot;, &quot;Pear&quot;, &quot;Car&quot;}, {&quot;Apple&quot;, &quot;Sun&quot;, &quot;Cat&quot;}]
+&gt;&gt;&gt; S2 = [{&quot;Something&quot;, &quot;Else&quot;}]
+&gt;&gt;&gt; S3 = [{&quot;Apple&quot;, &quot;Berlin&quot;, &quot;Sun&quot;}, {&quot;Apple&quot;}]
+&gt;&gt;&gt; S = [S1, S2, S3]
+&gt;&gt;&gt; signature = [&quot;Apple&quot;, &quot;Berlin&quot;]
+&gt;&gt;&gt; I = InvertedIndex(S)
+&gt;&gt;&gt; cand_selector = CandidateSelector(jaccard_similarity, similar, 0.7)
+&gt;&gt;&gt; cand_selector.get_candidates(signature, I, 2)
+{0, 2}
+</code></pre>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src/silkmoth/candidate_selector.py</code></summary>
+                <pre class="highlight"><code class="language-python">class CandidateSelector:
+    """
+    The candidate selector executes the candidate selection step in the SilkMoth
+    pipeline. After signature generation SilkMoth accesses the inverted index to 
+    get all sets which contain a token in the signature to form an initial set 
+    of candidates.
+
+    The size of the candidate set can be reduced further by applying the check 
+    or nearest neighbour filters in the refinement step of the SilkMoth pipeline.
+
+    Examples
+    --------
+    ```
+    &gt;&gt;&gt; from silkmoth.candidate_selector import CandidateSelector
+    &gt;&gt;&gt; from silkmoth.utils import similar, jaccard_similarity
+    &gt;&gt;&gt; from silkmoth.inverted_index import InvertedIndex
+    &gt;&gt;&gt; S1 = [{"Apple", "Pear", "Car"}, {"Apple", "Sun", "Cat"}]
+    &gt;&gt;&gt; S2 = [{"Something", "Else"}]
+    &gt;&gt;&gt; S3 = [{"Apple", "Berlin", "Sun"}, {"Apple"}]
+    &gt;&gt;&gt; S = [S1, S2, S3]
+    &gt;&gt;&gt; signature = ["Apple", "Berlin"]
+    &gt;&gt;&gt; I = InvertedIndex(S)
+    &gt;&gt;&gt; cand_selector = CandidateSelector(jaccard_similarity, similar, 0.7)
+    &gt;&gt;&gt; cand_selector.get_candidates(signature, I, 2)
+    {0, 2}
+    ```
+    """
+
+    def __init__(self, similarity_func, sim_metric, related_thresh, sim_thresh=0.0, q = 3):
+        """
+        Initialize the candidate selector with some parameters.
+
+        Args:
+            similarity_func (callable): Similarity function phi(r, s) (e.g., Jaccard).
+            sim_metric (callable): Similarity metric related(R, S) (e.g., contain).
+            related_thresh (float): Relatedness threshold delta.
+            sim_thresh (float): Similarity threshold alpha.
+            q (int): q-chunk length for edit similarity.
+        """
+        self.similarity = similarity_func
+        self.sim_metric = sim_metric
+        self.delta = related_thresh
+        self.alpha = sim_thresh
+        self.q = q
+
+    def get_candidates(self, signature, inverted_index, ref_size) -&gt; set:
+        """
+        Retrieve candidate set indices using token signature lookup.
+
+        Args:
+            signature (list): Signature tokens for a reference set.
+            inverted_index (InvertedIndex): Instance of the custom InvertedIndex class.
+            ref_size (int): Size of set R.
+
+        Returns:
+            set: Indices of candidate sets containing at least one signature token.
+        """
+        candidates = set()
+
+        for token in signature:
+            try:
+                idx_list = inverted_index.get_indexes(token)
+                for set_idx, _ in idx_list:
+                    src_size = len(inverted_index.get_set(set_idx))
+                    if self.verify_size(ref_size, src_size):
+                        candidates.add(set_idx)
+            except ValueError:
+                # token not found in inverted index; safely ignore
+                continue
+
+        return candidates
+
+    def verify_size(self, ref_size, src_size) -&gt; bool:
+        """
+        Checks if sets can be related based on their sizes. Set-Containment is 
+        only defined for |R|&lt;=|S|. For Set-Similarity we should compare only 
+        similar size sets.
+
+        Args:
+            ref_size (int): Size of set R.
+            src_size (int): Size of (possible) set S.
+
+        Returns:
+            bool: True if both sets could be related based on their size, False otherwise.
+        """
+        # case 1: Set-Containment
+        if self.sim_metric == contain and ref_size &gt; src_size:
+            return False
+        # case 2: Set-Similarity
+        if self.sim_metric == similar:
+            if min(ref_size, src_size) &lt; self.delta * max(ref_size, src_size):
+                return False
+        return True   
+
+    def check_filter(self, R, K, candidates, inverted_index) -&gt; tuple:
+        """
+        Apply check filter to prune weak candidate sets.
+
+        Args:
+            R (list of list): Tokenized reference set.
+            K (set): Flattened signature tokens.
+            candidates (set): Candidate set indices from get_candidates().
+            inverted_index (InvertedIndex): For retrieving sets.
+
+        Returns:
+            tuple:
+                set: Candidate indices that pass the check filter.
+                dict: c_idx -&gt; dict{r_idx -&gt; max_sim}.
+        """
+        filtered = set()
+        match_map = dict()
+        if self.similarity is jaccard_similarity:
+            k_i_sets = [set(r_i).intersection(K) for r_i in R]
+        elif self.similarity in (edit_similarity, N_edit_similarity):
+            k_i_sets = [set(get_q_grams(r_i, self.q)).intersection(K) for r_i in R]
+        else:
+            raise ValueError("Unsupported similarity function.")
+
+        for c_idx in candidates:
+            matched = self.create_match_map(R, k_i_sets, c_idx, inverted_index)
+
+            if matched:
+                filtered.add(c_idx)
+                match_map[c_idx] = matched
+
+        return filtered, match_map
+
+    def create_match_map(self, R, k_i_sets, c_idx, inverted_index) -&gt; dict:
+        """
+        Create a match map for a specific candidate index.
+
+        Args:
+            R (list of list): Tokenized reference set.
+            k_i_sets (list of sets): Unflattened signature.
+            c_idx (int): Candidate set index.
+            inverted_index (InvertedIndex): For retrieving sets.
+
+        Returns:
+            dict: r_idx -&gt; max_sim for matched reference sets.
+        """
+        S = inverted_index.get_set(c_idx)
+        matched = {}
+
+        for r_idx, (r_i, k_i) in enumerate(zip(R, k_i_sets)):
+            if not r_i or not k_i:
+                continue
+
+            if self.similarity in (edit_similarity, N_edit_similarity):
+                r_i = get_q_grams(r_i, self.q)
+                k_i = set(get_q_grams(k_i, self.q))
+                denominator = len(r_i) + ceil(len(r_i) / self.q) - len(k_i)
+                threshold = len(r_i) / denominator if denominator != 0 else 0.0
+            else:
+                denominator = len(r_i)
+                threshold = (len(r_i) - len(k_i)) / denominator if denominator != 0 else 0.0
+
+            r_set = set(r_i)
+            max_sim = 0.0
+
+            for token in k_i:
+                try:
+                    entries = inverted_index.get_indexes_binary(token, c_idx)
+                    for s_idx, e_idx in entries:
+                        if s_idx != c_idx:
+                            continue
+                        s = S[e_idx]
+                        sim = self.similarity(r_set, set(s), self.alpha)
+                        if sim &gt;= threshold:
+                            max_sim = max(max_sim, sim)
+                except ValueError:
+                    continue
+
+            if max_sim &gt;= threshold:
+                matched[r_idx] = max_sim
+
+        return matched
+
+    def _nn_search(self, r_set, S, c_idx, inverted_index) -&gt; float:
+        """
+        Find the maximum similarity between r and elements s ∈ S[C] that share at least one token with r using
+        the inverted index for efficiency.
+
+        Args:
+            r_set (set): Reference element tokens.
+            S (list of list): Elements of candidate set S[c_idx].
+            c_idx (int): Index of candidate set in inverted index.
+            inverted_index (InvertedIndex): For fetching token locations.
+
+        Returns:
+            float: Maximum similarity between r and any s ∈ S[c_idx].
+        """
+        # seen = set()
+        max_sim = 0.0
+        for token in r_set:
+            try:
+                entries = inverted_index.get_indexes_binary(token,c_idx)
+                for s_idx, e_idx in entries:
+                    if s_idx != c_idx:
+                        continue
+                    s = S[e_idx]
+                    sim = self.similarity(r_set, set(s), self.alpha)
+                    max_sim = max(max_sim, sim)
+            except ValueError:
+                continue
+        return max_sim
+
+
+    def nn_filter(self, R, K, candidates, inverted_index, threshold, match_map) -&gt; set:
+        """
+        Nearest Neighbor Filter (Algorithm 2 from SilkMoth paper).
+
+        Args:
+            R (list of list): Tokenized reference set.
+            K (set): Flattened signature tokens.
+            candidates (set): Candidate indices from check filter.
+            inverted_index (InvertedIndex): To retrieve sets and indexes.
+            threshold (float): Relatedness threshold δ (between 0 and 1).
+            match_map (dict): Maps candidate set index to matched rᵢ indices and their max sim (from check filter).
+
+        Returns:
+            set: Final filtered candidate indices that pass the NN filter.
+        """
+        n = len(R)
+        theta = threshold * n
+
+        if self.similarity is jaccard_similarity:
+            k_i_sets = [set(r_i).intersection(K) for r_i in R]
+            r_i_list = R
+        elif self.similarity in (edit_similarity, N_edit_similarity):
+            k_i_sets = [set(get_q_grams(r_i, self.q)).intersection(K) for r_i in R]
+            r_i_list = [get_q_grams(r, self.q) for r in R]
+        else:
+            raise ValueError("Unsupported similarity function.")
+
+        final_filtered = set()
+
+        total_init = 0
+        for r_idx, r_i in enumerate(R):
+            if not r_i:
+                continue
+            k_i = k_i_sets[r_idx]
+            base_loss = self.calc_base_loss(k_i, r_i)
+            total_init += base_loss
+
+        for c_idx in candidates:
+            S = inverted_index.get_set(c_idx)
+            if self.alpha &gt; 0:
+                S_tokens = set()
+                for s in S:
+                    S_tokens.update(s)
+
+            # Check if match_map is provided, otherwise create it
+            if match_map is None:
+                matched = self.create_match_map(R, K, c_idx, inverted_index)
+            else:
+                matched = match_map.get(c_idx, {})
+
+            # Step 1: initialize total estimate
+            total = total_init
+
+            # Step 2: for matched rᵢ, computational reuse of sim and adjust total
+            if matched:
+                for r_idx, sim in matched.items():
+                    r_i = r_i_list[r_idx]
+                    if not r_i:
+                        continue
+                    k_i = k_i_sets[r_idx]
+                    base_loss = self.calc_base_loss(k_i, r_i)
+                    total += sim - base_loss 
+
+            # Step 3: for non-matched rᵢ, compute NN and adjust total
+            for r_idx in set(range(n)) - matched.keys():
+                r_i = r_i_list[r_idx]
+                if not r_i:
+                    continue
+                k_i = k_i_sets[r_idx]
+                base_loss = self.calc_base_loss(k_i, r_i)
+
+                r_set = set(r_i)
+
+                # Case alpha &gt; 0
+                if (self.alpha &gt; 0 and len(k_i) &gt;= floor((1 - self.alpha) * len(r_i)) + 1 
+                    and k_i.isdisjoint(S_tokens)):
+                    nn_sim = 0
+                else:
+                    nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
+
+                total += nn_sim - base_loss
+                if total &lt; theta:
+                    break
+
+            if total &gt;= theta:
+                final_filtered.add(c_idx)
+
+        return final_filtered
+
+    def calc_base_loss(self, k_i, r_i):
+        if self.similarity in (edit_similarity, N_edit_similarity):
+            denominator = len(r_i) + ceil(len(r_i) / self.q) - len(k_i)
+            B_i = len(r_i) / denominator if denominator != 0 else 0.0
+            base_loss = 1.0 - B_i
+        else:
+            denominator = len(r_i)
+            base_loss = (len(r_i) - len(k_i)) / denominator if denominator != 0 else 0.0
+        return base_loss</code></pre>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.candidate_selector.CandidateSelector.__init__" class="doc doc-heading">
+            <code class="highlight language-python">__init__(similarity_func, sim_metric, related_thresh, sim_thresh=0.0, q=3)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the candidate selector with some parameters.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>similarity_func</code>
+            </td>
+            <td>
+                  <code><span title="callable">callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity function phi(r, s) (e.g., Jaccard).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_metric</code>
+            </td>
+            <td>
+                  <code><span title="callable">callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity metric related(R, S) (e.g., contain).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>related_thresh</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relatedness threshold delta.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_thresh</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity threshold alpha.</p>
+              </div>
+            </td>
+            <td>
+                  <code>0.0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>q</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>q-chunk length for edit similarity.</p>
+              </div>
+            </td>
+            <td>
+                  <code>3</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/candidate_selector.py</code></summary>
+              <pre class="highlight"><code class="language-python">def __init__(self, similarity_func, sim_metric, related_thresh, sim_thresh=0.0, q = 3):
+    """
+    Initialize the candidate selector with some parameters.
+
+    Args:
+        similarity_func (callable): Similarity function phi(r, s) (e.g., Jaccard).
+        sim_metric (callable): Similarity metric related(R, S) (e.g., contain).
+        related_thresh (float): Relatedness threshold delta.
+        sim_thresh (float): Similarity threshold alpha.
+        q (int): q-chunk length for edit similarity.
+    """
+    self.similarity = similarity_func
+    self.sim_metric = sim_metric
+    self.delta = related_thresh
+    self.alpha = sim_thresh
+    self.q = q</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.candidate_selector.CandidateSelector.check_filter" class="doc doc-heading">
+            <code class="highlight language-python">check_filter(R, K, candidates, inverted_index)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Apply check filter to prune weak candidate sets.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>R</code>
+            </td>
+            <td>
+                  <code>list of list</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokenized reference set.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>K</code>
+            </td>
+            <td>
+                  <code><span title="set">set</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flattened signature tokens.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>candidates</code>
+            </td>
+            <td>
+                  <code><span title="set">set</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Candidate set indices from get_candidates().</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>inverted_index</code>
+            </td>
+            <td>
+                  <code><span title="InvertedIndex">InvertedIndex</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>For retrieving sets.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>tuple</code></td>            <td>
+                  <code><span title="tuple">tuple</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>set: Candidate indices that pass the check filter.
+dict: c_idx -&gt; dict{r_idx -&gt; max_sim}.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/candidate_selector.py</code></summary>
+              <pre class="highlight"><code class="language-python">def check_filter(self, R, K, candidates, inverted_index) -&gt; tuple:
+    """
+    Apply check filter to prune weak candidate sets.
+
+    Args:
+        R (list of list): Tokenized reference set.
+        K (set): Flattened signature tokens.
+        candidates (set): Candidate set indices from get_candidates().
+        inverted_index (InvertedIndex): For retrieving sets.
+
+    Returns:
+        tuple:
+            set: Candidate indices that pass the check filter.
+            dict: c_idx -&gt; dict{r_idx -&gt; max_sim}.
+    """
+    filtered = set()
+    match_map = dict()
+    if self.similarity is jaccard_similarity:
+        k_i_sets = [set(r_i).intersection(K) for r_i in R]
+    elif self.similarity in (edit_similarity, N_edit_similarity):
+        k_i_sets = [set(get_q_grams(r_i, self.q)).intersection(K) for r_i in R]
+    else:
+        raise ValueError("Unsupported similarity function.")
+
+    for c_idx in candidates:
+        matched = self.create_match_map(R, k_i_sets, c_idx, inverted_index)
+
+        if matched:
+            filtered.add(c_idx)
+            match_map[c_idx] = matched
+
+    return filtered, match_map</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.candidate_selector.CandidateSelector.create_match_map" class="doc doc-heading">
+            <code class="highlight language-python">create_match_map(R, k_i_sets, c_idx, inverted_index)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Create a match map for a specific candidate index.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>R</code>
+            </td>
+            <td>
+                  <code>list of list</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokenized reference set.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>k_i_sets</code>
+            </td>
+            <td>
+                  <code>list of sets</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Unflattened signature.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>c_idx</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Candidate set index.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>inverted_index</code>
+            </td>
+            <td>
+                  <code><span title="InvertedIndex">InvertedIndex</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>For retrieving sets.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>dict</code></td>            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>r_idx -&gt; max_sim for matched reference sets.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/candidate_selector.py</code></summary>
+              <pre class="highlight"><code class="language-python">def create_match_map(self, R, k_i_sets, c_idx, inverted_index) -&gt; dict:
+    """
+    Create a match map for a specific candidate index.
+
+    Args:
+        R (list of list): Tokenized reference set.
+        k_i_sets (list of sets): Unflattened signature.
+        c_idx (int): Candidate set index.
+        inverted_index (InvertedIndex): For retrieving sets.
+
+    Returns:
+        dict: r_idx -&gt; max_sim for matched reference sets.
+    """
+    S = inverted_index.get_set(c_idx)
+    matched = {}
+
+    for r_idx, (r_i, k_i) in enumerate(zip(R, k_i_sets)):
+        if not r_i or not k_i:
+            continue
+
+        if self.similarity in (edit_similarity, N_edit_similarity):
+            r_i = get_q_grams(r_i, self.q)
+            k_i = set(get_q_grams(k_i, self.q))
+            denominator = len(r_i) + ceil(len(r_i) / self.q) - len(k_i)
+            threshold = len(r_i) / denominator if denominator != 0 else 0.0
+        else:
+            denominator = len(r_i)
+            threshold = (len(r_i) - len(k_i)) / denominator if denominator != 0 else 0.0
+
+        r_set = set(r_i)
+        max_sim = 0.0
+
+        for token in k_i:
+            try:
+                entries = inverted_index.get_indexes_binary(token, c_idx)
+                for s_idx, e_idx in entries:
+                    if s_idx != c_idx:
+                        continue
+                    s = S[e_idx]
+                    sim = self.similarity(r_set, set(s), self.alpha)
+                    if sim &gt;= threshold:
+                        max_sim = max(max_sim, sim)
+            except ValueError:
+                continue
+
+        if max_sim &gt;= threshold:
+            matched[r_idx] = max_sim
+
+    return matched</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.candidate_selector.CandidateSelector.get_candidates" class="doc doc-heading">
+            <code class="highlight language-python">get_candidates(signature, inverted_index, ref_size)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Retrieve candidate set indices using token signature lookup.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>signature</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Signature tokens for a reference set.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>inverted_index</code>
+            </td>
+            <td>
+                  <code><span title="InvertedIndex">InvertedIndex</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Instance of the custom InvertedIndex class.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>ref_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Size of set R.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>set</code></td>            <td>
+                  <code><span title="set">set</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Indices of candidate sets containing at least one signature token.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/candidate_selector.py</code></summary>
+              <pre class="highlight"><code class="language-python">def get_candidates(self, signature, inverted_index, ref_size) -&gt; set:
+    """
+    Retrieve candidate set indices using token signature lookup.
+
+    Args:
+        signature (list): Signature tokens for a reference set.
+        inverted_index (InvertedIndex): Instance of the custom InvertedIndex class.
+        ref_size (int): Size of set R.
+
+    Returns:
+        set: Indices of candidate sets containing at least one signature token.
+    """
+    candidates = set()
+
+    for token in signature:
+        try:
+            idx_list = inverted_index.get_indexes(token)
+            for set_idx, _ in idx_list:
+                src_size = len(inverted_index.get_set(set_idx))
+                if self.verify_size(ref_size, src_size):
+                    candidates.add(set_idx)
+        except ValueError:
+            # token not found in inverted index; safely ignore
+            continue
+
+    return candidates</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.candidate_selector.CandidateSelector.nn_filter" class="doc doc-heading">
+            <code class="highlight language-python">nn_filter(R, K, candidates, inverted_index, threshold, match_map)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Nearest Neighbor Filter (Algorithm 2 from SilkMoth paper).</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>R</code>
+            </td>
+            <td>
+                  <code>list of list</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokenized reference set.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>K</code>
+            </td>
+            <td>
+                  <code><span title="set">set</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flattened signature tokens.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>candidates</code>
+            </td>
+            <td>
+                  <code><span title="set">set</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Candidate indices from check filter.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>inverted_index</code>
+            </td>
+            <td>
+                  <code><span title="InvertedIndex">InvertedIndex</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>To retrieve sets and indexes.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>threshold</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relatedness threshold δ (between 0 and 1).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>match_map</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Maps candidate set index to matched rᵢ indices and their max sim (from check filter).</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>set</code></td>            <td>
+                  <code><span title="set">set</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Final filtered candidate indices that pass the NN filter.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/candidate_selector.py</code></summary>
+              <pre class="highlight"><code class="language-python">def nn_filter(self, R, K, candidates, inverted_index, threshold, match_map) -&gt; set:
+    """
+    Nearest Neighbor Filter (Algorithm 2 from SilkMoth paper).
+
+    Args:
+        R (list of list): Tokenized reference set.
+        K (set): Flattened signature tokens.
+        candidates (set): Candidate indices from check filter.
+        inverted_index (InvertedIndex): To retrieve sets and indexes.
+        threshold (float): Relatedness threshold δ (between 0 and 1).
+        match_map (dict): Maps candidate set index to matched rᵢ indices and their max sim (from check filter).
+
+    Returns:
+        set: Final filtered candidate indices that pass the NN filter.
+    """
+    n = len(R)
+    theta = threshold * n
+
+    if self.similarity is jaccard_similarity:
+        k_i_sets = [set(r_i).intersection(K) for r_i in R]
+        r_i_list = R
+    elif self.similarity in (edit_similarity, N_edit_similarity):
+        k_i_sets = [set(get_q_grams(r_i, self.q)).intersection(K) for r_i in R]
+        r_i_list = [get_q_grams(r, self.q) for r in R]
+    else:
+        raise ValueError("Unsupported similarity function.")
+
+    final_filtered = set()
+
+    total_init = 0
+    for r_idx, r_i in enumerate(R):
+        if not r_i:
+            continue
+        k_i = k_i_sets[r_idx]
+        base_loss = self.calc_base_loss(k_i, r_i)
+        total_init += base_loss
+
+    for c_idx in candidates:
+        S = inverted_index.get_set(c_idx)
+        if self.alpha &gt; 0:
+            S_tokens = set()
+            for s in S:
+                S_tokens.update(s)
+
+        # Check if match_map is provided, otherwise create it
+        if match_map is None:
+            matched = self.create_match_map(R, K, c_idx, inverted_index)
+        else:
+            matched = match_map.get(c_idx, {})
+
+        # Step 1: initialize total estimate
+        total = total_init
+
+        # Step 2: for matched rᵢ, computational reuse of sim and adjust total
+        if matched:
+            for r_idx, sim in matched.items():
+                r_i = r_i_list[r_idx]
+                if not r_i:
+                    continue
+                k_i = k_i_sets[r_idx]
+                base_loss = self.calc_base_loss(k_i, r_i)
+                total += sim - base_loss 
+
+        # Step 3: for non-matched rᵢ, compute NN and adjust total
+        for r_idx in set(range(n)) - matched.keys():
+            r_i = r_i_list[r_idx]
+            if not r_i:
+                continue
+            k_i = k_i_sets[r_idx]
+            base_loss = self.calc_base_loss(k_i, r_i)
+
+            r_set = set(r_i)
+
+            # Case alpha &gt; 0
+            if (self.alpha &gt; 0 and len(k_i) &gt;= floor((1 - self.alpha) * len(r_i)) + 1 
+                and k_i.isdisjoint(S_tokens)):
+                nn_sim = 0
+            else:
+                nn_sim = self._nn_search(r_set, S, c_idx, inverted_index)
+
+            total += nn_sim - base_loss
+            if total &lt; theta:
+                break
+
+        if total &gt;= theta:
+            final_filtered.add(c_idx)
+
+    return final_filtered</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.candidate_selector.CandidateSelector.verify_size" class="doc doc-heading">
+            <code class="highlight language-python">verify_size(ref_size, src_size)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Checks if sets can be related based on their sizes. Set-Containment is 
+only defined for |R|&lt;=|S|. For Set-Similarity we should compare only 
+similar size sets.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>ref_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Size of set R.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>src_size</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Size of (possible) set S.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>bool</code></td>            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>True if both sets could be related based on their size, False otherwise.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/candidate_selector.py</code></summary>
+              <pre class="highlight"><code class="language-python">def verify_size(self, ref_size, src_size) -&gt; bool:
+    """
+    Checks if sets can be related based on their sizes. Set-Containment is 
+    only defined for |R|&lt;=|S|. For Set-Similarity we should compare only 
+    similar size sets.
+
+    Args:
+        ref_size (int): Size of set R.
+        src_size (int): Size of (possible) set S.
+
+    Returns:
+        bool: True if both sets could be related based on their size, False otherwise.
+    """
+    # case 1: Set-Containment
+    if self.sim_metric == contain and ref_size &gt; src_size:
+        return False
+    # case 2: Set-Similarity
+    if self.sim_metric == similar:
+        if min(ref_size, src_size) &lt; self.delta * max(ref_size, src_size):
+            return False
+    return True   </code></pre>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://Andre-devv.github.io/LSDIPro-SilkMoth/pages/inverted_index/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Inverted Index - SilkMoth Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">SilkMoth Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../silkmoth_engine/" class="dropdown-item">Engine</a>
+</li>
+                                    
+<li>
+    <a href="../tokenizer/" class="dropdown-item">Tokenizer</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Inverted Index</a>
+</li>
+                                    
+<li>
+    <a href="../signature_generator/" class="dropdown-item">Signature Generator</a>
+</li>
+                                    
+<li>
+    <a href="../candidate_selector/" class="dropdown-item">Candidate Selector</a>
+</li>
+                                    
+<li>
+    <a href="../verifier/" class="dropdown-item">Verifier</a>
+</li>
+                                    
+<li>
+    <a href="../utils/" class="dropdown-item">Utils</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../tokenizer/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../signature_generator/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.inverted_index" class="nav-link">inverted_index</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.inverted_index.InvertedIndex" class="nav-link">InvertedIndex</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="silkmoth.inverted_index"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="silkmoth.inverted_index.InvertedIndex" class="doc doc-heading">
+            <code>InvertedIndex</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>The inverted index</p>
+<ul>
+<li>allows to lookup all appearances of a token in a collection of tokenized sets</li>
+<li>returns inverted lists consisting of (set, element) tuples</li>
+<li>supports full sets/elements and positional indexes of them</li>
+<li>stores source sets in <a href="../silkmoth_engine/">SilkMothEngine</a></li>
+</ul>
+<p>The inverted list</p>
+<ul>
+<li>is sorted first by the order of the sets and then by the order of the elements.</li>
+</ul>
+<h4 id="silkmoth.inverted_index.InvertedIndex--examples">Examples</h4>
+<pre><code>&gt;&gt;&gt; from silkmoth.inverted_index import InvertedIndex
+&gt;&gt;&gt; S1 = [{&quot;Apple&quot;, &quot;Pear&quot;, &quot;Car&quot;}, {&quot;Apple&quot;, &quot;Sun&quot;, &quot;Cat&quot;}]
+&gt;&gt;&gt; S2 = [{&quot;Apple&quot;, &quot;Berlin&quot;, &quot;Sun&quot;}, {&quot;Apple&quot;}]
+&gt;&gt;&gt; S = [S1, S2]
+&gt;&gt;&gt; I = InvertedIndex(S)
+&gt;&gt;&gt; I.get_indexes(&quot;Sun&quot;)
+[(0, 1), (1, 0)]
+&gt;&gt;&gt; I[&quot;Berlin&quot;]
+[([{'Sun', 'Apple', 'Berlin'}, {'Apple'}], {'Sun', 'Apple', 'Berlin'})]
+</code></pre>
+<p><img alt="SilkMoth Inverted Index" src="../../figures/InvertedIndex.png" /></p>
+<p><em>SilkMoth Inverted Index. Source: Deng et al., "SILKMOTH: An Efficient Method for Finding Related Sets with Maximum Matching Constraints", VLDB 2017.<br />
+Licensed under CC BY-NC-ND 4.0.</em></p>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src/silkmoth/inverted_index.py</code></summary>
+                <pre class="highlight"><code class="language-python">class InvertedIndex:
+    """
+    The inverted index
+
+    - allows to lookup all appearances of a token in a collection of tokenized sets
+    - returns inverted lists consisting of (set, element) tuples
+    - supports full sets/elements and positional indexes of them
+    - stores source sets in [SilkMothEngine](silkmoth_engine.md)
+
+    The inverted list
+
+    - is sorted first by the order of the sets and then by the order of the elements.
+
+    Examples
+    --------
+    ```
+    &gt;&gt;&gt; from silkmoth.inverted_index import InvertedIndex
+    &gt;&gt;&gt; S1 = [{"Apple", "Pear", "Car"}, {"Apple", "Sun", "Cat"}]
+    &gt;&gt;&gt; S2 = [{"Apple", "Berlin", "Sun"}, {"Apple"}]
+    &gt;&gt;&gt; S = [S1, S2]
+    &gt;&gt;&gt; I = InvertedIndex(S)
+    &gt;&gt;&gt; I.get_indexes("Sun")
+    [(0, 1), (1, 0)]
+    &gt;&gt;&gt; I["Berlin"]
+    [([{'Sun', 'Apple', 'Berlin'}, {'Apple'}], {'Sun', 'Apple', 'Berlin'})]
+    ```
+
+    ![SilkMoth Inverted Index](../figures/InvertedIndex.png)
+
+    *SilkMoth Inverted Index. Source: Deng et al., "SILKMOTH: An Efficient Method for Finding Related Sets with Maximum Matching Constraints", VLDB 2017.  
+    Licensed under CC BY-NC-ND 4.0.*
+    """
+
+    def __init__(self, token_sets: list):
+        """
+        Initialize the inverted index.
+
+        Args:
+            token_sets (list): Collection of (tokenized) sets
+        """
+        self.token_sets = token_sets
+        self.lookup_table = dict()
+        for set_idx, token_set in enumerate(self.token_sets):
+            for element_idx, tokens in enumerate(token_set):
+                for token in tokens:
+                    if not token in self.lookup_table:
+                        self.lookup_table[token] = [(set_idx, element_idx)]
+                    # avoid duplicates in inverted list
+                    elif self.lookup_table[token][-1] != (set_idx, element_idx):
+                        self.lookup_table[token].append((set_idx, element_idx))
+
+    def keys(self):
+        """
+        Gives all tokens similar like dict.keys().
+
+        Returns:
+            set (set): A set-like object providing all keys
+        """
+        return self.lookup_table.keys()
+
+    def __getitem__(self, token) -&gt; list:
+        """
+        Access inverted list from inverted index using square brackets.
+
+        Args:
+            token (str): Input token
+
+        Returns:
+            list:   A list of all (set, element) tuples which contain the input 
+                    token.
+        """
+        idx_list = self.get_indexes(token)
+        return [(self.get_set(s), self.get_set(s)[e]) for s, e in idx_list]
+
+    def get_indexes(self, token) -&gt; list:
+        """
+        Access inverted list of indexes. For some tasks retrieving the full set
+        and element pairs might not be necessary and their indexes are 
+        sufficient.
+
+        Args:
+            token (str): Input token
+
+        Returns:
+            list:   A list of all (set index, element index) tuples for (set, 
+                    element) tuples which contain the input tuple
+        """
+        if not token in self.lookup_table:
+            raise ValueError(f"Unknown token") 
+        return self.lookup_table[token] 
+
+    def get_set(self, set_id: int) -&gt; list:
+        """
+        Access (tokenized) set from set ID.
+
+        Args:
+            set_id: Set ID
+
+        Returns:
+            list: Tokenized set
+        """
+        if set_id &lt; 0 or set_id &gt;= len(self.token_sets):
+            raise ValueError(f"Invalid id")
+        return self.token_sets[set_id]
+
+    def get_indexes_binary(self, token, set_idx) -&gt; list:
+        """
+        Uses binary search to get all (set_idx, element_idx) pairs for a token
+        where set_idx matches the given set_idx.
+
+        Args:
+            token (str): The token to search in the inverted index.
+            set_idx (int): The ID of the set we want the element indexes for.
+
+        Returns:
+            list: All (set_idx, element_idx) tuples where the token appears in the given set.
+        """
+        if token not in self.lookup_table:
+            raise ValueError("Unknown token")
+
+        index_list = self.lookup_table[token]
+
+        # Using bisect to find the range of entries where set_idx matches
+        left = bisect.bisect_left(index_list, (set_idx, -1))
+        right = bisect.bisect_right(index_list, (set_idx, float('inf')))
+
+        return index_list[left:right]</code></pre>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.inverted_index.InvertedIndex.__getitem__" class="doc doc-heading">
+            <code class="highlight language-python">__getitem__(token)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Access inverted list from inverted index using square brackets.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>token</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Input token</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>list</code></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of all (set, element) tuples which contain the input 
+    token.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/inverted_index.py</code></summary>
+              <pre class="highlight"><code class="language-python">def __getitem__(self, token) -&gt; list:
+    """
+    Access inverted list from inverted index using square brackets.
+
+    Args:
+        token (str): Input token
+
+    Returns:
+        list:   A list of all (set, element) tuples which contain the input 
+                token.
+    """
+    idx_list = self.get_indexes(token)
+    return [(self.get_set(s), self.get_set(s)[e]) for s, e in idx_list]</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.inverted_index.InvertedIndex.__init__" class="doc doc-heading">
+            <code class="highlight language-python">__init__(token_sets)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the inverted index.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>token_sets</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Collection of (tokenized) sets</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/inverted_index.py</code></summary>
+              <pre class="highlight"><code class="language-python">def __init__(self, token_sets: list):
+    """
+    Initialize the inverted index.
+
+    Args:
+        token_sets (list): Collection of (tokenized) sets
+    """
+    self.token_sets = token_sets
+    self.lookup_table = dict()
+    for set_idx, token_set in enumerate(self.token_sets):
+        for element_idx, tokens in enumerate(token_set):
+            for token in tokens:
+                if not token in self.lookup_table:
+                    self.lookup_table[token] = [(set_idx, element_idx)]
+                # avoid duplicates in inverted list
+                elif self.lookup_table[token][-1] != (set_idx, element_idx):
+                    self.lookup_table[token].append((set_idx, element_idx))</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.inverted_index.InvertedIndex.get_indexes" class="doc doc-heading">
+            <code class="highlight language-python">get_indexes(token)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Access inverted list of indexes. For some tasks retrieving the full set
+and element pairs might not be necessary and their indexes are 
+sufficient.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>token</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Input token</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>list</code></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A list of all (set index, element index) tuples for (set, 
+    element) tuples which contain the input tuple</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/inverted_index.py</code></summary>
+              <pre class="highlight"><code class="language-python">def get_indexes(self, token) -&gt; list:
+    """
+    Access inverted list of indexes. For some tasks retrieving the full set
+    and element pairs might not be necessary and their indexes are 
+    sufficient.
+
+    Args:
+        token (str): Input token
+
+    Returns:
+        list:   A list of all (set index, element index) tuples for (set, 
+                element) tuples which contain the input tuple
+    """
+    if not token in self.lookup_table:
+        raise ValueError(f"Unknown token") 
+    return self.lookup_table[token] </code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.inverted_index.InvertedIndex.get_indexes_binary" class="doc doc-heading">
+            <code class="highlight language-python">get_indexes_binary(token, set_idx)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Uses binary search to get all (set_idx, element_idx) pairs for a token
+where set_idx matches the given set_idx.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>token</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The token to search in the inverted index.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>set_idx</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The ID of the set we want the element indexes for.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>list</code></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>All (set_idx, element_idx) tuples where the token appears in the given set.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/inverted_index.py</code></summary>
+              <pre class="highlight"><code class="language-python">def get_indexes_binary(self, token, set_idx) -&gt; list:
+    """
+    Uses binary search to get all (set_idx, element_idx) pairs for a token
+    where set_idx matches the given set_idx.
+
+    Args:
+        token (str): The token to search in the inverted index.
+        set_idx (int): The ID of the set we want the element indexes for.
+
+    Returns:
+        list: All (set_idx, element_idx) tuples where the token appears in the given set.
+    """
+    if token not in self.lookup_table:
+        raise ValueError("Unknown token")
+
+    index_list = self.lookup_table[token]
+
+    # Using bisect to find the range of entries where set_idx matches
+    left = bisect.bisect_left(index_list, (set_idx, -1))
+    right = bisect.bisect_right(index_list, (set_idx, float('inf')))
+
+    return index_list[left:right]</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.inverted_index.InvertedIndex.get_set" class="doc doc-heading">
+            <code class="highlight language-python">get_set(set_id)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Access (tokenized) set from set ID.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>set_id</code>
+            </td>
+            <td>
+                  <code><span title="int">int</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Set ID</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>list</code></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokenized set</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/inverted_index.py</code></summary>
+              <pre class="highlight"><code class="language-python">def get_set(self, set_id: int) -&gt; list:
+    """
+    Access (tokenized) set from set ID.
+
+    Args:
+        set_id: Set ID
+
+    Returns:
+        list: Tokenized set
+    """
+    if set_id &lt; 0 or set_id &gt;= len(self.token_sets):
+        raise ValueError(f"Invalid id")
+    return self.token_sets[set_id]</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.inverted_index.InvertedIndex.keys" class="doc doc-heading">
+            <code class="highlight language-python">keys()</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gives all tokens similar like dict.keys().</p>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>set</code></td>            <td>
+                  <code><span title="set">set</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>A set-like object providing all keys</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/inverted_index.py</code></summary>
+              <pre class="highlight"><code class="language-python">def keys(self):
+    """
+    Gives all tokens similar like dict.keys().
+
+    Returns:
+        set (set): A set-like object providing all keys
+    """
+    return self.lookup_table.keys()</code></pre>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

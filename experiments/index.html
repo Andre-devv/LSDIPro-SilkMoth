@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://Andre-devv.github.io/LSDIPro-SilkMoth/experiments/">
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>Index - SilkMoth Documentation</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../css/brands.min.css" rel="stylesheet">
+        <link href="../css/solid.min.css" rel="stylesheet">
+        <link href="../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">SilkMoth Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href=".." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../pages/silkmoth_engine/" class="dropdown-item">Engine</a>
+</li>
+                                    
+<li>
+    <a href="../pages/tokenizer/" class="dropdown-item">Tokenizer</a>
+</li>
+                                    
+<li>
+    <a href="../pages/inverted_index/" class="dropdown-item">Inverted Index</a>
+</li>
+                                    
+<li>
+    <a href="../pages/signature_generator/" class="dropdown-item">Signature Generator</a>
+</li>
+                                    
+<li>
+    <a href="../pages/candidate_selector/" class="dropdown-item">Candidate Selector</a>
+</li>
+                                    
+<li>
+    <a href="../pages/verifier/" class="dropdown-item">Verifier</a>
+</li>
+                                    
+<li>
+    <a href="../pages/utils/" class="dropdown-item">Utils</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            
+            
+            
+            
+            
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h3 id="running-the-experiments">🧪 Running the Experiments</h3>
+<p>This project includes multiple experiments to evaluate the performance and accuracy of our Python implementation of <strong>SilkMoth</strong>.</p>
+<hr />
+<h4 id="1-experiment-types">📊 1. Experiment Types</h4>
+<p>You can replicate and customize the following types of experiments using different configurations (e.g., filters, signature strategies, reduction techniques):</p>
+<ul>
+<li><strong>String Matching (DBLP Publication Titles)</strong></li>
+<li><strong>Schema Matching (WebTables)</strong></li>
+<li><strong>Inclusion Dependency Discovery (WebTable Columns)</strong></li>
+</ul>
+<p>Exact descriptions can be found in the official paper.</p>
+<hr />
+<h4 id="2-webschema-inclusion-dependency-setup">📦 2. WebSchema Inclusion Dependency Setup</h4>
+<p>To run the <strong>WebSchema + Inclusion Dependency</strong> experiments:</p>
+<ol>
+<li>Download the pre-extracted dataset from<br />
+<a href="https://tubcloud.tu-berlin.de/s/D4ngEfdn3cJ3pxF">📥 this link</a>.</li>
+<li>Place the <code>.json</code> files in the <code>data/webtables/</code> directory<br />
+<em>(create the folder if it does not exist)</em>.</li>
+</ol>
+<hr />
+<h4 id="3-running-the-experiments">🚀 3. Running the Experiments</h4>
+<p>To execute the core experiments from the paper:</p>
+<pre><code class="language-bash">python run.py
+</code></pre>
+<h3 id="4-results-overview">📈 4. Results Overview</h3>
+<p>We compared our results with those presented in the original SilkMoth paper.<br />
+Although exact reproduction is not possible due to language differences (Python vs C++) and dataset variations, overall <strong>performance trends align well</strong>.</p>
+<p>All the results can be found in the folder  <code>results</code>. </p>
+<blockquote>
+<p>💡 <em>Recent performance enhancements leverage <code>scipy</code>’s C-accelerated matching, replacing the original <code>networkx</code>-based approach.<br />
+Unless otherwise specified, the diagrams shown are generated using the <code>networkx</code> implementation.</em></p>
+</blockquote>
+<hr />
+<h3 id="inclusion-dependency">🔍 Inclusion Dependency</h3>
+<blockquote>
+<p><strong>Goal</strong>: Check if each reference set is contained within source sets.</p>
+</blockquote>
+<p><strong>Filter Comparison</strong>  </p>
+<p align="center">
+  <img src="silkmoth_results/inclusion_dep_filter.png" alt="Our Result" width="45%" />
+  <img src="results/inclusion_dependency/inclusion_dependency_filter_experiment_α=0.5.png" alt="Original Result" width="45%" />
+</p>
+
+<p><strong>Signature Comparison</strong>  </p>
+<p align="center">
+  <img src="silkmoth_results/inclusion_dep_sig.png" alt="Our Result" width="45%" />
+  <img src="results/inclusion_dependency/inclusion_dependency_sig_experiment_α=0.5.png" alt="Original Result" width="45%" />
+</p>
+
+<p><strong>Reduction Comparison</strong>  </p>
+<p align="center">
+  <img src="silkmoth_results/inclusion_dep_red.png" alt="Our Result" width="45%" />
+  <img src="results/inclusion_dependency/inclusion_dependency_reduction_experiment_α=0.0.png" alt="Original Result" width="45%" />
+</p>
+
+<p><strong>Scalability</strong>  </p>
+<p align="center">
+  <img src="silkmoth_results/inclusion_dep_scal.png" alt="Our Result" width="45%" />
+  <img src="results/inclusion_dependency/inclusion_dependency_scalability_experiment_α=0.5.png" alt="Original Result" width="45%" />
+</p>
+
+<hr />
+<h3 id="schema-matching-webtables">🔍 Schema Matching (WebTables)</h3>
+<blockquote>
+<p><strong>Goal</strong>: Detect related set pairs within a single source set.</p>
+</blockquote>
+<p><strong>Filter Comparison</strong>  </p>
+<p align="center">
+  <img src="silkmoth_results/schema_matching_filter.png" alt="Our Result" width="45%" />
+  <img src="results/schema_matching/schema_matching_filter_experiment_α=0.0.png" alt="Original Result" width="45%" />
+</p>
+
+<p><strong>Signature Comparison</strong>  </p>
+<p align="center">
+  <img src="silkmoth_results/schema_matching_sig.png" alt="Our Result" width="45%" />
+  <img src="results/schema_matching/schema_matching_sig_experiment_α=0.0.png" alt="Original Result" width="45%" />
+</p>
+
+<p><strong>Scalability</strong>  </p>
+<p align="center">
+  <img src="silkmoth_results/schema_matching_scal.png" alt="Our Result" width="45%" />
+  <img src="results/schema_matching/schema_matching_scalability_experiment_α=0.0.png" alt="Original Result" width="45%" />
+</p>
+
+<hr />
+<h3 id="additional-inclusion-dependency-silkmoth-filter-compared-with-no-silkmoth">🔍 Additional: Inclusion Dependency SilkMoth Filter compared with no SilkMoth</h3>
+<blockquote>
+<p>In this analysis, we focus exclusively on SilkMoth. But how does it compare to a 
+brute-force approach that skips the SilkMoth pipeline entirely? The graph below 
+shows the Filter run alongside the brute-force bipartite matching method without any 
+optimization pipeline. The results clearly demonstrate a dramatic improvement 
+in runtime efficiency when using SilkMoth.</p>
+</blockquote>
+<p><img src="results/inclusion_dependency/inclusion_dependency_filter_combined_raw_experiment_α=0.5.png" alt="WebTables Result"  /></p>
+<hr />
+<h3 id="additional-schema-matching-with-github-webtables">🔍 Additional: Schema Matching with GitHub WebTables</h3>
+<blockquote>
+<p>Similar to Schema Matching, this experiment uses a GitHub WebTable as a fixed reference set and matches it against other sets. The goal is to evaluate SilkMoth’s performance across different domains.
+<strong>Left:</strong> Matching with one reference set.
+<strong>Right:</strong> Matching with WebTable Corpus and GitHub WebTable datasets.
+The results show no significant difference, indicating consistent behavior across varying datasets.</p>
+</blockquote>
+<p align="center">
+  <img src="results/schema_matching/schema_matching_filter_experiment_α=0.5.png" alt="WebTables Result" width="45%" />
+  <img src="results/schema_matching/github_webtable_schema_matching_experiment_α=0.5.png" alt="GitHub Table Result" width="45%" />
+</p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>

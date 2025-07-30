@@ -1,0 +1,5 @@
+similarity_threshold,related_threshold,source_set_amount,reference_set_amount,label,elapsed_time,matches_found
+0.5,0.7,500000,200,RAW MATCH,6945.364,230903
+0.5,0.75,500000,200,RAW MATCH,6965.759,222613
+0.5,0.8,500000,200,RAW MATCH,6974.576,219875
+0.5,0.85,500000,200,RAW MATCH,7011.368,195759

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="None">
+        
+        <link rel="canonical" href="https://Andre-devv.github.io/LSDIPro-SilkMoth/">
+        <link rel="shortcut icon" href="img/favicon.ico">
+        <title>SilkMoth Documentation</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/fontawesome.min.css" rel="stylesheet">
+        <link href="css/brands.min.css" rel="stylesheet">
+        <link href="css/solid.min.css" rel="stylesheet">
+        <link href="css/v4-font-face.min.css" rel="stylesheet">
+        <link href="css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="assets/_mkdocstrings.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body class="homepage">
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href=".">SilkMoth Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="." class="nav-link active" aria-current="page">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="pages/silkmoth_engine/" class="dropdown-item">Engine</a>
+</li>
+                                    
+<li>
+    <a href="pages/tokenizer/" class="dropdown-item">Tokenizer</a>
+</li>
+                                    
+<li>
+    <a href="pages/inverted_index/" class="dropdown-item">Inverted Index</a>
+</li>
+                                    
+<li>
+    <a href="pages/signature_generator/" class="dropdown-item">Signature Generator</a>
+</li>
+                                    
+<li>
+    <a href="pages/candidate_selector/" class="dropdown-item">Candidate Selector</a>
+</li>
+                                    
+<li>
+    <a href="pages/verifier/" class="dropdown-item">Verifier</a>
+</li>
+                                    
+<li>
+    <a href="pages/utils/" class="dropdown-item">Utils</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" class="nav-link disabled">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="pages/silkmoth_engine/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="1"><a href="#lsdipro-ss2025" class="nav-link">🦋 LSDIPro SS2025</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth-an-efficient-method-for-finding-related-sets" class="nav-link">📄 SilkMoth: An Efficient Method for Finding Related Sets</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="1"><a href="#project-documentation" class="nav-link">📘 Project Documentation</a>
+              <ul class="nav flex-column">
+            <li class="nav-item" data-bs-level="2"><a href="#table-of-contents" class="nav-link">Table of Contents</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#1-large-scale-data-integration-project-lsdipro" class="nav-link">1. Large Scale Data Integration Project (LSDIPro)</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#2-what-is-silkmoth" class="nav-link">2. What is SilkMoth?</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#3-the-problem" class="nav-link">3. The Problem</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#4-silkmoths-solution" class="nav-link">4. SilkMoth’s Solution</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#5-core-pipeline-steps" class="nav-link">5. Core Pipeline Steps</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#6-modes-of-operation" class="nav-link">6. Modes of Operation 🧪</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#7-supported-similarity-functions" class="nav-link">7. Supported Similarity Functions 📐</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#8-installing-from-source" class="nav-link">8. Installing from Source</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            <li class="nav-item" data-bs-level="2"><a href="#9-experiment-results" class="nav-link">9. Experiment Results</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<h1 id="lsdipro-ss2025">🦋 LSDIPro SS2025</h1>
+<h2 id="silkmoth-an-efficient-method-for-finding-related-sets">📄 <a href="https://doi.org/10.14778/3115404.3115413">SilkMoth: An Efficient Method for Finding Related Sets</a></h2>
+<p>A project inspired by the SilkMoth paper, exploring efficient techniques for related set discovery.</p>
+<hr />
+<h3 id="team-members">👥 Team Members</h3>
+<ul>
+<li><strong>Andreas Wilms</strong></li>
+<li><strong>Sarra Daknou</strong></li>
+<li><strong>Amina Iqbal</strong></li>
+<li><strong>Jakob Berschneider</strong></li>
+</ul>
+<hr />
+<h3 id="see-experiments-and-results"><a href="experiments/">📊 See Experiments and Results</a></h3>
+<hr />
+<h1 id="project-documentation">📘 Project Documentation</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ul>
+<li><a href="#1-large-scale-data-integration-project-lsdipro">1. Large Scale Data Integration Project (LSDIPro)</a>  </li>
+<li><a href="#2-what-is-silkmoth">2. What is SilkMoth? 🐛</a>  </li>
+<li><a href="#3-the-problem">3. The Problem 🧩</a>  </li>
+<li><a href="#4-silkmoths-solution">4. SilkMoth’s Solution 🚀</a>  </li>
+<li><a href="#5-core-pipeline-steps">5. Core Pipeline Steps 🔁</a>  </li>
+<li><a href="#51-tokenization">5.1 Tokenization</a>  </li>
+<li><a href="#52-inverted-index-construction">5.2 Inverted Index Construction</a>  </li>
+<li><a href="#53-signature-generation">5.3 Signature Generation</a>  </li>
+<li><a href="#54-candidate-selection">5.4 Candidate Selection</a>  </li>
+<li><a href="#55-refinement-filters">5.5 Refinement Filters</a>  </li>
+<li><a href="#56-verification-via-maximum-matching">5.6 Verification via Maximum Matching</a>  </li>
+<li><a href="#6-modes-of-operation-">6. Modes of Operation 🧪</a>  </li>
+<li><a href="#7-supported-similarity-functions-">7. Supported Similarity Functions 📐</a>  </li>
+<li><a href="#8-installing-from-source">8. Installing from Source</a>  </li>
+<li><a href="#9-experiment-results">9. Experiment Results</a>  </li>
+</ul>
+<hr />
+<h2 id="1-large-scale-data-integration-project-lsdipro">1. Large Scale Data Integration Project (LSDIPro)</h2>
+<p>As part of the university project LSDIPro, our team implemented the SilkMoth paper in Python.<br />
+The course focuses on large-scale data integration, where student groups reproduce and extend research prototypes.<br />
+The project emphasizes scalable algorithm design, evaluation, and handling heterogeneous data at scale.</p>
+<hr />
+<h2 id="2-what-is-silkmoth">2. What is SilkMoth?</h2>
+<p><strong>SilkMoth</strong> is a system designed to efficiently discover related sets in large collections of data, even when the elements within those sets are only approximately similar.<br />
+This is especially important in <strong>data integration</strong>, <strong>data cleaning</strong>, and <strong>information retrieval</strong>, where messy or inconsistent data is common.</p>
+<hr />
+<h2 id="3-the-problem">3. The Problem</h2>
+<p>Determining whether two sets are related, for example, whether two database columns should be joined, often involves comparing their elements using <strong>similarity functions</strong> (not just exact matches).<br />
+A powerful approach models this as a <strong>bipartite graph</strong> and finds the <strong>maximum matching score</strong> between elements. However, this method is <strong>computationally expensive</strong> (<code>O(n³)</code> per pair), making it impractical for large datasets.</p>
+<hr />
+<h2 id="4-silkmoths-solution">4. SilkMoth’s Solution</h2>
+<p>SilkMoth tackles this with a three-step approach:</p>
+<ol>
+<li><strong>Signature Generation</strong>: Creates compact signatures for each set, ensuring related sets share signature parts.  </li>
+<li><strong>Pruning</strong>: Filters out unrelated sets early, reducing candidates.  </li>
+<li><strong>Verification</strong>: Applies the costly matching metric only on remaining candidates, matching brute-force accuracy but faster.</li>
+</ol>
+<hr />
+<h2 id="5-core-pipeline-steps">5. Core Pipeline Steps</h2>
+<p><img alt="Figure 1: SILKMOTH Framework Overview" src="figures/Pipeline.png" /></p>
+<p><em>Figure 1. SILKMOTH pipeline framework. Source: Deng et al., "SILKMOTH: An Efficient Method for Finding Related Sets with Maximum Matching Constraints", VLDB 2017. Licensed under CC BY-NC-ND 4.0.</em></p>
+<h3 id="51-tokenization"><a href="pages/tokenizer/">5.1 Tokenization</a></h3>
+<p>Each element in every set is tokenized based on the selected similarity function:<br />
+- <strong>Jaccard Similarity</strong>: Elements are split into whitespace-delimited tokens.<br />
+- <strong>Edit Similarity</strong>: Elements are split into overlapping <code>q</code>-grams (e.g., 3-grams).</p>
+<h3 id="52-inverted-index-construction"><a href="pages/inverted_index/">5.2 Inverted Index Construction</a></h3>
+<p>An <strong>inverted index</strong> is built from the reference set <code>R</code> to map each token to a list of <code>(set, element)</code> pairs in which it occurs.<br />
+This allows fast lookup of candidate sets sharing tokens with a query.</p>
+<h3 id="53-signature-generation"><a href="pages/signature_generator/">5.3 Signature Generation</a></h3>
+<p>A <strong>signature</strong> is a subset of tokens selected from each set such that:<br />
+- Any related set must share at least one signature token.<br />
+- Signature size is minimized to reduce candidate space.</p>
+<p>Signature selection heuristics (e.g., cost/value greedy ranking) approximate the optimal valid signature, which is NP-complete to compute exactly.</p>
+<h3 id="54-candidate-selection"><a href="pages/candidate_selector/">5.4 Candidate Selection</a></h3>
+<p>For each set <code>R</code>, retrieve from the inverted index all sets <code>S</code> sharing at least one token with <code>R</code>’s signature. These become <strong>candidate sets</strong> for further evaluation.</p>
+<h3 id="55-refinement-filters"><a href="pages/candidate_selector/">5.5 Refinement Filters</a></h3>
+<p>Two filters reduce false positives among candidates:<br />
+- <strong>Check Filter</strong>: Uses an upper bound on similarity to eliminate sets below threshold.<br />
+- <strong>Nearest Neighbor Filter</strong>: Approximates maximum matching score using nearest neighbor similarity for each element in <code>R</code>.</p>
+<h3 id="56-verification-via-maximum-matching"><a href="pages/verifier/">5.6 Verification via Maximum Matching</a></h3>
+<p>Compute <strong>maximum weighted bipartite matching</strong> between elements of <code>R</code> and <code>S</code> for remaining candidates using the similarity function as edge weights.<br />
+Sets meeting or exceeding threshold <code>δ</code> are considered <strong>related</strong>.</p>
+<hr />
+<h2 id="6-modes-of-operation">6. Modes of Operation 🧪</h2>
+<ul>
+<li>
+<p><strong>Discovery Mode</strong>: Compare all pairs of sets to find all related pairs.<br />
+<em>Use case:</em> Finding related columns in databases.</p>
+</li>
+<li>
+<p><strong>Search Mode</strong>: Given a reference set, find all related sets.<br />
+<em>Use case:</em> Schema matching or entity deduplication.</p>
+</li>
+</ul>
+<hr />
+<h2 id="7-supported-similarity-functions">7. Supported Similarity Functions 📐</h2>
+<ul>
+<li><strong>Jaccard Similarity</strong>  </li>
+<li><strong>Edit Similarity</strong> (Levenshtein-based)  </li>
+<li>Optional minimum similarity threshold <code>α</code> on element comparisons.</li>
+</ul>
+<hr />
+<h2 id="8-installing-from-source">8. Installing from Source</h2>
+<ol>
+<li>Run <code>pip install src/</code> to install  </li>
+<li>(Optional) Run <code>python -m unittest discover -s src/silkmoth/test -p "*.py"</code> to execute unit tests</li>
+</ol>
+<hr />
+<h2 id="9-experiment-results">9. Experiment Results</h2>
+<p><a href="experiments/">📊 See Experiments and Results</a></p></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = ".",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 1.6.1
+Build Date UTC : 2025-07-30 12:12:13.505750+00:00
+-->

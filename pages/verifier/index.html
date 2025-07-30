@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="https://Andre-devv.github.io/LSDIPro-SilkMoth/pages/verifier/">
+        <link rel="shortcut icon" href="../../img/favicon.ico">
+        <title>Verifier - SilkMoth Documentation</title>
+        <link href="../../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../css/fontawesome.min.css" rel="stylesheet">
+        <link href="../../css/brands.min.css" rel="stylesheet">
+        <link href="../../css/solid.min.css" rel="stylesheet">
+        <link href="../../css/v4-font-face.min.css" rel="stylesheet">
+        <link href="../../css/base.css" rel="stylesheet">
+        <link id="hljs-light" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" >
+        <link id="hljs-dark" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github-dark.min.css" disabled>
+        <link href="../../assets/_mkdocstrings.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="../..">SilkMoth Documentation</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a href="../.." class="nav-link">Home</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle active" aria-current="page" role="button" data-bs-toggle="dropdown"  aria-expanded="false">API</a>
+                                <ul class="dropdown-menu">
+                                    
+<li>
+    <a href="../silkmoth_engine/" class="dropdown-item">Engine</a>
+</li>
+                                    
+<li>
+    <a href="../tokenizer/" class="dropdown-item">Tokenizer</a>
+</li>
+                                    
+<li>
+    <a href="../inverted_index/" class="dropdown-item">Inverted Index</a>
+</li>
+                                    
+<li>
+    <a href="../signature_generator/" class="dropdown-item">Signature Generator</a>
+</li>
+                                    
+<li>
+    <a href="../candidate_selector/" class="dropdown-item">Candidate Selector</a>
+</li>
+                                    
+<li>
+    <a href="./" class="dropdown-item active" aria-current="page">Verifier</a>
+</li>
+                                    
+<li>
+    <a href="../utils/" class="dropdown-item">Utils</a>
+</li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ms-md-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../candidate_selector/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../utils/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-bs-toggle="collapse" data-bs-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
+        <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.verifier" class="nav-link">verifier</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.verifier.Verifier" class="nav-link">Verifier</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#silkmoth.verifier.reduce_sets" class="nav-link">reduce_sets</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<div class="doc doc-object doc-module">
+
+
+
+<a id="silkmoth.verifier"></a>
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="silkmoth.verifier.Verifier" class="doc doc-heading">
+            <code>Verifier</code>
+
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+
+        <p>The verifier component executes the final verification step in the SilkMoth
+pipeline. During verification SilkMoth performs the maximum matching between
+every candidate set and the reference set R. The sets whose maximum matching
+score surpass the relatedness threshold δ are the verified related sets to R.</p>
+<p>For maximum matching computation we treat every element of the two sets as 
+vertices of a bipartite graph and the weights of each edge determined by the 
+similarity function. The maximum weighted matching is computed using the existing
+library <a href="https://scipy.org/">SciPy</a>.</p>
+<p>Optionally, a triangle inequality-based reduction can be applied to further 
+improve performance.</p>
+<h4 id="silkmoth.verifier.Verifier--examples">Examples</h4>
+<pre><code>&gt;&gt;&gt; from silkmoth.inverted_index import InvertedIndex
+&gt;&gt;&gt; from silkmoth.utils import similar, jaccard_similarity
+&gt;&gt;&gt; from silkmoth.verifier import Verifier
+&gt;&gt;&gt; S1 = [{&quot;Apple&quot;, &quot;Pear&quot;, &quot;Car&quot;}, {&quot;Apple&quot;, &quot;Sun&quot;, &quot;Cat&quot;}]
+&gt;&gt;&gt; S2 = [{&quot;Apple&quot;, &quot;Berlin&quot;, &quot;Sun&quot;}, {&quot;Apple&quot;}]
+&gt;&gt;&gt; S = [S1, S2]
+&gt;&gt;&gt; I = InvertedIndex(S)
+&gt;&gt;&gt; R = [{&quot;Apple&quot;}, {&quot;Berlin&quot;, &quot;Sun&quot;}]
+&gt;&gt;&gt; verifier = Verifier(0.1, similar, jaccard_similarity)
+&gt;&gt;&gt; verifier.get_related_sets(R, {0, 1}, I)
+[(0, 0.17073170731707313), (1, 0.7142857142857142)]
+&gt;&gt;&gt; verifier = Verifier(0.7, similar, jaccard_similarity)
+&gt;&gt;&gt; verifier.get_related_sets(R, {0, 1}, I)
+[(1, 0.7142857142857142)]
+</code></pre>
+
+
+
+
+
+
+
+              <details class="quote">
+                <summary>Source code in <code>src/silkmoth/verifier.py</code></summary>
+                <pre class="highlight"><code class="language-python">class Verifier:
+    """
+    The verifier component executes the final verification step in the SilkMoth
+    pipeline. During verification SilkMoth performs the maximum matching between
+    every candidate set and the reference set R. The sets whose maximum matching
+    score surpass the relatedness threshold δ are the verified related sets to R.
+
+    For maximum matching computation we treat every element of the two sets as 
+    vertices of a bipartite graph and the weights of each edge determined by the 
+    similarity function. The maximum weighted matching is computed using the existing
+    library [SciPy](https://scipy.org/).
+
+    Optionally, a triangle inequality-based reduction can be applied to further 
+    improve performance.
+
+    Examples
+    --------
+    ```
+    &gt;&gt;&gt; from silkmoth.inverted_index import InvertedIndex
+    &gt;&gt;&gt; from silkmoth.utils import similar, jaccard_similarity
+    &gt;&gt;&gt; from silkmoth.verifier import Verifier
+    &gt;&gt;&gt; S1 = [{"Apple", "Pear", "Car"}, {"Apple", "Sun", "Cat"}]
+    &gt;&gt;&gt; S2 = [{"Apple", "Berlin", "Sun"}, {"Apple"}]
+    &gt;&gt;&gt; S = [S1, S2]
+    &gt;&gt;&gt; I = InvertedIndex(S)
+    &gt;&gt;&gt; R = [{"Apple"}, {"Berlin", "Sun"}]
+    &gt;&gt;&gt; verifier = Verifier(0.1, similar, jaccard_similarity)
+    &gt;&gt;&gt; verifier.get_related_sets(R, {0, 1}, I)
+    [(0, 0.17073170731707313), (1, 0.7142857142857142)]
+    &gt;&gt;&gt; verifier = Verifier(0.7, similar, jaccard_similarity)
+    &gt;&gt;&gt; verifier.get_related_sets(R, {0, 1}, I)
+    [(1, 0.7142857142857142)]
+    ```
+    """
+
+    def __init__(self, related_thresh, sim_metric, sim_func, sim_thresh=0, reduction=False):
+        """
+        Initialize the verifier with some parameters.
+
+        Args:
+            related_thresh (float): Relatedness threshold delta
+            sim_metric (callable): Similarity metric similar(...)/contain(...)
+            sim_func (callable): Similarity function phi
+            sim_thresh (float): Similarity threshold alpha
+            reduction (bool): Flag to activate/deactivate triangle inequality reduction
+        """
+        self.related_thresh = related_thresh
+        self.sim_metric = sim_metric
+        self.sim_func = sim_func
+        self.sim_thresh = sim_thresh
+        self.reduction = reduction
+
+    def get_mm_score(self, reference_set, source_set) -&gt; float:
+        """
+        Helper function that computes the maximum weighted bipartite matching score, 
+        where elements correspond to nodes and the edges are weighted using the similarity 
+        function.
+
+        Args:
+            reference_set (list): Tokenized reference set R
+            source_set (list): Tokenized source set S
+
+        Returns:
+            float:  Maximum matching score (sum of weights of edges in the 
+                    matching)
+        """
+        n, m = len(reference_set), len(source_set)
+        if n == 0 or m == 0:
+            return 0.0
+
+        weights = np.zeros((n, m), dtype=float)
+        for i, r_elem in enumerate(reference_set):
+            for j, s_elem in enumerate(source_set):
+                weights[i, j] = self.sim_func(r_elem, s_elem, self.sim_thresh)
+
+        # use negative weights to search for minimal cost
+        cost = -weights
+        row_ind, col_ind = linear_sum_assignment(cost)
+        return float(weights[row_ind, col_ind].sum())
+
+
+    def get_relatedness(self, reference_set, source_set) -&gt; float:
+        """
+        Helper function that gives the relatedness score by computing the maximum weighted
+        bipartite matching.
+
+        Args:
+            reference_set (list): Tokenized reference set R
+            source_set (list): Tokenized source set S
+
+        Returns:
+            float: Relatedness score of R and S
+        """
+        r_size = len(reference_set)
+        s_size = len(source_set)
+        exact_matches = 0
+        if self.reduction:
+            reference_set, source_set, exact_matches = reduce_sets(reference_set, source_set)
+
+        mm_score = self.get_mm_score(reference_set, source_set) + exact_matches
+        relatedness = self.sim_metric(r_size, s_size, mm_score)
+        return relatedness
+
+
+    def get_related_sets(self, reference_set: list, candidates: set, inverted_index: InvertedIndex) -&gt; list:
+        """
+        Gives all candidate sets that are related to the reference set.
+
+        Args:
+            reference_set (list): Tokeinized reference set R
+            candidates (set): Collection of indices of candidate sets
+            inverted_index (InvertedIndex): Inverted index instance
+
+        Returns:
+            list: Pairs of indices of all related sets from the candidates and 
+            their relatedness with the reference set.
+        """
+        related_sets = []
+        for c in candidates:
+            source_set = inverted_index.get_set(c)
+            relatedness = self.get_relatedness(reference_set, source_set)
+            if relatedness &gt;= self.related_thresh:
+                related_sets.append((c, relatedness))
+        return related_sets</code></pre>
+              </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.verifier.Verifier.__init__" class="doc doc-heading">
+            <code class="highlight language-python">__init__(related_thresh, sim_metric, sim_func, sim_thresh=0, reduction=False)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Initialize the verifier with some parameters.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>related_thresh</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relatedness threshold delta</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_metric</code>
+            </td>
+            <td>
+                  <code><span title="callable">callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity metric similar(...)/contain(...)</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_func</code>
+            </td>
+            <td>
+                  <code><span title="callable">callable</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity function phi</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_thresh</code>
+            </td>
+            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity threshold alpha</p>
+              </div>
+            </td>
+            <td>
+                  <code>0</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>reduction</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Flag to activate/deactivate triangle inequality reduction</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/verifier.py</code></summary>
+              <pre class="highlight"><code class="language-python">def __init__(self, related_thresh, sim_metric, sim_func, sim_thresh=0, reduction=False):
+    """
+    Initialize the verifier with some parameters.
+
+    Args:
+        related_thresh (float): Relatedness threshold delta
+        sim_metric (callable): Similarity metric similar(...)/contain(...)
+        sim_func (callable): Similarity function phi
+        sim_thresh (float): Similarity threshold alpha
+        reduction (bool): Flag to activate/deactivate triangle inequality reduction
+    """
+    self.related_thresh = related_thresh
+    self.sim_metric = sim_metric
+    self.sim_func = sim_func
+    self.sim_thresh = sim_thresh
+    self.reduction = reduction</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.verifier.Verifier.get_mm_score" class="doc doc-heading">
+            <code class="highlight language-python">get_mm_score(reference_set, source_set)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Helper function that computes the maximum weighted bipartite matching score, 
+where elements correspond to nodes and the edges are weighted using the similarity 
+function.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_set</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokenized reference set R</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>source_set</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokenized source set S</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>float</code></td>            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Maximum matching score (sum of weights of edges in the 
+    matching)</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/verifier.py</code></summary>
+              <pre class="highlight"><code class="language-python">def get_mm_score(self, reference_set, source_set) -&gt; float:
+    """
+    Helper function that computes the maximum weighted bipartite matching score, 
+    where elements correspond to nodes and the edges are weighted using the similarity 
+    function.
+
+    Args:
+        reference_set (list): Tokenized reference set R
+        source_set (list): Tokenized source set S
+
+    Returns:
+        float:  Maximum matching score (sum of weights of edges in the 
+                matching)
+    """
+    n, m = len(reference_set), len(source_set)
+    if n == 0 or m == 0:
+        return 0.0
+
+    weights = np.zeros((n, m), dtype=float)
+    for i, r_elem in enumerate(reference_set):
+        for j, s_elem in enumerate(source_set):
+            weights[i, j] = self.sim_func(r_elem, s_elem, self.sim_thresh)
+
+    # use negative weights to search for minimal cost
+    cost = -weights
+    row_ind, col_ind = linear_sum_assignment(cost)
+    return float(weights[row_ind, col_ind].sum())</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.verifier.Verifier.get_related_sets" class="doc doc-heading">
+            <code class="highlight language-python">get_related_sets(reference_set, candidates, inverted_index)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Gives all candidate sets that are related to the reference set.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_set</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokeinized reference set R</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>candidates</code>
+            </td>
+            <td>
+                  <code><span title="set">set</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Collection of indices of candidate sets</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>inverted_index</code>
+            </td>
+            <td>
+                  <code><a class="autorefs autorefs-internal" title="InvertedIndex (silkmoth.inverted_index.InvertedIndex)" href="../inverted_index/#silkmoth.inverted_index.InvertedIndex">InvertedIndex</a></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Inverted index instance</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>list</code></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Pairs of indices of all related sets from the candidates and </p>
+              </div>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+<td></td>            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>their relatedness with the reference set.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/verifier.py</code></summary>
+              <pre class="highlight"><code class="language-python">def get_related_sets(self, reference_set: list, candidates: set, inverted_index: InvertedIndex) -&gt; list:
+    """
+    Gives all candidate sets that are related to the reference set.
+
+    Args:
+        reference_set (list): Tokeinized reference set R
+        candidates (set): Collection of indices of candidate sets
+        inverted_index (InvertedIndex): Inverted index instance
+
+    Returns:
+        list: Pairs of indices of all related sets from the candidates and 
+        their relatedness with the reference set.
+    """
+    related_sets = []
+    for c in candidates:
+        source_set = inverted_index.get_set(c)
+        relatedness = self.get_relatedness(reference_set, source_set)
+        if relatedness &gt;= self.related_thresh:
+            related_sets.append((c, relatedness))
+    return related_sets</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.verifier.Verifier.get_relatedness" class="doc doc-heading">
+            <code class="highlight language-python">get_relatedness(reference_set, source_set)</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Helper function that gives the relatedness score by computing the maximum weighted
+bipartite matching.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_set</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokenized reference set R</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>source_set</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokenized source set S</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>float</code></td>            <td>
+                  <code><span title="float">float</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Relatedness score of R and S</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/verifier.py</code></summary>
+              <pre class="highlight"><code class="language-python">def get_relatedness(self, reference_set, source_set) -&gt; float:
+    """
+    Helper function that gives the relatedness score by computing the maximum weighted
+    bipartite matching.
+
+    Args:
+        reference_set (list): Tokenized reference set R
+        source_set (list): Tokenized source set S
+
+    Returns:
+        float: Relatedness score of R and S
+    """
+    r_size = len(reference_set)
+    s_size = len(source_set)
+    exact_matches = 0
+    if self.reduction:
+        reference_set, source_set, exact_matches = reduce_sets(reference_set, source_set)
+
+    mm_score = self.get_mm_score(reference_set, source_set) + exact_matches
+    relatedness = self.sim_metric(r_size, s_size, mm_score)
+    return relatedness</code></pre>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="silkmoth.verifier.reduce_sets" class="doc doc-heading">
+            <code class="highlight language-python">reduce_sets(reference_set, source_set)</code>
+
+</h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Applies the triangle inequality reduction by removing every element from 
+both sets that has an identical match in the other set. </p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>reference_set</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokenized reference set R</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>source_set</code>
+            </td>
+            <td>
+                  <code><span title="list">list</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Tokenized source set S</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code>(<span title="list">list</span>, <span title="list">list</span>, <span title="int">int</span>)</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Reduced reference set, reduced source set and number
+                of identical elements.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/verifier.py</code></summary>
+              <pre class="highlight"><code class="language-python">def reduce_sets(reference_set: list, source_set: list) -&gt; tuple:
+    """
+    Applies the triangle inequality reduction by removing every element from 
+    both sets that has an identical match in the other set. 
+
+    Args:
+        reference_set: Tokenized reference set R
+        source_set: Tokenized source set S
+
+    Returns:
+        (list, list, int):  Reduced reference set, reduced source set and number
+                            of identical elements.
+    """
+    r_reduced = reference_set[:]
+    s_reduced = source_set[:]
+    count = 0
+    for elem in reference_set:
+        if elem in s_reduced:
+            s_reduced.remove(elem)
+            r_reduced.remove(elem)
+            count += 1
+    return (r_reduced, s_reduced, count)</code></pre>
+            </details>
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../../js/bootstrap.bundle.min.js"></script>
+        <script>
+            var base_url = "../..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../../js/base.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
