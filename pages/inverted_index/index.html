@@ -231,18 +231,22 @@ Licensed under CC BY-NC-ND 4.0.</em></p>
         Initialize the inverted index.
 
         Args:
-            token_sets (list): Collection of (tokenized) sets
+            token_sets (list): Collection of tokenized sets
+            sim_func (function): Similarity function
         """
-        self.token_sets = token_sets
+        #self.sim_func = sim_func
+        self.token_sets = []
         self.lookup_table = dict()
-        for set_idx, token_set in enumerate(self.token_sets):
+
+        for set_idx, token_set in enumerate(token_sets):
+            self.token_sets.append(token_set)
             for element_idx, tokens in enumerate(token_set):
                 for token in tokens:
-                    if not token in self.lookup_table:
-                        self.lookup_table[token] = [(set_idx, element_idx)]
-                    # avoid duplicates in inverted list
-                    elif self.lookup_table[token][-1] != (set_idx, element_idx):
-                        self.lookup_table[token].append((set_idx, element_idx))
+                    key = (set_idx, element_idx)
+                    if token not in self.lookup_table:
+                        self.lookup_table[token] = [key]
+                    elif self.lookup_table[token][-1] != key:
+                        self.lookup_table[token].append(key)
 
     def keys(self):
         """
@@ -318,8 +322,15 @@ Licensed under CC BY-NC-ND 4.0.</em></p>
         # Using bisect to find the range of entries where set_idx matches
         left = bisect.bisect_left(index_list, (set_idx, -1))
         right = bisect.bisect_right(index_list, (set_idx, float('inf')))
+        return index_list[left:right]
 
-        return index_list[left:right]</code></pre>
+    def print_index(self):
+        """
+        Prints the inverted index in a readable format.
+        """
+        print("=== Inverted Index ===")
+        for token, locations in self.lookup_table.items():
+            print(f"Token: {token} → Locations: {locations}")</code></pre>
               </details>
 
 
@@ -457,7 +468,23 @@ Licensed under CC BY-NC-ND 4.0.</em></p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Collection of (tokenized) sets</p>
+                <p>Collection of tokenized sets</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>sim_func</code>
+            </td>
+            <td>
+                  <code><span title="function">function</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Similarity function</p>
               </div>
             </td>
             <td>
@@ -475,18 +502,22 @@ Licensed under CC BY-NC-ND 4.0.</em></p>
     Initialize the inverted index.
 
     Args:
-        token_sets (list): Collection of (tokenized) sets
+        token_sets (list): Collection of tokenized sets
+        sim_func (function): Similarity function
     """
-    self.token_sets = token_sets
+    #self.sim_func = sim_func
+    self.token_sets = []
     self.lookup_table = dict()
-    for set_idx, token_set in enumerate(self.token_sets):
+
+    for set_idx, token_set in enumerate(token_sets):
+        self.token_sets.append(token_set)
         for element_idx, tokens in enumerate(token_set):
             for token in tokens:
-                if not token in self.lookup_table:
-                    self.lookup_table[token] = [(set_idx, element_idx)]
-                # avoid duplicates in inverted list
-                elif self.lookup_table[token][-1] != (set_idx, element_idx):
-                    self.lookup_table[token].append((set_idx, element_idx))</code></pre>
+                key = (set_idx, element_idx)
+                if token not in self.lookup_table:
+                    self.lookup_table[token] = [key]
+                elif self.lookup_table[token][-1] != key:
+                    self.lookup_table[token].append(key)</code></pre>
             </details>
     </div>
 
@@ -693,7 +724,6 @@ where set_idx matches the given set_idx.</p>
     # Using bisect to find the range of entries where set_idx matches
     left = bisect.bisect_left(index_list, (set_idx, -1))
     right = bisect.bisect_right(index_list, (set_idx, float('inf')))
-
     return index_list[left:right]</code></pre>
             </details>
     </div>
@@ -835,6 +865,34 @@ where set_idx matches the given set_idx.</p>
         set (set): A set-like object providing all keys
     """
     return self.lookup_table.keys()</code></pre>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="silkmoth.inverted_index.InvertedIndex.print_index" class="doc doc-heading">
+            <code class="highlight language-python">print_index()</code>
+
+</h3>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Prints the inverted index in a readable format.</p>
+
+
+            <details class="quote">
+              <summary>Source code in <code>src/silkmoth/inverted_index.py</code></summary>
+              <pre class="highlight"><code class="language-python">def print_index(self):
+    """
+    Prints the inverted index in a readable format.
+    """
+    print("=== Inverted Index ===")
+    for token, locations in self.lookup_table.items():
+        print(f"Token: {token} → Locations: {locations}")</code></pre>
             </details>
     </div>
 
