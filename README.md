@@ -18,6 +18,13 @@ A project inspired by the SilkMoth paper, exploring efficient techniques for rel
 
 --- 
 
+### 📚 Explore the Full Documentation  
+Check out our documentation site for detailed guides, API references, and examples:  
+👉 [andre-devv.github.io/LSDIPro-SilkMoth](https://andre-devv.github.io/LSDIPro-SilkMoth/)
+
+
+---
+
 # 📘 Project Documentation
 
 ## Table of Contents
@@ -42,8 +49,7 @@ A project inspired by the SilkMoth paper, exploring efficient techniques for rel
 
 ## 1. Large Scale Data Integration Project (LSDIPro)
 
-As part of the university project LSDIPro, our team implemented the SilkMoth paper in Python.  
-The course focuses on large-scale data integration, where student groups reproduce and extend research prototypes.  
+As part of the university project LSDIPro, our team implemented the SilkMoth paper in Python. The course focuses on large-scale data integration, where student groups reproduce and extend research prototypes.  
 The project emphasizes scalable algorithm design, evaluation, and handling heterogeneous data at scale.
 
 ---
