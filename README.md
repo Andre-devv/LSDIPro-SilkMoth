@@ -18,8 +18,7 @@ A project inspired by the SilkMoth paper, exploring efficient techniques for rel
 
 --- 
 
-### 📚 Explore the Full Documentation  
-Check out our documentation site for detailed guides, API references, and examples:  
+### 📚 Check out our documentation site
 👉 [andre-devv.github.io/LSDIPro-SilkMoth](https://andre-devv.github.io/LSDIPro-SilkMoth/)
 
 
@@ -140,9 +139,7 @@ Sets meeting or exceeding threshold `δ` are considered **related**.
 
 ## 8. Installing from Source
 
-1. Run `pip install src/` to install  
-2. (Optional) Run `python -m unittest discover -s src/silkmoth/test -p "*.py"` to execute unit tests
-
+1. Run `pip install src/` to install
 ---
 
 
