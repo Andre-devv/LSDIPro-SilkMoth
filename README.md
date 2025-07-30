@@ -14,15 +14,19 @@ A project inspired by the SilkMoth paper, exploring efficient techniques for rel
 
 ---
 
+### [📊 See Experiments and Results](experiments/README.md)
+
+--- 
+
 # 📘 Project Documentation
 
 ## Table of Contents
 
 - [1. Large Scale Data Integration Project (LSDIPro)](#1-large-scale-data-integration-project-lsdipro)  
-- [2. What is SilkMoth? 🐛](#2-what-is-silkmoth-)  
-- [3. The Problem 🧩](#3-the-problem-)  
-- [4. SilkMoth’s Solution 🚀](#4-silkmoths-solution-)  
-- [5. Core Pipeline Steps 🔁](#5-core-pipeline-steps-)  
+- [2. What is SilkMoth? 🐛](#2-what-is-silkmoth)  
+- [3. The Problem 🧩](#3-the-problem)  
+- [4. SilkMoth’s Solution 🚀](#4-silkmoths-solution)  
+- [5. Core Pipeline Steps 🔁](#5-core-pipeline-steps)  
   - [5.1 Tokenization](#51-tokenization)  
   - [5.2 Inverted Index Construction](#52-inverted-index-construction)  
   - [5.3 Signature Generation](#53-signature-generation)  
@@ -44,21 +48,21 @@ The project emphasizes scalable algorithm design, evaluation, and handling heter
 
 ---
 
-## 2. What is SilkMoth? 🐛
+## 2. What is SilkMoth?
 
 **SilkMoth** is a system designed to efficiently discover related sets in large collections of data, even when the elements within those sets are only approximately similar.  
 This is especially important in **data integration**, **data cleaning**, and **information retrieval**, where messy or inconsistent data is common.
 
 ---
 
-## 3. The Problem 🧩
+## 3. The Problem
 
 Determining whether two sets are related, for example, whether two database columns should be joined, often involves comparing their elements using **similarity functions** (not just exact matches).  
 A powerful approach models this as a **bipartite graph** and finds the **maximum matching score** between elements. However, this method is **computationally expensive** (`O(n³)` per pair), making it impractical for large datasets.
 
 ---
 
-## 4. SilkMoth’s Solution 🚀
+## 4. SilkMoth’s Solution
 
 SilkMoth tackles this with a three-step approach:
 
@@ -68,7 +72,7 @@ SilkMoth tackles this with a three-step approach:
 
 ---
 
-## 5. Core Pipeline Steps 🔁
+## 5. Core Pipeline Steps
 
 ![Figure 1: SILKMOTH Framework Overview](docs/figures/Pipeline.png)
 

@@ -1,6 +1,6 @@
 # Python
 import multiprocessing
-from experiments import run_experiment_filter_schemes, run_reduction_experiment, run_scalability_experiment
+from experiments import run_experiment_filter_schemes, run_reduction_experiment, run_scalability_experiment, run_matching_without_silkmoth_inc_dep
 import os
 from data_loader import DataLoader
 from utils import load_sets_from_files, experiment_set_ratio_calc, save_sets_to_files
@@ -58,11 +58,12 @@ if __name__ == "__main__":
 
     # Experiment configuration
     experiment_config = {
-        "filter_runs": True,
+        "filter_runs": False,
         "signature_scheme_runs": False,
         "reduction_runs": False,
         "scalability_runs": False,
         "schema_github_webtable_runs": False,
+        "inc_dep_without_silkmoth": True
     }
 
     # Define experiments to run
@@ -152,6 +153,12 @@ if __name__ == "__main__":
             run_experiment_filter_schemes, [0.7, 0.75, 0.8, 0.85], [0.0, 0.25, 0.5, 0.75],
             labels_filter, source_sets_schema_matching[:10000], github_source_sets_schema_matching[:10000], similar, jaccard_similarity, True,
             "github_webtable_schema_matching", "results/schema_matching/"
+        ))
+
+    if experiment_config["inc_dep_without_silkmoth"]:
+        experiments.append((
+            run_matching_without_silkmoth_inc_dep, source_sets_in_dep[:500_000], reference_sets_in_dep[:200], [0.7, 0.75, 0.8, 0.85], 0.5, contain, jaccard_similarity,
+            "raw_matching", "results/inclusion_dependency/"
         ))
 
     # Create and start processes for each experiment
