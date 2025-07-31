@@ -87,7 +87,7 @@ The **left** diagrams are from the paper and the **right** are ours.
 **Filter Comparison**  
 <p align="center">
   <img src="silkmoth_results/schema_matching_filter.png" alt="Our Result" width="45%" />
-  <img src="results/schema_matching/schema_matching_filter_experiment_α=0.0.png" alt="Original Result" width="45%" />
+  <img src="results/schema_matching/schema_matching_filter_experiment_α=0.png" alt="Original Result" width="45%" />
 </p>
 
 **Signature Comparison**  
@@ -123,7 +123,7 @@ based on **edit similarity** and **q-gram** tokenization.
 **Scalability**  
 <p align="center">
   <img src="silkmoth_results/string_matching_scal.png" alt="Our Result" width="45%" />
-  <img src="results/string_matching/schema_matching_scalability_experiment_α=0.8.png" alt="Original Result" width="45%" />
+  <img src="results/string_matching/string_matching_scalability_experiment_α=0.8.png" alt="Original Result" width="45%" />
 </p>
 ---
 
