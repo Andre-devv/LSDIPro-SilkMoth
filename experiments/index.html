@@ -8,7 +8,7 @@
         
         <link rel="canonical" href="https://Andre-devv.github.io/LSDIPro-SilkMoth/experiments/">
         <link rel="shortcut icon" href="../img/favicon.ico">
-        <title>Index - SilkMoth Documentation</title>
+        <title>Results - SilkMoth Documentation</title>
         <link href="../css/bootstrap.min.css" rel="stylesheet">
         <link href="../css/fontawesome.min.css" rel="stylesheet">
         <link href="../css/brands.min.css" rel="stylesheet">
@@ -71,6 +71,9 @@
 </li>
                                 </ul>
                             </li>
+                            <li class="nav-item">
+                                <a href="./" class="nav-link active" aria-current="page">Results</a>
+                            </li>
                         </ul>
 
                     <ul class="nav navbar-nav ms-md-auto">
@@ -79,6 +82,16 @@
                                 <i class="fa fa-search"></i> Search
                             </a>
                         </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../pages/utils/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" class="nav-link disabled">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
                     </ul>
                 </div>
             </div>
@@ -96,6 +109,7 @@
     
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
+            
             
             
             
@@ -136,6 +150,7 @@
 <p>We compared our results with those presented in the original SilkMoth paper.<br />
 Although exact reproduction is not possible due to language differences (Python vs C++) and dataset variations, overall <strong>performance trends align well</strong>.</p>
 <p>All the results can be found in the folder  <code>results</code>. </p>
+<p>The <strong>left</strong> diagrams are from the paper and the <strong>right</strong> are ours.</p>
 <blockquote>
 <p>💡 <em>Recent performance enhancements leverage <code>scipy</code>’s C-accelerated matching, replacing the original <code>networkx</code>-based approach.<br />
 Unless otherwise specified, the diagrams shown are generated using the <code>networkx</code> implementation.</em></p>
@@ -177,7 +192,7 @@ Unless otherwise specified, the diagrams shown are generated using the <code>net
 <p><strong>Filter Comparison</strong>  </p>
 <p align="center">
   <img src="silkmoth_results/schema_matching_filter.png" alt="Our Result" width="45%" />
-  <img src="results/schema_matching/schema_matching_filter_experiment_α=0.0.png" alt="Original Result" width="45%" />
+  <img src="results/schema_matching/schema_matching_filter_experiment_α=0.png" alt="Original Result" width="45%" />
 </p>
 
 <p><strong>Signature Comparison</strong>  </p>
@@ -192,6 +207,30 @@ Unless otherwise specified, the diagrams shown are generated using the <code>net
   <img src="results/schema_matching/schema_matching_scalability_experiment_α=0.0.png" alt="Original Result" width="45%" />
 </p>
 
+<hr />
+<h3 id="string-matching-dblp-publication-titles">🔍 String Matching (DBLP Publication Titles)</h3>
+<blockquote>
+<p><strong>Goal:</strong> Detect related titles within the dataset using the extended SilkMoth pipeline
+based on <strong>edit similarity</strong> and <strong>q-gram</strong> tokenization.
+SciPy was used here.</p>
+</blockquote>
+<p><strong>Filter Comparison</strong>  </p>
+<p align="center">
+  <img src="silkmoth_results/string_matching_filter.png" alt="Our Result" width="45%" />
+  <img src="results/string_matching/10k-set-size/string_matching_filter_experiment_α=0.8.png" alt="Original Result" width="45%" />
+</p>
+
+<p><strong>Signature Comparison</strong>  </p>
+<p align="center">
+  <img src="silkmoth_results/string_matching_sig.png" alt="Our Result" width="45%" />
+  <img src="results/string_matching/10k-set-size/string_matching_sig_experiment_α=0.8.png" alt="Original Result" width="45%" />
+</p>
+
+<p><strong>Scalability</strong>  </p>
+<p align="center">
+  <img src="silkmoth_results/string_matching_scal.png" alt="Our Result" width="45%" />
+  <img src="results/string_matching/string_matching_scalability_experiment_α=0.8.png" alt="Original Result" width="45%" />
+</p>
 <hr />
 <h3 id="additional-inclusion-dependency-silkmoth-filter-compared-with-no-silkmoth">🔍 Additional: Inclusion Dependency SilkMoth Filter compared with no SilkMoth</h3>
 <blockquote>
