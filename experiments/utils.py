@@ -5,8 +5,8 @@ import json
 import os
 import pandas as pd
 import psutil
-from silkmoth.utils import jaccard_similarity
-from silkmoth.tokenizer import Tokenizer
+from src.silkmoth.utils import jaccard_similarity
+from src.silkmoth.tokenizer import Tokenizer
 
 def is_convertible_to_number(value):
     try:

@@ -2,10 +2,12 @@ import time
 from math import floor
 
 from silkmoth.silkmoth_engine import SilkMothEngine
-from silkmoth.utils import SigType, edit_similarity
+from silkmoth.utils import SigType, edit_similarity, contain, jaccard_similarity
+from silkmoth.verifier import Verifier
+from silkmoth.tokenizer import Tokenizer
+from src.silkmoth.silkmoth_engine import SilkMothEngine
+from src.silkmoth.utils import SigType, edit_similarity
 from utils import *
-import multiprocessing
-from multiprocessing import Manager
 
 
 def run_experiment_filter_schemes(related_thresholds, similarity_thresholds, labels, source_sets, reference_sets,
@@ -108,12 +110,14 @@ def run_experiment_filter_schemes(related_thresholds, similarity_thresholds, lab
                 # Used for search to see how many candidates were found and how many were removed
                 candidates_amount = 0
                 candidates_after = 0
+                related_sets_found = 0
                 if is_search:
                     for ref_id, ref_set in enumerate(reference_sets):
                         related_sets_temp, candidates_amount_temp, candidates_removed_temp = silk_moth_engine.search_sets(
                             ref_set)
                         candidates_amount += candidates_amount_temp
                         candidates_after += candidates_removed_temp
+                        related_sets_found += len(related_sets_temp)
                 else:
                     # If not searching, we are discovering sets
                     silk_moth_engine.discover_sets(source_sets)
@@ -136,6 +140,7 @@ def run_experiment_filter_schemes(related_thresholds, similarity_thresholds, lab
                         "inverted_index_ram_usage": round(in_index_ram_usage, 3),
                         "candidates_amount": candidates_amount,
                         "candidates_amount_after_filtering": candidates_after,
+                        "related_sets_found": related_sets_found,
                     }
                 else:
                     data_overall = {
@@ -422,3 +427,43 @@ def run_scalability_experiment(related_thresholds, similarity_threshold, set_siz
         file_name=f"{folder_path}{file_name_prefix}_experiment_α={similarity_threshold}.png",
         xlabel="Number of Sets (in 100ks)",
     )
+
+def run_matching_without_silkmoth_inc_dep(source_sets, reference_sets, related_thresholds, similarity_threshold, sim_metric, sim_fun , file_name_prefix, folder_path):
+
+    tokenizer = Tokenizer(sim_func=sim_fun)
+
+    for related_thresh in related_thresholds:
+        verifier = Verifier(sim_thresh=similarity_threshold, related_thresh=related_thresh,
+                            sim_metric=sim_metric, sim_func=sim_fun, reduction=False)
+        related_sets = []
+        time_start = time.time()
+        for ref in reference_sets:
+            for source in source_sets:
+                if len(ref) > len(source):
+                    continue
+                relatedness = verifier.get_relatedness(tokenizer.tokenize(ref), tokenizer.tokenize(source))
+                if relatedness >= related_thresh:
+                    related_sets.append((source, relatedness))
+
+        time_end = time.time()
+        elapsed_time = time_end - time_start
+
+        data_overall = {
+            "similarity_threshold": similarity_threshold,
+            "related_threshold": related_thresh,
+            "source_set_amount": len(source_sets),
+            "reference_set_amount": len(reference_sets),
+            "label": "RAW MATCH",
+            "elapsed_time": round(elapsed_time, 3),
+            "matches_found": len(related_sets)
+        }
+
+        # Save results to a CSV file
+        save_experiment_results_to_csv(
+            results=data_overall,
+            file_name=f"{folder_path}{file_name_prefix}_experiment_results.csv"
+        )
+
+
+
+

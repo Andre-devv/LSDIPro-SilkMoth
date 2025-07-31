@@ -1,6 +1,6 @@
 site_name: SilkMoth Documentation
 docs_dir: docu
-
+site_url: https://Andre-devv.github.io/LSDIPro-SilkMoth
 nav:
   - Home: index.md
   - API:

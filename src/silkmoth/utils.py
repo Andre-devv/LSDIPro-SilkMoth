@@ -112,7 +112,7 @@ def reverse_qgrams(input_val) -> str:
     """
     Reverse qgrams back to their original text.
     """
-    if isinstance(input_val, (OrderedSet)):
+    if isinstance(input_val, (list,OrderedSet)):
         if len(input_val) == 0:
             return ""
         if len(input_val) == 1:
@@ -188,7 +188,9 @@ class SigType(Enum):
     SKYLINE = "skyline"
     DICHOTOMY = "dichotomy"
 
+
+
 def get_q_chunks(tokens, q):
     joined = " ".join(tokens)
-    chunks = [joined[j:j + q] for j in range(0, len(joined) - q + 1)]
+    chunks = [joined[j:j + q] for j in range(0, len(joined) - q + 1, q)]
     return chunks
