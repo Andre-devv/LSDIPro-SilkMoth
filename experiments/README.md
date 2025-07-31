@@ -42,6 +42,8 @@ Although exact reproduction is not possible due to language differences (Python 
 
 All the results can be found in the folder  `results`. 
 
+The **left** diagrams are from the paper and the **right** are ours.
+
 > 💡 *Recent performance enhancements leverage `scipy`’s C-accelerated matching, replacing the original `networkx`-based approach.  
 > Unless otherwise specified, the diagrams shown are generated using the `networkx` implementation.*
 
@@ -85,7 +87,7 @@ All the results can be found in the folder  `results`.
 **Filter Comparison**  
 <p align="center">
   <img src="silkmoth_results/schema_matching_filter.png" alt="Our Result" width="45%" />
-  <img src="results/schema_matching/schema_matching_filter_experiment_α=0.0.png" alt="Original Result" width="45%" />
+  <img src="results/schema_matching/schema_matching_filter_experiment_α=0.png" alt="Original Result" width="45%" />
 </p>
 
 **Signature Comparison**  
@@ -100,6 +102,30 @@ All the results can be found in the folder  `results`.
   <img src="results/schema_matching/schema_matching_scalability_experiment_α=0.0.png" alt="Original Result" width="45%" />
 </p>
 
+---
+
+### 🔍 String Matching (DBLP Publication Titles)
+>**Goal:** Detect related titles within the dataset using the extended SilkMoth pipeline
+based on **edit similarity** and **q-gram** tokenization.
+> SciPy was used here.
+
+**Filter Comparison**  
+<p align="center">
+  <img src="silkmoth_results/string_matching_filter.png" alt="Our Result" width="45%" />
+  <img src="results/string_matching/string_matching_filter_experiment_α=0.8.png" alt="Original Result" width="45%" />
+</p>
+
+**Signature Comparison**  
+<p align="center">
+  <img src="silkmoth_results/string_matching_sig.png" alt="Our Result" width="45%" />
+  <img src="results/string_matching/10k-set-size/string_matching_sig_experiment_α=0.8.png" alt="Original Result" width="45%" />
+</p>
+
+**Scalability**  
+<p align="center">
+  <img src="silkmoth_results/string_matching_scal.png" alt="Our Result" width="45%" />
+  <img src="results/string_matching/string_matching_scalability_experiment_α=0.8.png" alt="Original Result" width="45%" />
+</p>
 ---
 
 ### 🔍 Additional: Inclusion Dependency SilkMoth Filter compared with no SilkMoth
