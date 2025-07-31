@@ -6,7 +6,7 @@ A project inspired by the SilkMoth paper, exploring efficient techniques for rel
 
 ---
 
-### 👥 Team Members
+## 👥 Team Members
 - **Andreas Wilms**
 - **Sarra Daknou**
 - **Amina Iqbal**
@@ -14,13 +14,22 @@ A project inspired by the SilkMoth paper, exploring efficient techniques for rel
 
 ---
 
-### [📊 See Experiments and Results](experiments/README.md)
+## 📊 Experiments & Results
+➡️ [**See Experiments**](experiments/README.md)
 
 --- 
 
-### 📚 Check out our documentation site
+## 📚 Check out our documentation site
 👉 [andre-devv.github.io/LSDIPro-SilkMoth](https://andre-devv.github.io/LSDIPro-SilkMoth/)
 
+
+---
+
+## 🧪 Interactive Demo
+
+Follow our **step-by-step Jupyter Notebook demo** for a hands-on understanding of SilkMoth
+
+📓 [**Open demo_example.ipynb**](demo_example.ipynb)
 
 ---
 

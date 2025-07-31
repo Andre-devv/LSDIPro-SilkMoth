@@ -6,7 +6,7 @@ A project inspired by the SilkMoth paper, exploring efficient techniques for rel
 
 ---
 
-### 👥 Team Members
+## 👥 Team Members
 - **Andreas Wilms**
 - **Sarra Daknou**
 - **Amina Iqbal**
@@ -14,11 +14,18 @@ A project inspired by the SilkMoth paper, exploring efficient techniques for rel
 
 ---
 
-### [📊 See Experiments and Results](experiments/README.md)
+## 📊 Experiments & Results
+➡️ [**See Experiments**](experiments/README.md)
 
---- 
+---
 
-# 📘 Project Documentation
+## 🧪 Interactive Demo
+
+Follow our **step-by-step Jupyter Notebook demo** for a hands-on understanding of SilkMoth
+
+📓 [**Open demo_example.ipynb**](demo_example.ipynb)
+
+---
 
 ## Table of Contents
 
@@ -135,7 +142,6 @@ Sets meeting or exceeding threshold `δ` are considered **related**.
 ## 8. Installing from Source
 
 1. Run `pip install src/` to install  
-2. (Optional) Run `python -m unittest discover -s src/silkmoth/test -p "*.py"` to execute unit tests
 
 ---
 

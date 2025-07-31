@@ -107,11 +107,12 @@ The **left** diagrams are from the paper and the **right** are ours.
 ### 🔍 String Matching (DBLP Publication Titles)
 >**Goal:** Detect related titles within the dataset using the extended SilkMoth pipeline
 based on **edit similarity** and **q-gram** tokenization.
+> SciPy was used here.
 
 **Filter Comparison**  
 <p align="center">
   <img src="silkmoth_results/string_matching_filter.png" alt="Our Result" width="45%" />
-  <img src="results/string_matching/string_matching_filter_experiment_α=0.8.png" alt="Original Result" width="45%" />
+  <img src="results/string_matching/10k-set-size/string_matching_filter_experiment_α=0.8.png" alt="Original Result" width="45%" />
 </p>
 
 **Signature Comparison**  

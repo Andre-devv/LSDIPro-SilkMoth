@@ -130,13 +130,13 @@ class SilkMothEngine:
             list:   Tuples (i, j, sim) of all related sets with reference index i,
                     source set index j and the computed similarity score sim.
         """
-        #related_pairs = []
+        related_pairs = []
 
         for i, reference_set in enumerate(reference_sets):
             sets, _, _ = self.search_sets(reference_set)
-            #related_pairs.extend([(i, j, sim) for j, sim in sets])
+            related_pairs.extend([(i, j, sim) for j, sim in sets])
 
-        #return related_pairs
+        return related_pairs
 
     def set_related_threshold(self, related_thresh):
         """
