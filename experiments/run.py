@@ -29,7 +29,7 @@ if __name__ == "__main__":
     source_string_matching = [title.split() for title in source_string_matching]
 
     try:
-        folder_path = os.path.join(os.path.dirname(__file__), "../experiments/data/web tables")
+        folder_path = os.path.join(os.path.dirname(__file__), "../experiments/data/webtables")
         folder_path = os.path.normpath(folder_path)
         reference_sets_in_dep, source_sets_in_dep = load_sets_from_files(
             folder_path=folder_path,
